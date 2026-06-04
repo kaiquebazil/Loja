@@ -7,7 +7,25 @@ document.addEventListener('DOMContentLoaded', function() {
     populateBairroSelect();
     initOrcamentoForm();
     updateCartBadge();
+    handleUrlParams();
 });
+
+function handleUrlParams() {
+    var params = new URLSearchParams(window.location.search);
+    var tipo = params.get('tipo');
+    if (tipo) {
+        var select = document.getElementById('orc-tipo');
+        if (select) {
+            // Mapeamento simples para garantir compatibilidade
+            var map = {
+                'Celular': 'Manutenção de Celular',
+                'Computador': 'Manutenção de Computador',
+                'Montagem': 'Montagem de PC'
+            };
+            select.value = map[tipo] || tipo;
+        }
+    }
+}
 
 function populateBairroSelect() {
     var select = document.getElementById('orc-bairro');
