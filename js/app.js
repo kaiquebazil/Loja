@@ -19,13 +19,10 @@ var reviews = [
 ];
 
 var categoryIcons = {
-    'Informática': 'fa-laptop', 'Áudio': 'fa-headphones', 'Cabos': 'fa-plug',
-    'Carregadores': 'fa-bolt', 'TV e Streaming': 'fa-tv', 'Câmeras': 'fa-camera',
-    'Wearables': 'fa-watch', 'Acessórios': 'fa-mobile-alt', 'Iluminação': 'fa-lightbulb',
-    'Casa': 'fa-home', 'Beleza': 'fa-spa', 'Saúde': 'fa-heartbeat',
-    'Elétrica': 'fa-bolt', 'Ferramentas': 'fa-tools', 'Fotografia': 'fa-camera-retro',
-    'Projetores': 'fa-film', 'Redes': 'fa-wifi', 'Controles': 'fa-gamepad',
-    'Drones': 'fa-paper-plane', 'Baterias': 'fa-battery-full'
+    'Periféricos': 'fa-mouse',
+    'Hardware': 'fa-microchip',
+    'Cabos': 'fa-plug',
+    'Adaptadores': 'fa-random'
 };
 
 document.addEventListener('DOMContentLoaded', function() {
