@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Painel Admin | Kaique Bazil Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         .admin-container {
             max-width: 1200px;
@@ -17,14 +17,33 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
             margin-bottom: 30px;
             background-color: var(--bg-panel);
             padding: 20px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
         }
+        .admin-header h2 {
+            font-size: 1.5rem;
+        }
+        .admin-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
         .btn-add {
             background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-reset {
+            background-color: #e52e2e;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -38,21 +57,13 @@
             border-radius: 12px;
             border: 1px solid var(--border-color);
             border-collapse: collapse;
-            overflow: hidden;
+            overflow-x: auto;
+            display: block;
         }
         .product-table th, .product-table td {
-            padding: 15px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
-        }
-        @media (max-width: 768px) {
-            .admin-header { flex-direction: column; gap: 15px; text-align: center; }
-            .product-table thead { display: none; }
-            .product-table tr { display: block; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
-            .product-table td { display: flex; justify-content: space-between; align-items: center; border: none; padding: 8px 5px; }
-            .product-table td::before { content: attr(data-label); font-weight: bold; color: var(--text-muted); font-size: 12px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .form-full { grid-column: span 1; }
         }
         .product-table th {
             background-color: #0d1017;
@@ -90,10 +101,11 @@
             background: var(--bg-panel);
             width: 100%;
             max-width: 600px;
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
             max-height: 90vh;
             overflow-y: auto;
+            margin: 20px;
         }
         .admin-modal-header {
             display: flex;
@@ -107,6 +119,17 @@
             gap: 15px;
         }
         .form-full { grid-column: span 2; }
+        
+        @media (max-width: 768px) {
+            .admin-header { flex-direction: column; text-align: center; }
+            .admin-buttons { justify-content: center; }
+            .product-table thead { display: none; }
+            .product-table tr { display: block; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
+            .product-table td { display: flex; justify-content: space-between; align-items: center; border: none; padding: 8px 5px; }
+            .product-table td::before { content: attr(data-label); font-weight: bold; color: var(--text-muted); font-size: 12px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-full { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
@@ -119,34 +142,37 @@
                     <p>ADMIN PANEL</p>
                 </div>
             </div>
-            <a href="index.html" class="btn-outline"><i class="fas fa-arrow-left"></i> Voltar para Loja</a>
+            <a href="index.html" class="btn-outline" style="color: var(--primary-blue);"><i class="fas fa-arrow-left"></i> Voltar para Loja</a>
         </div>
     </header>
 
     <div class="admin-container">
         <div class="admin-header">
             <h2>Gerenciar Produtos</h2>
-            <button class="btn-add" id="btn-add-product"><i class="fas fa-plus"></i> Novo Produto</button>
+            <div class="admin-buttons">
+                <button class="btn-add" id="btn-add-product"><i class="fas fa-plus"></i> Novo Produto</button>
+                <button class="btn-reset" id="btn-reset-products"><i class="fas fa-sync-alt"></i> Resetar Produtos</button>
+            </div>
         </div>
 
-        <table class="product-table">
-            <thead>
-                <tr>
-                    <th>Imagem</th>
-                    <th>Nome</th>
-                    <th>Categoria</th>
-                    <th>Preço</th>
-                    <th>Estoque</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="admin-product-list">
-                <!-- Preenchido via JS -->
-            </tbody>
-        </table>
+        <div style="overflow-x: auto;">
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Imagem</th>
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-product-list">
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Modal Adicionar/Editar -->
     <div id="product-modal" class="admin-modal">
         <div class="admin-modal-content">
             <div class="admin-modal-header">
@@ -208,7 +234,7 @@
         </div>
     </div>
 
-    <script src="products.js"></script>
+    <script src="js/products.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             renderAdminProducts();
@@ -217,6 +243,7 @@
             const form = document.getElementById('product-form');
             const btnAdd = document.getElementById('btn-add-product');
             const btnClose = document.getElementById('close-admin-modal');
+            const btnReset = document.getElementById('btn-reset-products');
 
             btnAdd.onclick = () => {
                 form.reset();
@@ -226,6 +253,17 @@
             };
 
             btnClose.onclick = () => modal.classList.remove('active');
+
+            btnReset.onclick = () => {
+                if (confirm('ATENÇÃO! Isso irá resetar todos os produtos para o catálogo original. Os produtos que você adicionou serão perdidos. Continuar?')) {
+                    resetProducts();
+                    renderAdminProducts();
+                    alert('Produtos resetados com sucesso!');
+                    if (typeof renderProducts === 'function') {
+                        renderProducts();
+                    }
+                }
+            };
 
             form.onsubmit = (e) => {
                 e.preventDefault();
@@ -256,19 +294,23 @@
                 saveProducts(products);
                 modal.classList.remove('active');
                 renderAdminProducts();
+                if (typeof renderProducts === 'function') {
+                    renderProducts();
+                }
             };
         });
 
         function renderAdminProducts() {
             const products = getProducts();
             const list = document.getElementById('admin-product-list');
+            if (!list) return;
             list.innerHTML = '';
 
             products.forEach(p => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td data-label="Imagem"><img src="${p.imagem}" alt=""></td>
-                    <td data-label="Nome">${p.nome}</td>
+                    <td data-label="Imagem"><img src="${p.imagem}" onerror="this.src='https://placehold.co/50x50/11141b/ffffff?text=Img'" alt=""></td>
+                    <td data-label="Nome">${p.nome.substring(0, 50)}${p.nome.length > 50 ? '...' : ''}</td>
                     <td data-label="Categoria">${p.categoria}</td>
                     <td data-label="Preço">R$ ${p.preco.toFixed(2)}</td>
                     <td data-label="Estoque">${p.estoque}</td>
@@ -291,11 +333,11 @@
             document.getElementById('prod-category').value = p.categoria;
             document.getElementById('prod-price').value = p.preco;
             document.getElementById('prod-stock').value = p.estoque;
-            document.getElementById('prod-image').value = p.imagem;
+            document.getElementById('prod-image').value = p.imagem || '';
             document.getElementById('prod-desc').value = p.descricao || '';
-            document.getElementById('prod-featured').checked = p.destaque;
-            document.getElementById('prod-bestseller').checked = p.maisVendido;
-            document.getElementById('prod-offer').checked = p.oferta;
+            document.getElementById('prod-featured').checked = p.destaque || false;
+            document.getElementById('prod-bestseller').checked = p.maisVendido || false;
+            document.getElementById('prod-offer').checked = p.oferta || false;
             document.getElementById('prod-discount').value = p.desconto || 0;
 
             document.getElementById('modal-title').innerText = 'Editar Produto';
@@ -308,6 +350,9 @@
                 products = products.filter(p => p.id !== id);
                 saveProducts(products);
                 renderAdminProducts();
+                if (typeof renderProducts === 'function') {
+                    renderProducts();
+                }
             }
         }
     </script>

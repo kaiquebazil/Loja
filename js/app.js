@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Carregado - Inicializando...');
     renderProducts();
     updateCartUI();
     setupEventListeners();
@@ -6,19 +7,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderProducts(filter = 'Todos', searchQuery = '') {
     const products = getProducts();
+    console.log('Renderizando produtos:', products.length);
+    
     const container = document.getElementById('product-grid');
-    if (!container) return;
+    if (!container) {
+        console.error('Container product-grid não encontrado!');
+        return;
+    }
 
     container.innerHTML = '';
 
+    if (products.length === 0) {
+        container.innerHTML = '<p class="no-products" style="text-align:center; padding:40px;">Nenhum produto encontrado. Adicione produtos no painel admin.</p>';
+        return;
+    }
+
     const filteredProducts = products.filter(p => {
         const matchesCategory = filter === 'Todos' || p.categoria === filter || (filter === 'Promoções' && p.oferta);
-        const matchesSearch = p.nome.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearch = searchQuery === '' || p.nome.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesCategory && matchesSearch;
     });
 
     if (filteredProducts.length === 0) {
-        container.innerHTML = '<p class="no-products">Nenhum produto encontrado.</p>';
+        container.innerHTML = '<p class="no-products" style="text-align:center; padding:40px;">Nenhum produto encontrado para esta categoria.</p>';
         return;
     }
 
@@ -34,13 +45,15 @@ function renderProducts(filter = 'Todos', searchQuery = '') {
             if (product.desconto) tags += `<span class="tag desconto">-${product.desconto}%</span>`;
         }
 
+        const imgUrl = product.imagem || 'https://placehold.co/400x400/11141b/ffffff?text=Produto';
+
         card.innerHTML = `
             ${tags}
             <div class="product-img">
-                <img src="${product.imagem}" alt="${product.nome}" loading="lazy">
+                <img src="${imgUrl}" alt="${product.nome}" loading="lazy" onerror="this.src='https://placehold.co/400x400/11141b/ffffff?text=Produto'">
             </div>
             <div class="product-info">
-                <span class="product-category">${product.categoria}</span>
+                <span class="product-category">${product.categoria || 'Geral'}</span>
                 <h4 class="product-title">${product.nome}</h4>
                 <div class="product-price">
                     <span class="price">R$ ${product.preco.toFixed(2)}</span>
@@ -57,7 +70,7 @@ function renderProducts(filter = 'Todos', searchQuery = '') {
 
 function updateCartUI() {
     const cart = getCart();
-    const cartCountElements = document.querySelectorAll('.cart-badge, .fab-cart .badge');
+    const cartBadges = document.querySelectorAll('.cart-badge, .fab-cart .badge');
     const cartTotalElement = document.querySelector('.action-text span');
     const cartItemsContainer = document.getElementById('cart-items');
     const cartTotalDisplay = document.getElementById('cart-total-display');
@@ -65,7 +78,10 @@ function updateCartUI() {
     const count = getCartCount();
     const total = getCartTotal();
 
-    cartCountElements.forEach(el => el.textContent = count);
+    cartBadges.forEach(badge => {
+        if (badge) badge.textContent = count;
+    });
+    
     if (cartTotalElement) cartTotalElement.textContent = `R$ ${total.toFixed(2)}`;
     
     if (cartItemsContainer) {
@@ -77,7 +93,7 @@ function updateCartUI() {
                 const div = document.createElement('div');
                 div.className = 'cart-item';
                 div.innerHTML = `
-                    <img src="${item.imagem}" alt="${item.nome}">
+                    <img src="${item.imagem}" alt="${item.nome}" onerror="this.src='https://placehold.co/80x80/11141b/ffffff?text=Produto'">
                     <div class="cart-item-info">
                         <h5>${item.nome}</h5>
                         <p>R$ ${item.preco.toFixed(2)}</p>
@@ -100,7 +116,6 @@ function updateCartUI() {
 }
 
 function setupEventListeners() {
-    // Pesquisa
     const searchInput = document.querySelector('.search-container input');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -108,37 +123,27 @@ function setupEventListeners() {
         });
     }
 
-    // Categorias no Menu
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            navLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            
-            const category = link.textContent.trim().replace(/.*?\s/, ''); // Remove ícone se houver
+    const categoryCards = document.querySelectorAll('.category-card');
+    categoryCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.querySelector('span')?.textContent || 'Todos';
             const categoryMap = {
-                'Início': 'Todos',
-                'Todos os Produtos': 'Todos',
                 'Mouse': 'Mouse',
                 'Teclados': 'Teclados',
                 'Headsets': 'Headsets',
                 'Controles': 'Controles',
-                'Armazenamento': 'Armazenamento',
+                'SSDs': 'Armazenamento',
                 'Memórias RAM': 'Memórias RAM',
-                'Cabos e Adaptadores': 'Cabos e Adaptadores',
-                'Ofertas': 'Promoções',
-                'Promoções': 'Promoções'
+                'Cabos': 'Cabos e Adaptadores',
+                'Outros': 'Outros'
             };
-            
             renderProducts(categoryMap[category] || category);
             
-            // Scroll para produtos
-            document.querySelector('.products-section').scrollIntoView({ behavior: 'smooth' });
+            const titleEl = document.getElementById('current-category-title');
+            if (titleEl) titleEl.textContent = category;
         });
     });
 
-    // Abrir/Fechar Menu Mobile
     const menuToggle = document.getElementById('menu-toggle');
     const closeMenu = document.getElementById('close-menu');
     const navMenu = document.getElementById('nav-menu');
@@ -155,40 +160,42 @@ function setupEventListeners() {
             overlay.classList.remove('active');
         };
 
-        closeMenu.addEventListener('click', closeNav);
+        if (closeMenu) closeMenu.addEventListener('click', closeNav);
         
-        // Fechar ao clicar em um link
         const navLinks = navMenu.querySelectorAll('a');
         navLinks.forEach(link => link.addEventListener('click', closeNav));
     }
 
-    // Abrir/Fechar Carrinho Lateral
     const cartIcons = document.querySelectorAll('.cart-icon-wrapper, .fab-cart');
     const cartSidebar = document.getElementById('cart-sidebar');
     const closeCart = document.getElementById('close-cart');
 
     if (cartSidebar && overlay) {
         cartIcons.forEach(icon => {
-            icon.addEventListener('click', () => {
-                cartSidebar.classList.add('open');
-                overlay.classList.add('active');
-            });
+            if (icon) {
+                icon.addEventListener('click', () => {
+                    cartSidebar.classList.add('open');
+                    overlay.classList.add('active');
+                });
+            }
         });
 
-        closeCart.addEventListener('click', () => {
-            cartSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
+        if (closeCart) {
+            closeCart.addEventListener('click', () => {
+                cartSidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            });
+        }
 
         overlay.addEventListener('click', () => {
             cartSidebar.classList.remove('open');
             if (navMenu) navMenu.classList.remove('active');
-            document.getElementById('checkout-modal').classList.remove('active');
+            const checkoutModal = document.getElementById('checkout-modal');
+            if (checkoutModal) checkoutModal.classList.remove('active');
             overlay.classList.remove('active');
         });
     }
 
-    // Finalizar Pedido (Abrir Modal)
     const btnCheckout = document.getElementById('btn-checkout');
     if (btnCheckout) {
         btnCheckout.addEventListener('click', () => {
@@ -196,18 +203,22 @@ function setupEventListeners() {
                 alert("Adicione produtos ao carrinho primeiro!");
                 return;
             }
-            document.getElementById('checkout-modal').classList.add('active');
+            const checkoutModal = document.getElementById('checkout-modal');
+            if (checkoutModal) checkoutModal.classList.add('active');
             
-            // Preencher dados salvos
             const savedData = getCustomerData();
-            document.getElementById('cust-name').value = savedData.nome || '';
-            document.getElementById('cust-phone').value = savedData.telefone || '';
-            document.getElementById('cust-city').value = savedData.cidade || '';
-            document.getElementById('cust-obs').value = savedData.observacoes || '';
+            const nameInput = document.getElementById('cust-name');
+            const phoneInput = document.getElementById('cust-phone');
+            const cityInput = document.getElementById('cust-city');
+            const obsInput = document.getElementById('cust-obs');
+            
+            if (nameInput) nameInput.value = savedData.nome || '';
+            if (phoneInput) phoneInput.value = savedData.telefone || '';
+            if (cityInput) cityInput.value = savedData.cidade || '';
+            if (obsInput) obsInput.value = savedData.observacoes || '';
         });
     }
 
-    // Confirmar Pedido no Modal
     const checkoutForm = document.getElementById('checkout-form');
     if (checkoutForm) {
         checkoutForm.addEventListener('submit', (e) => {
@@ -222,12 +233,13 @@ function setupEventListeners() {
         });
     }
     
-    // Fechar Modal
     const closeCheckout = document.getElementById('close-checkout');
     if (closeCheckout) {
         closeCheckout.addEventListener('click', () => {
-            document.getElementById('checkout-modal').classList.remove('active');
-            if (!document.getElementById('cart-sidebar').classList.contains('open')) {
+            const checkoutModal = document.getElementById('checkout-modal');
+            if (checkoutModal) checkoutModal.classList.remove('active');
+            const cartSidebarCheck = document.getElementById('cart-sidebar');
+            if (cartSidebarCheck && !cartSidebarCheck.classList.contains('open')) {
                 overlay.classList.remove('active');
             }
         });
