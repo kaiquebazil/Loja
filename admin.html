@@ -45,6 +45,15 @@
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
+        @media (max-width: 768px) {
+            .admin-header { flex-direction: column; gap: 15px; text-align: center; }
+            .product-table thead { display: none; }
+            .product-table tr { display: block; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
+            .product-table td { display: flex; justify-content: space-between; align-items: center; border: none; padding: 8px 5px; }
+            .product-table td::before { content: attr(data-label); font-weight: bold; color: var(--text-muted); font-size: 12px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-full { grid-column: span 1; }
+        }
         .product-table th {
             background-color: #0d1017;
             color: var(--text-muted);
@@ -258,12 +267,12 @@
             products.forEach(p => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><img src="${p.imagem}" alt=""></td>
-                    <td>${p.nome}</td>
-                    <td>${p.categoria}</td>
-                    <td>R$ ${p.preco.toFixed(2)}</td>
-                    <td>${p.estoque}</td>
-                    <td class="actions">
+                    <td data-label="Imagem"><img src="${p.imagem}" alt=""></td>
+                    <td data-label="Nome">${p.nome}</td>
+                    <td data-label="Categoria">${p.categoria}</td>
+                    <td data-label="Preço">R$ ${p.preco.toFixed(2)}</td>
+                    <td data-label="Estoque">${p.estoque}</td>
+                    <td data-label="Ações" class="actions">
                         <button class="btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
                         <button class="btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
                     </td>

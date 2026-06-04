@@ -138,11 +138,34 @@ function setupEventListeners() {
         });
     });
 
+    // Abrir/Fechar Menu Mobile
+    const menuToggle = document.getElementById('menu-toggle');
+    const closeMenu = document.getElementById('close-menu');
+    const navMenu = document.getElementById('nav-menu');
+    const overlay = document.getElementById('overlay');
+
+    if (menuToggle && navMenu && overlay) {
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        const closeNav = () => {
+            navMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        };
+
+        closeMenu.addEventListener('click', closeNav);
+        
+        // Fechar ao clicar em um link
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => link.addEventListener('click', closeNav));
+    }
+
     // Abrir/Fechar Carrinho Lateral
     const cartIcons = document.querySelectorAll('.cart-icon-wrapper, .fab-cart');
     const cartSidebar = document.getElementById('cart-sidebar');
     const closeCart = document.getElementById('close-cart');
-    const overlay = document.getElementById('overlay');
 
     if (cartSidebar && overlay) {
         cartIcons.forEach(icon => {
@@ -159,6 +182,7 @@ function setupEventListeners() {
 
         overlay.addEventListener('click', () => {
             cartSidebar.classList.remove('open');
+            if (navMenu) navMenu.classList.remove('active');
             document.getElementById('checkout-modal').classList.remove('active');
             overlay.classList.remove('active');
         });
