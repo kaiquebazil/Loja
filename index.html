@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaique Bazil Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #06080d;
+            --bg-panel: #11141b;
+            --bg-search: #171a21;
+            --primary-blue: #0f58d6;
+            --primary-blue-hover: #0c46ab;
+            --text-main: #ffffff;
+            --text-muted: #8b92a5;
+            --border-color: #222733;
+            --font-family: 'Inter', sans-serif;
+            --container-width: 1400px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            background-color: #030407;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 10px 0;
+        }
+
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-bar i {
+            color: var(--primary-blue);
+            font-size: 14px;
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: 25px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #111 0%, #222 100%);
+            box-shadow: 0 0 15px rgba(15, 88, 214, 0.2);
+        }
+        
+        .logo-icon span { color: var(--primary-blue); }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            gap: 5px;
+        }
+        .logo-text h1 .blue { color: var(--primary-blue); }
+        .logo-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+        }
+
+        .search-container {
+            flex: 1;
+            display: flex;
+            background-color: var(--bg-search);
+            border-radius: 30px;
+            overflow: hidden;
+            height: 45px;
+        }
+
+        .search-container input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0 20px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .search-container button {
+            background-color: var(--primary-blue);
+            border: none;
+            width: 50px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-container button:hover { background-color: var(--primary-blue-hover); }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .action-item i {
+            font-size: 24px;
+            color: var(--text-main);
+        }
+
+        .action-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-text strong { font-size: 14px; font-weight: 600; }
+        .action-text span { font-size: 12px; color: var(--text-muted); }
+
+        .cart-icon-wrapper {
+            position: relative;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background-color: var(--primary-blue);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        /* --- Navigation --- */
+        .nav-menu {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-menu ul {
+            display: flex;
+            justify-content: space-between;
+            list-style: none;
+        }
+
+        .nav-menu li a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu li a:hover, .nav-menu li a.active {
+            color: var(--primary-blue);
+        }
+
+        /* --- Hero Banner --- */
+        .hero-section {
+            margin: 30px auto;
+            max-width: var(--container-width);
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero-banner {
+            background: linear-gradient(90deg, #0a0d14 0%, #0d121c 50%, #0a0d14 100%);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 80px;
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+        }
+
+        /* Efeito de luz azul ao fundo */
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(15,88,214,0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+        }
+
+        .hero-content h2 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        .hero-content h2 .highlight { color: var(--primary-blue); }
+
+        .hero-content p {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover { background-color: var(--primary-blue-hover); }
+
+        .hero-image {
+            position: relative;
+            z-index: 1;
+            width: 500px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Placeholder simulando os periféricos no banner */
+        .hero-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: url('https://placehold.co/600x400/11141b/333333?text=Imagem+dos+Periféricos') center/cover no-repeat;
+            border-radius: 10px;
+            opacity: 0.7;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 2;
+        }
+
+        .nav-btn:hover { background-color: rgba(255,255,255,0.1); }
+        .nav-btn.prev { left: 5px; }
+        .nav-btn.next { right: 5px; }
+
+        .dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #333;
+            cursor: pointer;
+        }
+        .dot.active { background-color: var(--primary-blue); }
+
+        /* --- Trust Badges --- */
+        .trust-badges {
+            margin: 40px auto;
+            max-width: var(--container-width);
+            padding: 0 20px;
+        }
+
+        .badges-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .badge-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 0 20px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .badge-item:last-child { border-right: none; }
+
+        .badge-item i {
+            font-size: 28px;
+            color: var(--primary-blue);
+        }
+
+        .badge-text h4 { font-size: 14px; margin-bottom: 3px; font-weight: 600; }
+        .badge-text p { font-size: 12px; color: var(--text-muted); }
+
+        /* --- Section Titles --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-outline:hover { color: white; border-color: #444; }
+
+        /* --- Categories --- */
+        .categories { margin: 50px auto; max-width: var(--container-width); padding: 0 20px; }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+        }
+
+        .category-card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            height: 160px;
+        }
+
+        .category-card:hover { border-color: #444; transform: translateY(-5px); }
+
+        .cat-img-placeholder {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            background-color: #1a1e28;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-size: 30px;
+        }
+
+        .category-card.outros .cat-img-placeholder {
+            background-color: transparent;
+            color: var(--primary-blue);
+        }
+
+        .category-card span { font-size: 13px; font-weight: 500; }
+
+        /* --- Products Section --- */
+        .products-section { margin: 50px auto; max-width: var(--container-width); padding: 0 20px; margin-bottom: 100px; }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .product-card:hover { border-color: #444; }
+
+        .tag {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .tag.lancamento { background-color: var(--primary-blue); color: white; }
+        .tag.mais-vendido { background-color: #9d2ada; color: white; }
+        .tag.oferta { background-color: #e52e2e; color: white; }
+        .tag.desconto { top: 40px; background-color: transparent; border: 1px solid #e52e2e; color: #e52e2e;}
+
+        /* --- Floating Buttons --- */
+        .fab-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .fab-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background-color: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(15, 88, 214, 0.3);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .fab-cart .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #083c96;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fab fa-whatsapp"></i> Atendimento via WhatsApp</span>
+            <span><i class="fas fa-truck"></i> Entregamos para todo o Brasil</span>
+            <span><i class="far fa-credit-card"></i> Parcele em até 12x no cartão</span>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon"><span>K</span>B</div>
+                <div class="logo-text">
+                    <h1>KAIQUE <span class="blue">BAZIL</span></h1>
+                    <p>STORE</p>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <input type="text" placeholder="Buscar produtos...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="header-actions">
+                <div class="action-item">
+                    <i class="far fa-user"></i>
+                    <div class="action-text">
+                        <strong>Entrar</strong>
+                        <span>Minha conta</span>
+                    </div>
+                </div>
+                <div class="action-item">
+                    <div class="cart-icon-wrapper">
+                        <i class="fas fa-shopping-cart"></i>
+                        <div class="cart-badge">3</div>
+                    </div>
+                    <div class="action-text">
+                        <strong>Carrinho</strong>
+                        <span>R$ 578,00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-menu">
+        <div class="container">
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="#">Todos os Produtos</a></li>
+                <li><a href="#">Mouse</a></li>
+                <li><a href="#">Teclados</a></li>
+                <li><a href="#">Headsets</a></li>
+                <li><a href="#">Controles</a></li>
+                <li><a href="#">Armazenamento</a></li>
+                <li><a href="#">Cabos e Adaptadores</a></li>
+                <li><a href="#">Ofertas</a></li>
+                <li><a href="#">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <button class="nav-btn prev"><i class="fas fa-chevron-left"></i></button>
+        <button class="nav-btn next"><i class="fas fa-chevron-right"></i></button>
+        
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h2>PERIFÉRICOS DE<br><span class="highlight">ALTO DESEMPENHO</span></h2>
+                <p>Qualidade, performance e o melhor preço<br>você encontra aqui!</p>
+                <button class="btn-primary"><i class="fas fa-shopping-cart"></i> VER PRODUTOS</button>
+            </div>
+            <div class="hero-image">
+                <div class="hero-image-placeholder"></div>
+            </div>
+            
+            <div class="dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-badges">
+        <div class="badges-container">
+            <div class="badge-item">
+                <i class="fas fa-shield-check" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;">&#xf3ed;</i>
+                <div class="badge-text">
+                    <h4>Compra 100% Segura</h4>
+                    <p>Seus dados protegidos</p>
+                </div>
+            </div>
+            <div class="badge-item">
+                <i class="fas fa-award"></i>
+                <div class="badge-text">
+                    <h4>Produtos de Qualidade</h4>
+                    <p>Trabalhamos com as melhores marcas</p>
+                </div>
+            </div>
+            <div class="badge-item">
+                <i class="fas fa-truck-fast"></i>
+                <div class="badge-text">
+                    <h4>Envio Rápido</h4>
+                    <p>Para todo o Brasil</p>
+                </div>
+            </div>
+            <div class="badge-item">
+                <i class="fab fa-whatsapp"></i>
+                <div class="badge-text">
+                    <h4>Atendimento via WhatsApp</h4>
+                    <p>Fale direto conosco</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="section-header">
+            <h3>Categorias</h3>
+            <button class="btn-outline">Ver todas</button>
+        </div>
+        <div class="category-grid">
+            <div class="category-card">
+                <div class="cat-img-placeholder"><i class="fas fa-mouse"></i></div>
+                <span>Mouse</span>
+            </div>
+            <div class="category-card">
+                <div class="cat-img-placeholder"><i class="fas fa-keyboard"></i></div>
+                <span>Teclados</span>
+            </div>
+            <div class="category-card">
+                <div class="cat-img-placeholder"><i class="fas fa-headphones"></i></div>
+                <span>Headsets</span>
+            </div>
+            <div class="category-card">
+                <div class="cat-img-placeholder"><i class="fas fa-gamepad"></i></div>
+                <span>Controles</span>
+            </div>
+            <div class="category-card">
+                <div class="cat-img-placeholder">SSD</div>
+                <span>Armazenamento</span>
+            </div>
+            <div class="category-card">
+                <div class="cat-img-placeholder"><i class="fas fa-usb"></i></div>
+                <span>Cabos e Adaptadores</span>
+            </div>
+            <div class="category-card outros">
+                <div class="cat-img-placeholder"><i class="fas fa-ellipsis-h"></i></div>
+                <span>Outros</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section">
+        <div class="section-header">
+            <h3>Produtos em Destaque</h3>
+            <button class="btn-outline">Ver todas</button>
+        </div>
+        <div class="product-grid">
+            <div class="product-card">
+                <span class="tag lancamento">LANÇAMENTO</span>
+            </div>
+            <div class="product-card">
+                <span class="tag mais-vendido">MAIS VENDIDO</span>
+            </div>
+            <div class="product-card">
+                <span class="tag oferta">OFERTA</span>
+                <span class="tag desconto">-15%</span>
+            </div>
+            <div class="product-card">
+            </div>
+            <div class="product-card">
+            </div>
+        </div>
+    </section>
+
+    <div class="fab-whatsapp">
+        <i class="fab fa-whatsapp"></i>
+    </div>
+    
+    <div class="fab-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="badge">3</div>
+    </div>
+
+</body>
+</html>
