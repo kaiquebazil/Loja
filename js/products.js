@@ -1,113 +1,135 @@
 /* ============================================================
    KA TECH - products.js
-   Dados de produtos e frete (localStorage)
+   Gerenciamento do catálogo de produtos via localStorage
    ============================================================ */
 
-var PRODUCTS_KEY = 'katech_products_v1';
-var SHIPPING_KEY = 'katech_shipping_v1';
+const PRODUCTS_KEY = 'katech_products';
+const SHIPPING_KEY = 'katech_shipping';
 
-// ── Produtos iniciais (focados no solicitado) ─────────────────
-var initialProducts = [
-    {
-        id: 1,
-        nome: 'Mouse Gamer RGB 3200 DPI',
-        categoria: 'Periféricos',
-        preco: 79.90,
-        estoque: 15,
-        desconto: 0,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=Mouse+Gamer',
-        destaque: true,
-        maisVendido: true,
-        oferta: false
-    },
-    {
-        id: 2,
-        nome: 'Teclado Mecânico Compacto',
-        categoria: 'Periféricos',
-        preco: 189.90,
-        estoque: 10,
-        desconto: 10,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=Teclado+Mecanico',
-        destaque: true,
-        maisVendido: false,
-        oferta: true
-    },
-    {
-        id: 3,
-        nome: 'Headset Gamer 7.1 Surround',
-        categoria: 'Periféricos',
-        preco: 159.90,
-        estoque: 8,
-        desconto: 0,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=Headset+Gamer',
-        destaque: false,
-        maisVendido: true,
-        oferta: false
-    },
-    {
-        id: 4,
-        nome: 'SSD NVMe 500GB Kingston',
-        categoria: 'Hardware',
-        preco: 249.90,
-        estoque: 12,
-        desconto: 5,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=SSD+NVMe',
-        destaque: true,
-        maisVendido: true,
-        oferta: false
-    },
-    {
-        id: 5,
-        nome: 'Memória RAM 8GB DDR4 3200MHz',
-        categoria: 'Hardware',
-        preco: 139.90,
-        estoque: 20,
-        desconto: 0,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=Memoria+RAM',
-        destaque: false,
-        maisVendido: false,
-        oferta: false
-    },
-    {
-        id: 6,
-        nome: 'Cabo HDMI 2.0 4K 2 Metros',
-        categoria: 'Cabos',
-        preco: 29.90,
-        estoque: 50,
-        desconto: 0,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=Cabo+HDMI',
-        destaque: false,
-        maisVendido: true,
-        oferta: false
-    },
-    {
-        id: 7,
-        nome: 'Adaptador USB-C para HDMI',
-        categoria: 'Adaptadores',
-        preco: 45.00,
-        estoque: 15,
-        desconto: 0,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=Adaptador+USB-C',
-        destaque: true,
-        maisVendido: false,
-        oferta: false
-    },
-    {
-        id: 8,
-        nome: 'Cabo de Rede Cat6 5 Metros',
-        categoria: 'Cabos',
-        preco: 35.00,
-        estoque: 30,
-        desconto: 0,
-        imagem: 'https://placehold.co/400x400/11141b/ffffff?text=Cabo+Rede',
-        destaque: false,
-        maisVendido: false,
-        oferta: false
-    }
+// ── Catálogo inicial ──────────────────────────────────────────
+const initialProducts = [
+  {"id":100,"nome":"ADAPTADOR DE FONE IPHONE/LIGHTNING INOVA CBO-7582","categoria":"Acessórios","preco":17.25,"estoque":10,"imagem":"produtos/acess_rios/100_adaptador_de_fone_iphone_light.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":101,"nome":"ANDROID TV STICK","categoria":"TV e Streaming","preco":270.0,"estoque":10,"imagem":"produtos/tv_e_streaming/101_android_tv_stick.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":102,"nome":"ANTENA WIFI USB 802.IIN LB-450","categoria":"Redes","preco":30.0,"estoque":10,"imagem":"produtos/redes/102_antena_wifi_usb_802_iin_lb_450.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":103,"nome":"BATERIA DE LÍTIO CR2032 (CARTELA COM 5)","categoria":"Baterias","preco":16.5,"estoque":10,"imagem":"produtos/baterias/103_bateria_de_l_tio_cr2032_carte.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":104,"nome":"CABO DE HDMI 1METRO SEM MARCA","categoria":"Cabos","preco":30.0,"estoque":10,"imagem":"produtos/cabos/104_cabo_de_hdmi_1metro_sem_marca.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":105,"nome":"CABO DE HDMI SAQUINHO 1.8 METROS EXBOM","categoria":"Cabos","preco":30.0,"estoque":10,"imagem":"produtos/cabos/105_cabo_de_hdmi_saquinho_1_8_metr.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":106,"nome":"CABO HDMI KAPBOM VGA X VGA KAP-DMI-VGA 1.8M","categoria":"Cabos","preco":15.75,"estoque":10,"imagem":"produtos/cabos/106_cabo_hdmi_kapbom_vga_x_vga_kap.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":107,"nome":"CABO TIPO C A'GOLD TIPO C X TIPO C CB-51/CB101","categoria":"Cabos","preco":16.5,"estoque":10,"imagem":"produtos/cabos/107_cabo_tipo_c_a_gold_tipo_c_x_ti.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":108,"nome":"CABO TIPO C INOVA IPHONE/LIGHTNING 3.1A MD-12447","categoria":"Cabos","preco":11.25,"estoque":10,"imagem":"produtos/cabos/108_cabo_tipo_c_inova_iphone_light.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":109,"nome":"CABO TIPO C INOVA TIPO C 2M 65W HBT-8810","categoria":"Cabos","preco":12.0,"estoque":10,"imagem":"produtos/cabos/109_cabo_tipo_c_inova_tipo_c_2m_65.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":110,"nome":"CABO TIPO C TIPO C CX BRANCO 1 METRO 30205A","categoria":"Cabos","preco":7.35,"estoque":10,"imagem":"produtos/cabos/110_cabo_tipo_c_tipo_c_cx_branco_1.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":111,"nome":"CABO USB 3 EM 1 INOVA 100W HBT-8801","categoria":"Cabos","preco":15.0,"estoque":10,"imagem":"produtos/cabos/111_cabo_usb_3_em_1_inova_100w_hbt.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":112,"nome":"CABO USB BASIKE TIPO C CBO-7509","categoria":"Cabos","preco":10.5,"estoque":10,"imagem":"produtos/cabos/112_cabo_usb_basike_tipo_c_cbo_750.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":113,"nome":"CABO USB INOVA IPHONE/LIGHTNING 3.1A HBT-8803","categoria":"Cabos","preco":9.0,"estoque":10,"imagem":"produtos/cabos/113_cabo_usb_inova_iphone_lightnin.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":114,"nome":"CABO USB INOVA IPHONE/LIGHTNING SAQUINHO 1M","categoria":"Cabos","preco":7.5,"estoque":10,"imagem":"produtos/cabos/114_cabo_usb_inova_iphone_lightnin.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":115,"nome":"CABO USB INOVA TIPO C KV-6122","categoria":"Cabos","preco":11.7,"estoque":10,"imagem":"produtos/cabos/115_cabo_usb_inova_tipo_c_kv_6122.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":116,"nome":"CABO USB INOVA TIPO C MD-12465","categoria":"Cabos","preco":9.75,"estoque":10,"imagem":"produtos/cabos/116_cabo_usb_inova_tipo_c_md_12465.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":117,"nome":"CABO USB INOVA TUBINHO LIGHTNING/IPHONE 1M","categoria":"Cabos","preco":12.75,"estoque":10,"imagem":"produtos/cabos/117_cabo_usb_inova_tubinho_tubete.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":118,"nome":"CABO USB INOVA TUBINHO LIGHTNING/IPHONE 2M","categoria":"Cabos","preco":14.25,"estoque":10,"imagem":"produtos/cabos/118_cabo_usb_inova_tubinho_tubete.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":119,"nome":"CABO USB INOVA TUBINHO TIPO C CBO-20308 2M","categoria":"Cabos","preco":13.5,"estoque":10,"imagem":"produtos/cabos/119_cabo_usb_inova_tubinho_tubete.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":120,"nome":"CABO USB INOVA V8 3.4A 1M CBO-6008","categoria":"Cabos","preco":12.0,"estoque":10,"imagem":"produtos/cabos/120_cabo_usb_inova_v8_3_4a_1m_cbo.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":121,"nome":"CABO USB KAPBOM 25W IPHONE/LIGHTNING KAP-318-5G","categoria":"Cabos","preco":4.5,"estoque":10,"imagem":"produtos/cabos/121_cabo_usb_kapbom_25w_iphone_lig.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":122,"nome":"CABO USB KAPBOM IPHONE/LIGHTNING 4.8A KAP-370","categoria":"Cabos","preco":6.75,"estoque":10,"imagem":"produtos/cabos/122_cabo_usb_kapbom_iphone_lightni.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":123,"nome":"CABO USB KAPBOM TIPO C 25W KAP-318-TY","categoria":"Cabos","preco":3.75,"estoque":10,"imagem":"produtos/cabos/123_cabo_usb_kapbom_tipo_c_25w_kap.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":124,"nome":"CABO USB TURBO CARTELADO LIGHTNING/IPHONE","categoria":"Cabos","preco":6.75,"estoque":10,"imagem":"produtos/cabos/124_cabo_usb_turbo_cartelado_light.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":125,"nome":"CABO USB TURBO CARTELADO TIPO C","categoria":"Cabos","preco":6.75,"estoque":10,"imagem":"produtos/cabos/125_cabo_usb_turbo_cartelado_tipo.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":126,"nome":"CABO V3 PRETO","categoria":"Cabos","preco":21.0,"estoque":10,"imagem":"produtos/cabos/126_cabo_v3_preto.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":127,"nome":"CABO V8 2M TUBINHO INOVA CBO-6067","categoria":"Cabos","preco":12.0,"estoque":10,"imagem":"produtos/cabos/127_cabo_v8_2m_tubinho_inova_cbo_6.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":128,"nome":"CABO V8 INOVA CBO-20295","categoria":"Cabos","preco":16.5,"estoque":10,"imagem":"produtos/cabos/128_cabo_v8_inova_cbo_20295.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":129,"nome":"CAIXA DE SOM/RADIO INOVA KV-829","categoria":"Áudio","preco":63.0,"estoque":10,"imagem":"produtos/udio/129_caixa_de_som_radio_inova_kv_82.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":130,"nome":"CAIXA DE SOM/RADIO INOVA MD-12268","categoria":"Áudio","preco":181.5,"estoque":10,"imagem":"produtos/udio/130_caixa_de_som_radio_inova_md_12.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":131,"nome":"CAIXA DE SOM/RADIO INOVA MD-12271","categoria":"Áudio","preco":181.5,"estoque":10,"imagem":"produtos/udio/131_caixa_de_som_radio_inova_md_12.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":132,"nome":"CAMERA DE FOTO INSTANTÂNEA INFANTIL CAM-12607","categoria":"Câmeras","preco":211.5,"estoque":10,"imagem":"produtos/c_meras/132_camera_de_foto_instant_nea_inf.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":133,"nome":"CAMERA FOTOGRÁFICA BASIKE BA-CAM215","categoria":"Câmeras","preco":346.5,"estoque":10,"imagem":"produtos/c_meras/133_camera_fotogr_fica_basike_ba_c.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":134,"nome":"CAMERA INTELIGENTE COM VISOR INOVA MD-12772","categoria":"Câmeras","preco":187.5,"estoque":10,"imagem":"produtos/c_meras/134_camera_inteligente_com_visor_i.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":135,"nome":"CAMERA INTELIGENTE INOVA KV-740","categoria":"Câmeras","preco":148.5,"estoque":10,"imagem":"produtos/c_meras/135_camera_inteligente_inova_kv_74.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":136,"nome":"CAMERA INTELIGENTE SMART WIFI INOVA KV-726","categoria":"Câmeras","preco":315.0,"estoque":10,"imagem":"produtos/c_meras/136_camera_inteligente_smart_wifi.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":137,"nome":"CARREGADOR COMPLETO H'MASTON USB V8 PD & QC3.0","categoria":"Carregadores","preco":20.25,"estoque":10,"imagem":"produtos/carregadores/137_carregador_completo_h_maston_u.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":138,"nome":"CARREGADOR COMPLETO SAMSUNG TIPO C/TIPO C 67W","categoria":"Carregadores","preco":31.5,"estoque":10,"imagem":"produtos/carregadores/138_carregador_completo_samsung_ti.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":139,"nome":"CARREGADOR COMPLETO TIPO C BASIKE BA-CAR112","categoria":"Carregadores","preco":33.0,"estoque":10,"imagem":"produtos/carregadores/139_carregador_completo_tipo_c_bas.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":140,"nome":"CARREGADOR COMPLETO USB TIPO C 20W CAR-2176D","categoria":"Carregadores","preco":30.0,"estoque":10,"imagem":"produtos/carregadores/140_carregador_completo_usb_tipo_c.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":141,"nome":"CARREGADOR DOBRAVEL INDUÇÃO 3 EM 1 BASIKE BA-WXC01","categoria":"Carregadores","preco":151.5,"estoque":10,"imagem":"produtos/carregadores/141_carregador_dobravel_indu_o_3.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":142,"nome":"CARREGADOR INDUÇÃO GOLD 20W BTE-52/YS10","categoria":"Carregadores","preco":82.5,"estoque":10,"imagem":"produtos/carregadores/142_carregador_indu_o_gold_20w_bt.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":143,"nome":"CARREGADOR INOVA IPHONE/LIGHTNING TIPO C 20W","categoria":"Carregadores","preco":33.0,"estoque":10,"imagem":"produtos/carregadores/143_carregador_inova_iphone_lightn.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":144,"nome":"CARREGADOR INOVA V8 3.1A G81","categoria":"Carregadores","preco":8.7,"estoque":10,"imagem":"produtos/carregadores/144_carregador_inova_v8_3_1a_g81.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":145,"nome":"CARREGADOR VEICULAR INOVA IPHONE/LIGHTNING 3.4A","categoria":"Carregadores","preco":18.75,"estoque":10,"imagem":"produtos/carregadores/145_carregador_veicular_inova_ipho.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":146,"nome":"CARREGADOR VEICULAR INOVA TIPO C 3.4A CAR-3216C","categoria":"Carregadores","preco":17.25,"estoque":10,"imagem":"produtos/carregadores/146_carregador_veicular_inova_tipo.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":147,"nome":"CARREGADOR VEICULAR INOVA TIPO C 4.1A G06-C","categoria":"Carregadores","preco":15.75,"estoque":10,"imagem":"produtos/carregadores/147_carregador_veicular_inova_tipo.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":148,"nome":"CONTROLE TV BOX UNIVERSAL/UNITV V10 LELONG LE-7490","categoria":"Controles","preco":15.0,"estoque":10,"imagem":"produtos/controles/148_controle_tv_box_universal_unit.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":149,"nome":"CONTROLE TV UNIVERSAL LELONG","categoria":"Controles","preco":24.0,"estoque":10,"imagem":"produtos/controles/149_controle_tv_universal_lelong.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":150,"nome":"DEPILADOR INOVA ELETRICO 3 EM 1 LFJ-13043","categoria":"Beleza","preco":105.0,"estoque":10,"imagem":"produtos/beleza/150_depilador_inova_eletrico_3_em.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":151,"nome":"DRONE INOVA WRJ-12619","categoria":"Drones","preco":208.5,"estoque":10,"imagem":"produtos/drones/151_drone_inova_wrj_12619.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":152,"nome":"ESCOVA MODELADORA INOVA 110V DRS-12900","categoria":"Beleza","preco":99.0,"estoque":10,"imagem":"produtos/beleza/152_escova_modeladora_inova_110v_d.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":153,"nome":"FILTRO DE LINHA/EXTENSÃO 5 METROS B-MAX (8 TOMADAS)","categoria":"Elétrica","preco":73.5,"estoque":10,"imagem":"produtos/el_trica/153_filtro_de_linha_extens_o_5_met.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":154,"nome":"FITA DE LED INOVA 5 METROS MD-12794","categoria":"Iluminação","preco":36.0,"estoque":10,"imagem":"produtos/ilumina_o/154_fita_de_led_inova_5_metros_md.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":155,"nome":"FITA DE LED INOVA 5 METROS MD-12796","categoria":"Iluminação","preco":31.5,"estoque":10,"imagem":"produtos/ilumina_o/155_fita_de_led_inova_5_metros_md.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":156,"nome":"FONE COM FIO INOVA HEADSET FON-8639","categoria":"Áudio","preco":61.5,"estoque":10,"imagem":"produtos/udio/156_fone_com_fio_inova_headset_fon.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":157,"nome":"FONE COM FIO INOVA TIPO C FON-7541","categoria":"Áudio","preco":19.5,"estoque":10,"imagem":"produtos/udio/157_fone_com_fio_inova_tipo_c_fon.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":158,"nome":"FONE COM FIO LIGHTNING CX BRANCO 12821","categoria":"Áudio","preco":33.0,"estoque":10,"imagem":"produtos/udio/158_fone_com_fio_lightning_cx_bran.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":159,"nome":"FONE COM FIO P2 HEADPHONE INOVA N817","categoria":"Áudio","preco":34.5,"estoque":10,"imagem":"produtos/udio/159_fone_com_fio_p2_headphone_inov.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":160,"nome":"FONE COM FIO P2 INOVA SAQUINHO FON-10066","categoria":"Áudio","preco":6.0,"estoque":10,"imagem":"produtos/udio/160_fone_com_fio_p2_inova_saquinho.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":161,"nome":"FONE COM FIO P2 KAPBOM SAQUINHO KA-733B","categoria":"Áudio","preco":3.75,"estoque":10,"imagem":"produtos/udio/161_fone_com_fio_p2_kapbom_saquinh.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":162,"nome":"FONE COM FIO TIPO C CX BRANCO 12377 A1748","categoria":"Áudio","preco":21.75,"estoque":10,"imagem":"produtos/udio/162_fone_com_fio_tipo_c_cx_branco.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":163,"nome":"FONE SEM FIO BLUETOOTH BASIKE BA-FON173","categoria":"Áudio","preco":75.0,"estoque":10,"imagem":"produtos/udio/163_fone_sem_fio_bluetooth_basike.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":164,"nome":"FONE SEM FIO BLUETOOTH BASIKE COM VISOR E TOUCH","categoria":"Áudio","preco":84.0,"estoque":10,"imagem":"produtos/udio/164_fone_sem_fio_bluetooth_basike.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":165,"nome":"FONE SEM FIO BLUETOOTH CX BRANCO AIR PODS PRO","categoria":"Áudio","preco":69.0,"estoque":10,"imagem":"produtos/udio/165_fone_sem_fio_bluetooth_cx_bran.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":166,"nome":"FONE SEM FIO BLUETOOTH INOVA COM VISOR","categoria":"Áudio","preco":57.0,"estoque":10,"imagem":"produtos/udio/166_fone_sem_fio_bluetooth_inova_c.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":167,"nome":"FONE SEM FIO BLUETOOTH KAPBOM M20 PRO","categoria":"Áudio","preco":33.0,"estoque":10,"imagem":"produtos/udio/167_fone_sem_fio_bluetooth_kapbom.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":168,"nome":"FONE SEM FIO BLUETOOTH XIAOMI REDMI AIR DOTS","categoria":"Áudio","preco":31.5,"estoque":10,"imagem":"produtos/udio/168_fone_sem_fio_bluetooth_xiaomi.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":169,"nome":"FONE SEM FIO ERGONOMICO INOVA FON-13025","categoria":"Áudio","preco":73.5,"estoque":10,"imagem":"produtos/udio/169_fone_sem_fio_ergonomico_inova.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":170,"nome":"FONE SEM FIO HEADPHONE BLUETOOTH INOVA MD-510","categoria":"Áudio","preco":76.5,"estoque":10,"imagem":"produtos/udio/170_fone_sem_fio_headphone_bluetoo.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":171,"nome":"FONE SEM FIO HEADPHONE BLUETOOTH INOVA MD-760","categoria":"Áudio","preco":54.0,"estoque":10,"imagem":"produtos/udio/171_fone_sem_fio_headphone_bluetoo.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":172,"nome":"FONE SEM FIO INOVA MD-11109/FON-11109","categoria":"Áudio","preco":61.5,"estoque":10,"imagem":"produtos/udio/172_fone_sem_fio_inova_md_11109_fo.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":173,"nome":"FONTE ADAPTADOR INOVA AC/DC 3.1A 9V MD-12214","categoria":"Carregadores","preco":13.5,"estoque":10,"imagem":"produtos/carregadores/173_fonte_adaptador_inova_ac_dc_3.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":174,"nome":"FONTE TIPO C 20W CX BRANCO 7447A A2245","categoria":"Carregadores","preco":25.5,"estoque":10,"imagem":"produtos/carregadores/174_fonte_tipo_c_20w_cx_branco_744.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":175,"nome":"FONTE TV BOX KAPBOM UNIVERSAL 5V KAP-1181","categoria":"Carregadores","preco":18.0,"estoque":10,"imagem":"produtos/carregadores/175_fonte_tv_box_kapbom_universal.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":176,"nome":"GANCHO DE PAREDE COM VENTOSA OASIS","categoria":"Casa","preco":15.0,"estoque":10,"imagem":"produtos/casa/176_gancho_de_parede_com_ventosa_o.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":177,"nome":"GARRAFA TERMICA 600ML WU-263","categoria":"Casa","preco":49.5,"estoque":10,"imagem":"produtos/casa/177_garrafa_termica_600ml_wu_263.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":178,"nome":"GARRAFA TERMICA 800ML CORES DIVERSAS","categoria":"Casa","preco":58.5,"estoque":10,"imagem":"produtos/casa/178_garrafa_termica_800ml_cores_di.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":179,"nome":"GARRAFA TERMICA 800ML WU-505","categoria":"Casa","preco":58.5,"estoque":10,"imagem":"produtos/casa/179_garrafa_termica_800ml_wu_505.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":180,"nome":"KIT DE CHAVES E FERRAMENTAS INOVA MD-12769","categoria":"Ferramentas","preco":31.5,"estoque":10,"imagem":"produtos/ferramentas/180_kit_de_chaves_e_ferramentas_in.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":181,"nome":"LANTERNA ELETRICA HOLDA T9 H3702","categoria":"Iluminação","preco":82.5,"estoque":10,"imagem":"produtos/ilumina_o/181_lanterna_eletrica_holda_t9_h37.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":182,"nome":"LUMINARIA DE PROJEÇÃO ASTRONAUTAS COM BLUETOOTH","categoria":"Iluminação","preco":99.0,"estoque":10,"imagem":"produtos/ilumina_o/182_luminaria_de_proje_ao_astronau.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":183,"nome":"LUMINARIA INOVA KV-6736","categoria":"Iluminação","preco":64.5,"estoque":10,"imagem":"produtos/ilumina_o/183_luminaria_inova_kv_6736.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":184,"nome":"LUMINARIA INOVA KV-6737","categoria":"Iluminação","preco":64.5,"estoque":10,"imagem":"produtos/ilumina_o/184_luminaria_inova_kv_6737.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":185,"nome":"MASSAGEADOR EM PISTOLA INOVA JMQ-12666","categoria":"Saúde","preco":91.5,"estoque":10,"imagem":"produtos/sa_de/185_massageador_em_pistola_inova_j.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":186,"nome":"MICROFONE LAPELA SEM FIO BASIKE IPHONE/LIGHTNING","categoria":"Áudio","preco":112.5,"estoque":10,"imagem":"produtos/udio/186_microfone_lapela_sem_fio_basik.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":187,"nome":"MICROFONE LAPELA SEM FIO BASIKE TIPO C BA-MIC00001","categoria":"Áudio","preco":112.5,"estoque":10,"imagem":"produtos/udio/187_microfone_lapela_sem_fio_basik.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":188,"nome":"MINI TECLADO COM LED","categoria":"Informática","preco":48.0,"estoque":10,"imagem":"produtos/inform_tica/188_mini_teclado_com_led.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":189,"nome":"MINI TRIPÉ INOVA COM LUZ E MICROFONE SPO-13368","categoria":"Fotografia","preco":43.5,"estoque":10,"imagem":"produtos/fotografia/189_mini_trip_inova_com_luz_e_mic.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":190,"nome":"MINI TRIPÉ INOVA SPO-13361 130CM","categoria":"Fotografia","preco":55.5,"estoque":10,"imagem":"produtos/fotografia/190_mini_trip_inova_spo_13361_130.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":191,"nome":"MINI UNITV SMART TV 8K V11","categoria":"TV e Streaming","preco":526.5,"estoque":10,"imagem":"produtos/tv_e_streaming/191_mini_unitv_smart_tv_8k_v11.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":192,"nome":"MINI UNITV SMART TV V12","categoria":"TV e Streaming","preco":540.0,"estoque":10,"imagem":"produtos/tv_e_streaming/192_mini_unitv_smart_tv_v12.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":193,"nome":"MOUSE SEM FIO INOVA KV-8580/KV-8608/KV-9813","categoria":"Informática","preco":25.5,"estoque":10,"imagem":"produtos/inform_tica/193_mouse_sem_fio_inova_kv_8580_kv.jpg","destaque":true,"maisVendido":true,"oferta":false,"desconto":0},
+  {"id":194,"nome":"MOUSE SEM FIO KAPBOM KA-602","categoria":"Informática","preco":37.5,"estoque":10,"imagem":"produtos/inform_tica/194_mouse_sem_fio_kapbom_ka_602.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":195,"nome":"MOUSE SEM FIO KAPBOM KA-603","categoria":"Informática","preco":30.0,"estoque":10,"imagem":"produtos/inform_tica/195_mouse_sem_fio_kapbom_ka_603.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":196,"nome":"PENDRIVE KAPBOM 32GB KA-0-32","categoria":"Informática","preco":58.5,"estoque":10,"imagem":"produtos/inform_tica/196_pendrive_kapbom_32gb_ka_0_32.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":197,"nome":"PENDRIVE TIPO C KAPBOM 128GB KAT128","categoria":"Informática","preco":97.5,"estoque":10,"imagem":"produtos/inform_tica/197_pendrive_tipo_c_kapbom_128gb_k.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":198,"nome":"PENDRIVE TIPO C KAPBOM 16GB KAT16","categoria":"Informática","preco":67.5,"estoque":10,"imagem":"produtos/inform_tica/198_pendrive_tipo_c_kapbom_16gb_ka.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":199,"nome":"PENDRIVE TIPO C KAPBOM 32GB KAT32","categoria":"Informática","preco":72.0,"estoque":10,"imagem":"produtos/inform_tica/199_pendrive_tipo_c_kapbom_32gb_ka.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":200,"nome":"PENDRIVE TIPO C KAPBOM 64GB KAT64","categoria":"Informática","preco":75.0,"estoque":10,"imagem":"produtos/inform_tica/200_pendrive_tipo_c_kapbom_64gb_ka.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":201,"nome":"PENDRIVE/CARTAO DE MEMORIA ELETROMEX 128GB","categoria":"Informática","preco":136.5,"estoque":10,"imagem":"produtos/inform_tica/201_pendrive_cartao_de_memoria_ele.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":202,"nome":"PENDRIVE/CARTAO DE MEMORIA ELETROMEX 64GB","categoria":"Informática","preco":84.0,"estoque":10,"imagem":"produtos/inform_tica/202_pendrive_cartao_de_memoria_ele.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":203,"nome":"PROJETOR ULTRA HD SMART B-MAX KA-HY300","categoria":"Projetores","preco":322.5,"estoque":10,"imagem":"produtos/projetores/203_projetor_ultra_hd_smart_b_max.jpg","destaque":true,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":204,"nome":"RADIO/CAIXA DE SOM COM RELOGIO INOVA RAD-12569","categoria":"Áudio","preco":73.5,"estoque":10,"imagem":"produtos/udio/204_radio_caixa_de_som_com_relogio.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":205,"nome":"RADIO/CAIXA DE SOM KARAOKE KAPBOM KA-8072","categoria":"Áudio","preco":78.0,"estoque":10,"imagem":"produtos/udio/205_radio_caixa_de_som_karaoke_kap.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":206,"nome":"RELOGIO SMARTWATCH BASIKE AMAX ULTRA","categoria":"Wearables","preco":148.5,"estoque":10,"imagem":"produtos/wearables/206_relogio_smartwatch_basike_amax.jpg","destaque":true,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":207,"nome":"SUPORTE CELULAR INOVA SPO-8770","categoria":"Acessórios","preco":25.5,"estoque":10,"imagem":"produtos/acess_rios/207_suporte_celular_inova_spo_8770.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":208,"nome":"SUPORTE CELULAR PARA MOTO H'MASTON CJ-37","categoria":"Acessórios","preco":54.0,"estoque":10,"imagem":"produtos/acess_rios/208_suporte_celular_para_moto_h_ma.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":209,"nome":"SUPORTE VEICULAR INOVA IN-12961","categoria":"Acessórios","preco":27.0,"estoque":10,"imagem":"produtos/acess_rios/209_suporte_veicular_inova_in_1296.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":210,"nome":"TAG RASTREADORA A'GOLD TCD-06F (TIPO AIRTAG)","categoria":"Acessórios","preco":97.5,"estoque":10,"imagem":"produtos/acess_rios/210_tag_rastreadora_a_gold_tcd_06f.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":211,"nome":"TAG RASTREADORA BASIKE BA-WD347 (1 UNIDADE)","categoria":"Acessórios","preco":43.5,"estoque":10,"imagem":"produtos/acess_rios/211_tag_rastreadora_basike_ba_wd34.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":212,"nome":"TECLADO SEM FIO INOVA KV-8785","categoria":"Informática","preco":73.5,"estoque":10,"imagem":"produtos/inform_tica/212_teclado_sem_fio_inova_kv_8785.jpg","destaque":true,"maisVendido":true,"oferta":false,"desconto":0},
+  {"id":213,"nome":"TECLADO USB INOVA COM LED KEY-9970","categoria":"Informática","preco":76.5,"estoque":10,"imagem":"produtos/inform_tica/213_teclado_usb_inova_com_led_key.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":214,"nome":"TOMADA/ADAPTADOR UNIVERSAL ALL-IN-ONE","categoria":"Elétrica","preco":22.5,"estoque":10,"imagem":"produtos/el_trica/214_tomada_adaptador_universal_all.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":215,"nome":"TV BOX MXQ PRO 5G 4K","categoria":"TV e Streaming","preco":136.5,"estoque":10,"imagem":"produtos/tv_e_streaming/215_tv_box_mxq_pro_5g_4k.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":216,"nome":"UMIDIFICADOR/AROMATIZADOR INOVA KV-12692","categoria":"Casa","preco":54.0,"estoque":10,"imagem":"produtos/casa/216_umidificador_aromatizador_inov.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0},
+  {"id":217,"nome":"UNITV SMART TV 4K V10","categoria":"TV e Streaming","preco":481.5,"estoque":10,"imagem":"produtos/tv_e_streaming/217_unitv_smart_tv_4k_v10.jpg","destaque":false,"maisVendido":false,"oferta":false,"desconto":0}
 ];
 
 // ── Frete inicial ─────────────────────────────────────────────
-var initialShipping = [
+const initialShipping = [
     { nome: 'Centro', valor: 15 },
     { nome: 'Retiro', valor: 15 },
     { nome: 'Quitandinha', valor: 15 },
@@ -159,8 +181,8 @@ function saveShipping(data) {
 }
 
 function getFreteByBairro(bairro) {
-    var shipping = getShipping();
-    var found = shipping.find(function(s) { return s.nome.toLowerCase() === bairro.toLowerCase(); });
+    const shipping = getShipping();
+    const found = shipping.find(s => s.nome.toLowerCase() === bairro.toLowerCase());
     return found ? found.valor : null;
 }
 
