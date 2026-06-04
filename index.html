@@ -1,12 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaique Bazil Store | Periféricos de Alto Desempenho</title>
+    <title>KA Tech Store | Periféricos de Alto Desempenho</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div id="overlay" class="overlay"></div>
@@ -23,10 +25,8 @@
         <div class="container">
             <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
             <div class="logo">
-                <div class="logo-icon"><span>K</span>B</div>
                 <div class="logo-text">
-                    <h1>KAIQUE <span class="blue">BAZIL</span></h1>
-                    <p>STORE</p>
+                    <img src="img/logo.png" width="150" alt="">
                 </div>
             </div>
 
@@ -83,44 +83,36 @@
     </section>
 
     <section class="categories">
-        <div class="section-header">
-            <h3>Categorias</h3>
+    <div class="section-header">
+        <h3>Categorias</h3>
+    </div>
+    <div class="category-grid">
+        <div class="category-card" onclick="renderProducts('Informática')">
+            <div class="cat-img-placeholder"><i class="fas fa-desktop"></i></div>
+            <span>Informática</span>
         </div>
-        <div class="category-grid">
-            <div class="category-card" onclick="renderProducts('Mouse')">
-                <div class="cat-img-placeholder"><i class="fas fa-mouse"></i></div>
-                <span>Mouse</span>
-            </div>
-            <div class="category-card" onclick="renderProducts('Teclados')">
-                <div class="cat-img-placeholder"><i class="fas fa-keyboard"></i></div>
-                <span>Teclados</span>
-            </div>
-            <div class="category-card" onclick="renderProducts('Headsets')">
-                <div class="cat-img-placeholder"><i class="fas fa-headphones"></i></div>
-                <span>Headsets</span>
-            </div>
-            <div class="category-card" onclick="renderProducts('Controles')">
-                <div class="cat-img-placeholder"><i class="fas fa-gamepad"></i></div>
-                <span>Controles</span>
-            </div>
-            <div class="category-card" onclick="renderProducts('Armazenamento')">
-                <div class="cat-img-placeholder">SSD</div>
-                <span>SSDs</span>
-            </div>
-            <div class="category-card" onclick="renderProducts('Memórias RAM')">
-                <div class="cat-img-placeholder"><i class="fas fa-memory"></i></div>
-                <span>Memórias RAM</span>
-            </div>
-            <div class="category-card" onclick="renderProducts('Cabos e Adaptadores')">
-                <div class="cat-img-placeholder"><i class="fas fa-usb"></i></div>
-                <span>Cabos</span>
-            </div>
-            <div class="category-card outros" onclick="renderProducts('Outros')">
-                <div class="cat-img-placeholder"><i class="fas fa-ellipsis-h"></i></div>
-                <span>Outros</span>
-            </div>
+        <div class="category-card" onclick="renderProducts('Áudio')">
+            <div class="cat-img-placeholder"><i class="fas fa-headphones"></i></div>
+            <span>Áudio</span>
         </div>
-    </section>
+        <div class="category-card" onclick="renderProducts('Cabos & Carregadores')">
+            <div class="cat-img-placeholder"><i class="fas fa-plug"></i></div>
+            <span>Cabos & Carregadores</span>
+        </div>
+        <div class="category-card" onclick="renderProducts('TV & Streaming')">
+            <div class="cat-img-placeholder"><i class="fas fa-tv"></i></div>
+            <span>TV & Streaming</span>
+        </div>
+        <div class="category-card" onclick="renderProducts('Câmeras & Drones')">
+            <div class="cat-img-placeholder"><i class="fas fa-camera"></i></div>
+            <span>Câmeras & Drones</span>
+        </div>
+        <div class="category-card" onclick="renderProducts('Casa & Beleza')">
+            <div class="cat-img-placeholder"><i class="fas fa-home"></i></div>
+            <span>Casa & Beleza</span>
+        </div>
+    </div>
+</section>
 
     <section class="products-section">
         <div class="section-header">
@@ -143,7 +135,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Kaique Bazil Store. Todos os direitos reservados.</p>
+                <p>&copy; 2026 KA Tech Store. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -201,15 +193,48 @@
     <a href="https://wa.me/5524992046467" target="_blank" class="fab-whatsapp">
         <i class="fab fa-whatsapp"></i>
     </a>
-    
-    <div class="fab-cart">
-        <i class="fas fa-shopping-cart"></i>
-        <div class="badge">0</div>
-    </div>
 
     <!-- Scripts -->
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/app.js"></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
