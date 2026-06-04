@@ -2,359 +2,286 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Painel Admin | Kaique Bazil Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | KA TECH</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .admin-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-            background-color: var(--bg-panel);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-        .admin-header h2 {
-            font-size: 1.5rem;
-        }
-        .admin-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .btn-add {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-reset {
-            background-color: #e52e2e;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .product-table {
-            width: 100%;
-            background-color: var(--bg-panel);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            border-collapse: collapse;
-            overflow-x: auto;
-            display: block;
-        }
-        .product-table th, .product-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .product-table th {
-            background-color: #0d1017;
-            color: var(--text-muted);
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-        .product-table img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-        .btn-edit { color: #ffc107; cursor: pointer; background: none; border: none; font-size: 18px; }
-        .btn-delete { color: #e52e2e; cursor: pointer; background: none; border: none; font-size: 18px; }
-        
-        .admin-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .admin-modal.active { display: flex; }
-        .admin-modal-content {
-            background: var(--bg-panel);
-            width: 100%;
-            max-width: 600px;
-            padding: 25px;
-            border-radius: 15px;
-            max-height: 90vh;
-            overflow-y: auto;
-            margin: 20px;
-        }
-        .admin-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .form-full { grid-column: span 2; }
-        
-        @media (max-width: 768px) {
-            .admin-header { flex-direction: column; text-align: center; }
-            .admin-buttons { justify-content: center; }
-            .product-table thead { display: none; }
-            .product-table tr { display: block; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
-            .product-table td { display: flex; justify-content: space-between; align-items: center; border: none; padding: 8px 5px; }
-            .product-table td::before { content: attr(data-label); font-weight: bold; color: var(--text-muted); font-size: 12px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .form-full { grid-column: span 1; }
-        }
-    </style>
+    <link rel="stylesheet" href="css/admin.css">
 </head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="logo" onclick="window.location.href='index.html'">
-                <div class="logo-icon"><span>K</span>B</div>
-                <div class="logo-text">
-                    <h1>KAIQUE <span class="blue">BAZIL</span></h1>
-                    <p>ADMIN PANEL</p>
+<body class="admin-body">
+
+    <!-- Tela de Login -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="img/logo.png" width="150" alt="KA TECH">
+            </div>
+            <h2>Painel Administrativo</h2>
+            <p>Digite a senha para acessar</p>
+            <form id="login-form" novalidate>
+                <div class="form-group">
+                    <label for="admin-password">Senha</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="admin-password" placeholder="Digite a senha" autocomplete="current-password">
+                        <button type="button" id="toggle-password" aria-label="Mostrar/ocultar senha">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <a href="index.html" class="btn-outline" style="color: var(--primary-blue);"><i class="fas fa-arrow-left"></i> Voltar para Loja</a>
-        </div>
-    </header>
-
-    <div class="admin-container">
-        <div class="admin-header">
-            <h2>Gerenciar Produtos</h2>
-            <div class="admin-buttons">
-                <button class="btn-add" id="btn-add-product"><i class="fas fa-plus"></i> Novo Produto</button>
-                <button class="btn-reset" id="btn-reset-products"><i class="fas fa-sync-alt"></i> Resetar Produtos</button>
-            </div>
-        </div>
-
-        <div style="overflow-x: auto;">
-            <table class="product-table">
-                <thead>
-                    <tr>
-                        <th>Imagem</th>
-                        <th>Nome</th>
-                        <th>Categoria</th>
-                        <th>Preço</th>
-                        <th>Estoque</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-product-list">
-                </tbody>
-            </table>
+                <div id="login-error" class="login-error" style="display:none;">
+                    <i class="fas fa-exclamation-circle"></i> Senha incorreta. Tente novamente.
+                </div>
+                <button type="submit" class="btn-primary btn-login">
+                    <i class="fas fa-lock-open"></i> Entrar
+                </button>
+            </form>
+            <a href="index.html" class="back-to-store"><i class="fas fa-arrow-left"></i> Voltar à loja</a>
         </div>
     </div>
 
-    <div id="product-modal" class="admin-modal">
-        <div class="admin-modal-content">
-            <div class="admin-modal-header">
-                <h3 id="modal-title">Adicionar Produto</h3>
-                <button id="close-admin-modal" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+    <!-- Painel Principal (oculto até login) -->
+    <div id="admin-panel" class="admin-panel" style="display:none;">
+
+        <!-- Sidebar Admin -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-logo">
+                <img src="img/logo.png" width="120" alt="KA TECH">
+                <span class="admin-badge">Admin</span>
             </div>
-            <form id="product-form">
-                <input type="hidden" id="prod-id">
-                <div class="form-grid">
-                    <div class="form-group form-full">
-                        <label>Nome do Produto</label>
-                        <input type="text" id="prod-name" required>
+            <nav class="admin-nav">
+                <button class="admin-nav-btn active" data-tab="products">
+                    <i class="fas fa-box"></i> Produtos
+                </button>
+                <button class="admin-nav-btn" data-tab="shipping">
+                    <i class="fas fa-truck"></i> Frete por Bairro
+                </button>
+                <button class="admin-nav-btn" data-tab="orders">
+                    <i class="fas fa-clipboard-list"></i> Pedidos
+                </button>
+            </nav>
+            <div class="admin-sidebar-footer">
+                <a href="index.html" class="admin-back-btn"><i class="fas fa-store"></i> Ver Loja</a>
+                <button id="btn-logout" class="admin-logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Admin -->
+        <main class="admin-main">
+
+            <!-- Tab: Produtos -->
+            <div id="tab-products" class="admin-tab active">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-box"></i> Gerenciar Produtos</h1>
+                    <button id="btn-add-product" class="btn-primary">
+                        <i class="fas fa-plus"></i> Novo Produto
+                    </button>
+                </div>
+
+                <div class="admin-search-bar">
+                    <input type="text" id="admin-search" placeholder="Buscar produto por nome ou categoria..." aria-label="Buscar produto">
+                    <button id="btn-reset-catalog" class="btn-danger-outline" title="Restaurar catálogo original">
+                        <i class="fas fa-undo"></i> Restaurar Catálogo
+                    </button>
+                </div>
+
+                <div class="admin-stats" id="admin-stats">
+                    <div class="stat-card">
+                        <span class="stat-number" id="stat-total">0</span>
+                        <span class="stat-label">Total de Produtos</span>
                     </div>
-                    <div class="form-group">
-                        <label>Categoria</label>
-                        <select id="prod-category" style="width:100%; background:#1a1e28; border:1px solid var(--border-color); color:white; padding:12px; border-radius:8px;">
-                            <option value="Mouse">Mouse</option>
-                            <option value="Teclados">Teclados</option>
-                            <option value="Headsets">Headsets</option>
-                            <option value="Controles">Controles</option>
-                            <option value="Armazenamento">Armazenamento</option>
-                            <option value="Memórias RAM">Memórias RAM</option>
-                            <option value="Cabos e Adaptadores">Cabos e Adaptadores</option>
-                            <option value="Outros">Outros</option>
-                        </select>
+                    <div class="stat-card">
+                        <span class="stat-number" id="stat-destaque">0</span>
+                        <span class="stat-label">Em Destaque</span>
                     </div>
-                    <div class="form-group">
-                        <label>Preço (R$)</label>
-                        <input type="number" id="prod-price" step="0.01" required>
+                    <div class="stat-card">
+                        <span class="stat-number" id="stat-oferta">0</span>
+                        <span class="stat-label">Em Oferta</span>
                     </div>
-                    <div class="form-group">
-                        <label>Estoque</label>
-                        <input type="number" id="prod-stock" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Desconto (%)</label>
-                        <input type="number" id="prod-discount" value="0">
-                    </div>
-                    <div class="form-group form-full">
-                        <label>URL da Imagem</label>
-                        <input type="text" id="prod-image" placeholder="https://...">
-                    </div>
-                    <div class="form-group form-full">
-                        <label>Descrição</label>
-                        <textarea id="prod-desc" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label><input type="checkbox" id="prod-featured"> Destaque</label>
-                    </div>
-                    <div class="form-group">
-                        <label><input type="checkbox" id="prod-bestseller"> Mais Vendido</label>
-                    </div>
-                    <div class="form-group">
-                        <label><input type="checkbox" id="prod-offer"> Oferta</label>
+                    <div class="stat-card">
+                        <span class="stat-number" id="stat-zerado">0</span>
+                        <span class="stat-label">Sem Estoque</span>
                     </div>
                 </div>
-                <button type="submit" class="btn-primary" style="width:100%; margin-top:20px;">Salvar Produto</button>
+
+                <div class="admin-table-wrapper">
+                    <table class="admin-table" id="products-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Imagem</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Flags</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Frete -->
+            <div id="tab-shipping" class="admin-tab" style="display:none;">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-truck"></i> Frete por Bairro</h1>
+                    <button id="btn-add-bairro" class="btn-primary">
+                        <i class="fas fa-plus"></i> Novo Bairro
+                    </button>
+                </div>
+                <p class="admin-info-text">Configure o valor do frete para cada bairro de Petrópolis. Os valores são salvos localmente.</p>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Bairro</th>
+                                <th>Valor do Frete</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shipping-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Pedidos -->
+            <div id="tab-orders" class="admin-tab" style="display:none;">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-clipboard-list"></i> Pedidos Recebidos</h1>
+                    <button id="btn-clear-orders" class="btn-danger-outline">
+                        <i class="fas fa-trash"></i> Limpar Histórico
+                    </button>
+                </div>
+                <p class="admin-info-text">Pedidos enviados pelo WhatsApp ficam registrados aqui para referência.</p>
+                <div id="orders-list" class="orders-list">
+                    <p class="empty-state"><i class="fas fa-inbox"></i> Nenhum pedido registrado ainda.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal de Produto -->
+    <div id="product-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="product-modal-title">Novo Produto</h3>
+                <button id="close-product-modal" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="product-form" novalidate>
+                <input type="hidden" id="prod-id">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group form-group-lg">
+                            <label for="prod-nome">Nome do Produto *</label>
+                            <input type="text" id="prod-nome" required placeholder="Nome completo do produto">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-categoria">Categoria *</label>
+                            <select id="prod-categoria" required>
+                                <option value="">Selecione</option>
+                                <option>Informática</option>
+                                <option>Áudio</option>
+                                <option>Cabos</option>
+                                <option>Carregadores</option>
+                                <option>TV e Streaming</option>
+                                <option>Câmeras</option>
+                                <option>Wearables</option>
+                                <option>Acessórios</option>
+                                <option>Iluminação</option>
+                                <option>Casa</option>
+                                <option>Beleza</option>
+                                <option>Saúde</option>
+                                <option>Elétrica</option>
+                                <option>Ferramentas</option>
+                                <option>Fotografia</option>
+                                <option>Projetores</option>
+                                <option>Redes</option>
+                                <option>Controles</option>
+                                <option>Drones</option>
+                                <option>Baterias</option>
+                                <option>Outro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prod-preco">Preço (R$) *</label>
+                            <input type="number" id="prod-preco" required min="0" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-estoque">Estoque *</label>
+                            <input type="number" id="prod-estoque" required min="0" step="1" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-desconto">Desconto (%)</label>
+                            <input type="number" id="prod-desconto" min="0" max="100" step="1" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="prod-imagem">URL da Imagem</label>
+                        <input type="text" id="prod-imagem" placeholder="produtos/categoria/nome_arquivo.jpg ou URL externa">
+                    </div>
+                    <div class="form-row form-flags">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="prod-destaque">
+                            <span>Destaque</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="prod-mais-vendido">
+                            <span>Mais Vendido</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="prod-oferta">
+                            <span>Oferta</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-product-modal" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Salvar Produto</button>
+                </div>
             </form>
         </div>
     </div>
 
+    <!-- Modal de Bairro -->
+    <div id="bairro-modal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="bairro-modal-title">Novo Bairro</h3>
+                <button id="close-bairro-modal" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="bairro-form" novalidate>
+                <input type="hidden" id="bairro-original">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="bairro-nome">Nome do Bairro *</label>
+                        <input type="text" id="bairro-nome" required placeholder="Ex: Centro">
+                    </div>
+                    <div class="form-group">
+                        <label for="bairro-valor">Valor do Frete (R$) *</label>
+                        <input type="number" id="bairro-valor" required min="0" step="0.01" placeholder="0,00">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-bairro-modal" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
     <script src="js/products.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            renderAdminProducts();
-            
-            const modal = document.getElementById('product-modal');
-            const form = document.getElementById('product-form');
-            const btnAdd = document.getElementById('btn-add-product');
-            const btnClose = document.getElementById('close-admin-modal');
-            const btnReset = document.getElementById('btn-reset-products');
-
-            btnAdd.onclick = () => {
-                form.reset();
-                document.getElementById('prod-id').value = '';
-                document.getElementById('modal-title').innerText = 'Adicionar Produto';
-                modal.classList.add('active');
-            };
-
-            btnClose.onclick = () => modal.classList.remove('active');
-
-            btnReset.onclick = () => {
-                if (confirm('ATENÇÃO! Isso irá resetar todos os produtos para o catálogo original. Os produtos que você adicionou serão perdidos. Continuar?')) {
-                    resetProducts();
-                    renderAdminProducts();
-                    alert('Produtos resetados com sucesso!');
-                    if (typeof renderProducts === 'function') {
-                        renderProducts();
-                    }
-                }
-            };
-
-            form.onsubmit = (e) => {
-                e.preventDefault();
-                const id = document.getElementById('prod-id').value;
-                const products = getProducts();
-                
-                const productData = {
-                    id: id ? parseInt(id) : Date.now(),
-                    nome: document.getElementById('prod-name').value,
-                    categoria: document.getElementById('prod-category').value,
-                    preco: parseFloat(document.getElementById('prod-price').value),
-                    estoque: parseInt(document.getElementById('prod-stock').value),
-                    imagem: document.getElementById('prod-image').value || 'https://placehold.co/400x400/11141b/ffffff?text=Produto',
-                    descricao: document.getElementById('prod-desc').value,
-                    destaque: document.getElementById('prod-featured').checked,
-                    maisVendido: document.getElementById('prod-bestseller').checked,
-                    oferta: document.getElementById('prod-offer').checked,
-                    desconto: parseInt(document.getElementById('prod-discount').value) || 0
-                };
-
-                if (id) {
-                    const index = products.findIndex(p => p.id === parseInt(id));
-                    products[index] = productData;
-                } else {
-                    products.push(productData);
-                }
-
-                saveProducts(products);
-                modal.classList.remove('active');
-                renderAdminProducts();
-                if (typeof renderProducts === 'function') {
-                    renderProducts();
-                }
-            };
-        });
-
-        function renderAdminProducts() {
-            const products = getProducts();
-            const list = document.getElementById('admin-product-list');
-            if (!list) return;
-            list.innerHTML = '';
-
-            products.forEach(p => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td data-label="Imagem"><img src="${p.imagem}" onerror="this.src='https://placehold.co/50x50/11141b/ffffff?text=Img'" alt=""></td>
-                    <td data-label="Nome">${p.nome.substring(0, 50)}${p.nome.length > 50 ? '...' : ''}</td>
-                    <td data-label="Categoria">${p.categoria}</td>
-                    <td data-label="Preço">R$ ${p.preco.toFixed(2)}</td>
-                    <td data-label="Estoque">${p.estoque}</td>
-                    <td data-label="Ações" class="actions">
-                        <button class="btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
-                list.appendChild(tr);
-            });
-        }
-
-        function editProduct(id) {
-            const products = getProducts();
-            const p = products.find(prod => prod.id === id);
-            if (!p) return;
-
-            document.getElementById('prod-id').value = p.id;
-            document.getElementById('prod-name').value = p.nome;
-            document.getElementById('prod-category').value = p.categoria;
-            document.getElementById('prod-price').value = p.preco;
-            document.getElementById('prod-stock').value = p.estoque;
-            document.getElementById('prod-image').value = p.imagem || '';
-            document.getElementById('prod-desc').value = p.descricao || '';
-            document.getElementById('prod-featured').checked = p.destaque || false;
-            document.getElementById('prod-bestseller').checked = p.maisVendido || false;
-            document.getElementById('prod-offer').checked = p.oferta || false;
-            document.getElementById('prod-discount').value = p.desconto || 0;
-
-            document.getElementById('modal-title').innerText = 'Editar Produto';
-            document.getElementById('product-modal').classList.add('active');
-        }
-
-        function deleteProduct(id) {
-            if (confirm('Tem certeza que deseja excluir este produto?')) {
-                let products = getProducts();
-                products = products.filter(p => p.id !== id);
-                saveProducts(products);
-                renderAdminProducts();
-                if (typeof renderProducts === 'function') {
-                    renderProducts();
-                }
-            }
-        }
-    </script>
+    <script src="js/admin.js"></script>
 </body>
 </html>

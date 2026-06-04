@@ -1,240 +1,334 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KA Tech Store | Periféricos de Alto Desempenho</title>
+    <title>KA TECH | Eletrônicos e Acessórios em Petrópolis</title>
+    <meta name="description" content="KA TECH - Loja de eletrônicos, cabos, carregadores, fones, câmeras e muito mais em Petrópolis. Compre pelo WhatsApp com entrega rápida!">
+    <meta name="keywords" content="eletrônicos petrópolis, cabos, carregadores, fones bluetooth, câmeras, smartwatch, KA TECH">
+    <meta name="author" content="KA TECH">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div id="overlay" class="overlay"></div>
 
+    <!-- Top Bar -->
     <div class="top-bar">
         <div class="container">
-            <span><i class="fab fa-whatsapp"></i> Atendimento via WhatsApp</span>
-            <span><i class="fas fa-truck"></i> Entregamos para todo o Brasil</span>
-            <span><i class="far fa-credit-card"></i> Parcele em até 12x no cartão</span>
+            <span><i class="fas fa-map-marker-alt"></i> Petrópolis, RJ</span>
+            <span><i class="fab fa-whatsapp"></i> (24) 99204-6467</span>
+            <span><i class="fas fa-truck"></i> Entrega em Petrópolis e região</span>
         </div>
     </div>
 
+    <!-- Header -->
     <header class="header">
         <div class="container">
-            <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
-            <div class="logo">
-                <div class="logo-text">
-                    <img src="img/logo.png" width="150" alt="">
-                </div>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo" onclick="window.location.href='index.html'" role="button" aria-label="KA TECH">
+                <img src="img/logo.png" alt="KA TECH" onerror="this.style.display='none'">
             </div>
-
             <div class="search-container">
-                <input type="text" placeholder="Buscar produtos...">
-                <button><i class="fas fa-search"></i></button>
+                <input type="text" id="search-input" placeholder="Buscar produtos..." aria-label="Buscar produtos">
+                <button id="search-btn" aria-label="Pesquisar"><i class="fas fa-search"></i></button>
             </div>
-
             <div class="header-actions">
-                <div class="action-item cart-icon-wrapper">
-                    <div class="cart-icon-container">
+                <div class="action-item cart-icon-container" data-open-cart role="button" aria-label="Carrinho" style="cursor:pointer;">
+                    <div style="position:relative;">
                         <i class="fas fa-shopping-cart"></i>
-                        <div class="cart-badge">0</div>
+                        <span class="cart-badge" style="display:none;">0</span>
                     </div>
                     <div class="action-text">
                         <strong>Carrinho</strong>
-                        <span>R$ 0,00</span>
+                        <span>Meu carrinho</span>
                     </div>
                 </div>
+                <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="action-item" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp" style="color:#25d366;"></i>
+                    <div class="action-text">
+                        <strong>WhatsApp</strong>
+                        <span>Fale conosco</span>
+                    </div>
+                </a>
             </div>
         </div>
     </header>
 
-    <nav class="nav-menu" id="nav-menu">
-        <div class="container">
-            <button class="close-menu" id="close-menu" style="display: none;"><i class="fas fa-times"></i></button>
-            <ul>
-                <li><a href="#" class="active"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="#">Produtos</a></li>
-                <li><a href="#">Mouse</a></li>
-                <li><a href="#">Teclados</a></li>
-                <li><a href="#">Headsets</a></li>
-                <li><a href="#">Controles</a></li>
-                <li><a href="#">Armazenamento</a></li>
-                <li><a href="#">Promoções</a></li>
-                <li><a href="#">Contato</a></li>
-            </ul>
-        </div>
+    <!-- Nav -->
+    <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
+        <button class="close-menu" id="close-menu" aria-label="Fechar menu"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><a href="index.html" class="active"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="#products-section"><i class="fas fa-box"></i> Produtos</a></li>
+            <li><a href="orcamento.html"><i class="fas fa-file-alt"></i> Orçamento</a></li>
+            <li><a href="https://wa.me/5524992046467" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+            <li><a href="admin.html"><i class="fas fa-lock"></i> Admin</a></li>
+        </ul>
     </nav>
 
-    <section class="hero-section">
-        <div class="hero-banner">
-            <div class="hero-content">
-                <h2>PERIFÉRICOS DE<br><span class="highlight">ALTO DESEMPENHO</span></h2>
-                <p>Qualidade, tecnologia e os melhores preços.</p>
-                <button class="btn-primary" onclick="document.querySelector('.products-section').scrollIntoView({behavior:'smooth'})">
-                    <i class="fas fa-shopping-cart"></i> VER PRODUTOS
+    <!-- Hero Carrossel -->
+    <section class="hero-section" aria-label="Destaques">
+        <div class="hero-carousel">
+            <div class="hero-slide active" style="background:linear-gradient(135deg,#06080d 0%,#0d1a2e 100%);">
+                <div class="hero-content">
+                    <div class="hero-badge">Novidades</div>
+                    <h1>Eletrônicos de <span class="highlight">Alta Qualidade</span></h1>
+                    <p>Cabos, carregadores, fones, câmeras e muito mais. Os melhores preços de Petrópolis.</p>
+                    <a href="#products-section" class="btn-primary"><i class="fas fa-shopping-bag"></i> Ver Produtos</a>
+                </div>
+                <div class="hero-visual"><div class="hero-icon-big"><i class="fas fa-bolt"></i></div></div>
+            </div>
+            <div class="hero-slide" style="background:linear-gradient(135deg,#06080d 0%,#0d1a2e 100%);">
+                <div class="hero-content">
+                    <div class="hero-badge">Fácil e Rápido</div>
+                    <h1>Compre pelo <span class="highlight">WhatsApp</span></h1>
+                    <p>Adicione produtos ao carrinho, informe seus dados e enviamos o pedido direto para o nosso WhatsApp!</p>
+                    <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="btn-primary btn-whatsapp"><i class="fab fa-whatsapp"></i> Falar Agora</a>
+                </div>
+                <div class="hero-visual"><div class="hero-icon-big"><i class="fab fa-whatsapp"></i></div></div>
+            </div>
+            <div class="hero-slide" style="background:linear-gradient(135deg,#06080d 0%,#0d1a2e 100%);">
+                <div class="hero-content">
+                    <div class="hero-badge">Serviços</div>
+                    <h1>Câmeras, Redes e <span class="highlight">Suporte Técnico</span></h1>
+                    <p>Instalação de câmeras de segurança, redes Wi-Fi, manutenção e muito mais. Orçamento sem compromisso!</p>
+                    <a href="orcamento.html" class="btn-primary"><i class="fas fa-file-alt"></i> Solicitar Orçamento</a>
+                </div>
+                <div class="hero-visual"><div class="hero-icon-big"><i class="fas fa-tools"></i></div></div>
+            </div>
+
+            <button class="carousel-btn carousel-prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-btn carousel-next" aria-label="Próximo"><i class="fas fa-chevron-right"></i></button>
+            <div class="carousel-dots">
+                <button class="dot active" aria-label="Slide 1"></button>
+                <button class="dot" aria-label="Slide 2"></button>
+                <button class="dot" aria-label="Slide 3"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Confiança -->
+    <div class="trust-section">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item"><i class="fas fa-shield-alt"></i> Produtos com Garantia</div>
+                <div class="trust-item"><i class="fab fa-whatsapp"></i> Atendimento pelo WhatsApp</div>
+                <div class="trust-item"><i class="fas fa-truck"></i> Entrega em Petrópolis</div>
+                <div class="trust-item"><i class="fas fa-lock"></i> Compra Segura</div>
+                <div class="trust-item"><i class="fas fa-star"></i> Clientes Satisfeitos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Serviços -->
+    <section class="services-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossos <span class="highlight">Serviços</span></h2>
+                <p>Além de produtos, oferecemos serviços técnicos especializados</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card service-card-featured">
+                    <div class="service-icon"><i class="fas fa-camera"></i></div>
+                    <h3>Câmeras de Segurança</h3>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check"></i> Instalação residencial e comercial</li>
+                        <li><i class="fas fa-check"></i> Câmeras IP e analógicas</li>
+                        <li><i class="fas fa-check"></i> Monitoramento remoto pelo celular</li>
+                        <li><i class="fas fa-check"></i> DVR e NVR</li>
+                    </ul>
+                    <a href="orcamento.html" class="btn-service"><i class="fas fa-file-alt"></i> Solicitar Orçamento</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-wifi"></i></div>
+                    <h3>Redes e Wi-Fi</h3>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check"></i> Instalação de roteadores</li>
+                        <li><i class="fas fa-check"></i> Extensores de sinal</li>
+                        <li><i class="fas fa-check"></i> Cabeamento estruturado</li>
+                        <li><i class="fas fa-check"></i> Configuração de rede</li>
+                    </ul>
+                    <a href="orcamento.html" class="btn-service"><i class="fas fa-file-alt"></i> Solicitar Orçamento</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-tools"></i></div>
+                    <h3>Manutenção e Suporte</h3>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check"></i> Formatação e instalação</li>
+                        <li><i class="fas fa-check"></i> Configuração de dispositivos</li>
+                        <li><i class="fas fa-check"></i> Suporte técnico remoto</li>
+                        <li><i class="fas fa-check"></i> Recuperação de dados</li>
+                    </ul>
+                    <a href="orcamento.html" class="btn-service"><i class="fas fa-file-alt"></i> Solicitar Orçamento</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categorias -->
+    <div class="categories">
+        <div class="section-header-left"><h2>Categorias</h2></div>
+        <div class="category-grid" id="category-grid"></div>
+    </div>
+
+    <!-- Produtos -->
+    <section class="products-section" id="products-section">
+        <div class="products-header">
+            <h2 id="section-title">Todos os Produtos</h2>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <button id="btn-clear-filter" class="btn-secondary" style="display:none;font-size:12px;padding:7px 14px;">
+                    <i class="fas fa-times"></i> Limpar filtro
                 </button>
+                <div class="products-filter">
+                    <select id="sort-select" aria-label="Ordenar">
+                        <option value="">Ordenar por</option>
+                        <option value="preco-asc">Menor preço</option>
+                        <option value="preco-desc">Maior preço</option>
+                        <option value="nome">Nome A-Z</option>
+                    </select>
+                </div>
             </div>
-            <div class="hero-image">
-                <div class="hero-image-placeholder"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+            <button class="btn-secondary active" data-filter="todos" style="font-size:13px;padding:8px 16px;">Todos</button>
+            <button class="btn-secondary" data-filter="destaque" style="font-size:13px;padding:8px 16px;"><i class="fas fa-star"></i> Destaques</button>
+            <button class="btn-secondary" data-filter="mais-vendido" style="font-size:13px;padding:8px 16px;"><i class="fas fa-fire"></i> Mais Vendidos</button>
+            <button class="btn-secondary" data-filter="oferta" style="font-size:13px;padding:8px 16px;"><i class="fas fa-tag"></i> Ofertas</button>
+        </div>
+        <div class="product-grid" id="product-grid">
+            <div class="loading-products">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando produtos...</p>
             </div>
+        </div>
+        <div class="load-more-wrapper" id="load-more-wrapper" style="display:none;">
+            <button class="btn-load-more" id="btn-load-more"><i class="fas fa-plus"></i> Carregar mais</button>
         </div>
     </section>
 
-    <section class="categories">
-    <div class="section-header">
-        <h3>Categorias</h3>
-    </div>
-    <div class="category-grid">
-        <div class="category-card" onclick="renderProducts('Informática')">
-            <div class="cat-img-placeholder"><i class="fas fa-desktop"></i></div>
-            <span>Informática</span>
+    <!-- Avaliações -->
+    <section class="reviews-section">
+        <div class="section-header-left">
+            <h2>O que nossos <span style="color:var(--primary-blue);">clientes dizem</span></h2>
         </div>
-        <div class="category-card" onclick="renderProducts('Áudio')">
-            <div class="cat-img-placeholder"><i class="fas fa-headphones"></i></div>
-            <span>Áudio</span>
-        </div>
-        <div class="category-card" onclick="renderProducts('Cabos & Carregadores')">
-            <div class="cat-img-placeholder"><i class="fas fa-plug"></i></div>
-            <span>Cabos & Carregadores</span>
-        </div>
-        <div class="category-card" onclick="renderProducts('TV & Streaming')">
-            <div class="cat-img-placeholder"><i class="fas fa-tv"></i></div>
-            <span>TV & Streaming</span>
-        </div>
-        <div class="category-card" onclick="renderProducts('Câmeras & Drones')">
-            <div class="cat-img-placeholder"><i class="fas fa-camera"></i></div>
-            <span>Câmeras & Drones</span>
-        </div>
-        <div class="category-card" onclick="renderProducts('Casa & Beleza')">
-            <div class="cat-img-placeholder"><i class="fas fa-home"></i></div>
-            <span>Casa & Beleza</span>
-        </div>
-    </div>
-</section>
-
-    <section class="products-section">
-        <div class="section-header">
-            <h3 id="current-category-title">Produtos em Destaque</h3>
-        </div>
-        <div id="product-grid" class="product-grid">
-            <!-- Produtos serão renderizados aqui pelo app.js -->
-        </div>
+        <div class="reviews-grid" id="reviews-grid"></div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <h2>KAIQUE <span class="blue">BAZIL</span> STORE</h2>
-                    <p>"Seu próximo periférico está aqui."</p>
+                    <img src="img/logo.png" alt="KA TECH" width="140" onerror="this.style.display='none'">
+                    <p>Eletrônicos e Acessórios</p>
+                    <p class="footer-tagline">Tecnologia ao seu alcance</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="#products-section">Produtos</a></li>
+                        <li><a href="orcamento.html">Orçamento</a></li>
+                        <li><a href="admin.html">Painel Admin</a></li>
+                    </ul>
                 </div>
                 <div class="footer-contact">
-                    <p><i class="fab fa-whatsapp"></i> WhatsApp: (24) 99204-6467</p>
+                    <h4>Contato</h4>
+                    <p><i class="fab fa-whatsapp"></i> (24) 99204-6467</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Petrópolis, RJ</p>
+                    <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="btn-whatsapp-footer">
+                        <i class="fab fa-whatsapp"></i> Falar pelo WhatsApp
+                    </a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 KA Tech Store. Todos os direitos reservados.</p>
+                <p>&copy; 2025 KA TECH. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Carrinho Lateral -->
-    <aside id="cart-sidebar" class="cart-sidebar">
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar" role="dialog" aria-label="Carrinho">
         <div class="cart-header">
-            <h3>Seu Carrinho</h3>
-            <button id="close-cart"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3>
+            <button id="close-cart" aria-label="Fechar"><i class="fas fa-times"></i></button>
         </div>
-        <div id="cart-items" class="cart-items">
-            <!-- Itens do carrinho aqui -->
+        <div class="cart-items" id="cart-items">
+            <div class="empty-cart-msg">
+                <i class="fas fa-shopping-cart" style="font-size:40px;margin-bottom:12px;color:var(--border-color);display:block;"></i>
+                <p>Seu carrinho está vazio.</p>
+            </div>
         </div>
         <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cart-total-display">R$ 0,00</span>
+            <div class="cart-shipping">
+                <label for="shipping-select">Calcular Frete por Bairro</label>
+                <select id="shipping-select" aria-label="Bairro para frete">
+                    <option value="">Selecione seu bairro</option>
+                </select>
+                <div class="shipping-result" id="shipping-result"></div>
             </div>
-            <button id="btn-checkout" class="btn-checkout">Finalizar Pedido</button>
+            <div class="cart-total"><span>Subtotal</span><span id="cart-subtotal">R$ 0,00</span></div>
+            <div class="cart-total"><span>Frete</span><span id="cart-frete">A calcular</span></div>
+            <div class="cart-total cart-total-final"><span>Total</span><span id="cart-total">R$ 0,00</span></div>
+            <button class="btn-checkout" id="btn-checkout">
+                <i class="fab fa-whatsapp"></i> Finalizar pelo WhatsApp
+            </button>
         </div>
-    </aside>
+    </div>
 
-    <!-- Modal de Finalização -->
-    <div id="checkout-modal" class="modal">
+    <!-- Modal Checkout -->
+    <div id="checkout-modal" class="modal" role="dialog" aria-modal="true">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Finalizar Pedido</h3>
-                <button id="close-checkout"><i class="fas fa-times"></i></button>
+                <h3><i class="fab fa-whatsapp"></i> Finalizar Pedido</h3>
+                <button id="close-checkout-modal" aria-label="Fechar"><i class="fas fa-times"></i></button>
             </div>
             <form id="checkout-form">
-                <div class="form-group">
-                    <label for="cust-name">Nome Completo</label>
-                    <input type="text" id="cust-name" required placeholder="Seu nome">
+                <div id="order-summary" class="form-summary"></div>
+                <div style="padding:20px;">
+                    <div class="form-group">
+                        <label for="checkout-nome">Nome Completo *</label>
+                        <input type="text" id="checkout-nome" required placeholder="Seu nome">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="checkout-telefone">Telefone *</label>
+                            <input type="tel" id="checkout-telefone" required placeholder="(24) 9xxxx-xxxx">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-cidade">Cidade *</label>
+                            <input type="text" id="checkout-cidade" required placeholder="Petrópolis">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-bairro">Bairro</label>
+                        <input type="text" id="checkout-bairro" placeholder="Seu bairro">
+                    </div>
+                    <button type="submit" class="btn-confirm-order">
+                        <i class="fab fa-whatsapp"></i> Enviar Pedido pelo WhatsApp
+                    </button>
+                    <button type="button" id="cancel-checkout" class="btn-secondary" style="width:100%;margin-top:10px;justify-content:center;">
+                        Cancelar
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label for="cust-phone">Telefone / WhatsApp</label>
-                    <input type="tel" id="cust-phone" required placeholder="(00) 00000-0000">
-                </div>
-                <div class="form-group">
-                    <label for="cust-city">Cidade</label>
-                    <input type="text" id="cust-city" required placeholder="Sua cidade">
-                </div>
-                <div class="form-group">
-                    <label for="cust-obs">Observações (Opcional)</label>
-                    <textarea id="cust-obs" rows="3" placeholder="Ex: Horário de entrega, referências..."></textarea>
-                </div>
-                <button type="submit" class="btn-confirm-order">
-                    <i class="fab fa-whatsapp"></i> Enviar Pedido para WhatsApp
-                </button>
             </form>
         </div>
     </div>
 
-    <!-- Botões Flutuantes -->
-    <a href="https://wa.me/5524992046467" target="_blank" class="fab-whatsapp">
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- FAB WhatsApp -->
+    <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="fab-whatsapp" aria-label="WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Scripts -->
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/app.js"></script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
 </body>
 </html>

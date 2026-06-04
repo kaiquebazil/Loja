@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Orçamento | KA TECH - Petrópolis</title>
+    <meta name="description" content="Solicite um orçamento gratuito para câmeras de segurança, redes Wi-Fi, manutenção e suporte técnico em Petrópolis. Atendimento via WhatsApp.">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fas fa-map-marker-alt"></i> Petrópolis, RJ</span>
+            <span><i class="fab fa-whatsapp"></i> (24) 99204-6467</span>
+            <span><i class="fas fa-tools"></i> Assistência Técnica Especializada</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo">
+                <a href="index.html"><img src="img/logo.png" alt="KA TECH" onerror="this.style.display='none'"></a>
+            </div>
+            <div class="header-actions">
+                <div class="action-item cart-icon-container" data-open-cart role="button" aria-label="Carrinho" style="cursor:pointer;">
+                    <div style="position:relative;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" style="display:none;">0</span>
+                    </div>
+                    <div class="action-text">
+                        <strong>Carrinho</strong>
+                        <span>Meu carrinho</span>
+                    </div>
+                </div>
+                <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="action-item" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp" style="color:#25d366;"></i>
+                    <div class="action-text">
+                        <strong>WhatsApp</strong>
+                        <span>Fale conosco</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nav -->
+    <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
+        <button class="close-menu" id="close-menu" aria-label="Fechar menu"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="index.html#products-section"><i class="fas fa-box"></i> Produtos</a></li>
+            <li><a href="orcamento.html" class="active"><i class="fas fa-file-alt"></i> Orçamento</a></li>
+            <li><a href="https://wa.me/5524992046467" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+            <li><a href="admin.html"><i class="fas fa-lock"></i> Admin</a></li>
+        </ul>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="page-main">
+        <div class="container">
+
+            <div class="page-header">
+                <h1><i class="fas fa-file-alt"></i> Solicitar <span class="highlight">Orçamento</span></h1>
+                <p>Preencha o formulário e entraremos em contato pelo WhatsApp com o orçamento gratuito.</p>
+            </div>
+
+            <div class="orcamento-layout">
+
+                <!-- Formulário -->
+                <div class="orcamento-form-wrapper">
+                    <form id="orcamento-form" class="orcamento-form" novalidate>
+
+                        <div class="form-section-title">
+                            <i class="fas fa-user"></i> Seus Dados
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="orc-nome">Nome Completo *</label>
+                                <input type="text" id="orc-nome" required placeholder="Seu nome completo" autocomplete="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="orc-telefone">Telefone / WhatsApp *</label>
+                                <input type="tel" id="orc-telefone" required placeholder="(24) 99999-9999" autocomplete="tel">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="orc-cidade">Cidade *</label>
+                                <input type="text" id="orc-cidade" required placeholder="Petrópolis" autocomplete="address-level2">
+                            </div>
+                            <div class="form-group">
+                                <label for="orc-bairro">Bairro</label>
+                                <select id="orc-bairro">
+                                    <option value="">Selecione o bairro (opcional)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">
+                            <i class="fas fa-tools"></i> Sobre o Serviço
+                        </div>
+
+                        <div class="form-group">
+                            <label for="orc-tipo">Tipo de Serviço *</label>
+                            <select id="orc-tipo" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="Câmeras de Segurança">Câmeras de Segurança</option>
+                                <option value="Redes e Wi-Fi">Redes e Wi-Fi</option>
+                                <option value="Manutenção de Computador">Manutenção de Computador</option>
+                                <option value="Manutenção de Celular">Manutenção de Celular</option>
+                                <option value="Formatação e Instalação">Formatação e Instalação</option>
+                                <option value="Suporte Técnico">Suporte Técnico</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="orc-descricao">Descrição do Serviço *</label>
+                            <textarea id="orc-descricao" rows="4" required placeholder="Descreva o que você precisa, o problema ou o serviço desejado..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="orc-orcamento">Orçamento Disponível (opcional)</label>
+                                <input type="text" id="orc-orcamento" placeholder="Ex: até R$ 500,00">
+                            </div>
+                            <div class="form-group">
+                                <label for="orc-urgencia">Urgência</label>
+                                <select id="orc-urgencia">
+                                    <option value="">Selecione</option>
+                                    <option value="Normal (até 5 dias)">Normal (até 5 dias)</option>
+                                    <option value="Urgente (1-2 dias)">Urgente (1-2 dias)</option>
+                                    <option value="Muito Urgente (hoje)">Muito Urgente (hoje)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-confirm-order btn-orcamento-submit">
+                            <i class="fab fa-whatsapp"></i> Solicitar Orçamento pelo WhatsApp
+                        </button>
+
+                    </form>
+                </div>
+
+                <!-- Info Lateral -->
+                <div class="orcamento-info">
+                    <div class="info-card">
+                        <h3><i class="fas fa-clock"></i> Horário de Atendimento</h3>
+                        <p>Segunda a Sexta: 9h às 18h</p>
+                        <p>Sábado: 9h às 14h</p>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-camera"></i> Câmeras de Segurança</h3>
+                        <ul>
+                            <li>Instalação residencial e comercial</li>
+                            <li>Câmeras IP e analógicas</li>
+                            <li>DVR e NVR</li>
+                            <li>Monitoramento remoto</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-wifi"></i> Redes e Informática</h3>
+                        <ul>
+                            <li>Instalação de roteadores</li>
+                            <li>Formatação e Windows</li>
+                            <li>Upgrade de SSD/RAM</li>
+                            <li>Suporte técnico remoto</li>
+                        </ul>
+                    </div>
+                    <div class="info-card info-card-whatsapp">
+                        <h3><i class="fab fa-whatsapp"></i> Atendimento Direto</h3>
+                        <p>Prefere falar diretamente?</p>
+                        <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="btn-whatsapp-direct">
+                            <i class="fab fa-whatsapp"></i> (24) 99204-6467
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="img/logo.png" alt="KA TECH" width="140" onerror="this.style.display='none'">
+                    <p>Eletrônicos e Acessórios</p>
+                    <p class="footer-tagline">Tecnologia ao seu alcance</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="index.html#products-section">Produtos</a></li>
+                        <li><a href="orcamento.html">Orçamento</a></li>
+                        <li><a href="admin.html">Painel Admin</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contato</h4>
+                    <p><i class="fab fa-whatsapp"></i> (24) 99204-6467</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Petrópolis, RJ</p>
+                    <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="btn-whatsapp-footer">
+                        <i class="fab fa-whatsapp"></i> Falar pelo WhatsApp
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 KA TECH. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar" role="dialog" aria-label="Carrinho">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3>
+            <button id="close-cart" aria-label="Fechar"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <div class="empty-cart-msg">
+                <i class="fas fa-shopping-cart" style="font-size:40px;margin-bottom:12px;color:var(--border-color);display:block;"></i>
+                <p>Seu carrinho está vazio.</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-shipping">
+                <label for="shipping-select">Calcular Frete por Bairro</label>
+                <select id="shipping-select" aria-label="Bairro para frete">
+                    <option value="">Selecione seu bairro</option>
+                </select>
+                <div class="shipping-result" id="shipping-result"></div>
+            </div>
+            <div class="cart-total"><span>Subtotal</span><span id="cart-subtotal">R$ 0,00</span></div>
+            <div class="cart-total"><span>Frete</span><span id="cart-frete">A calcular</span></div>
+            <div class="cart-total cart-total-final"><span>Total</span><span id="cart-total">R$ 0,00</span></div>
+            <button class="btn-checkout" id="btn-checkout">
+                <i class="fab fa-whatsapp"></i> Finalizar pelo WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Checkout -->
+    <div id="checkout-modal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fab fa-whatsapp"></i> Finalizar Pedido</h3>
+                <button id="close-checkout-modal" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="checkout-form">
+                <div id="order-summary" class="form-summary"></div>
+                <div style="padding:20px;">
+                    <div class="form-group">
+                        <label for="checkout-nome">Nome Completo *</label>
+                        <input type="text" id="checkout-nome" required placeholder="Seu nome">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="checkout-telefone">Telefone *</label>
+                            <input type="tel" id="checkout-telefone" required placeholder="(24) 9xxxx-xxxx">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-cidade">Cidade *</label>
+                            <input type="text" id="checkout-cidade" required placeholder="Petrópolis">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-bairro">Bairro</label>
+                        <input type="text" id="checkout-bairro" placeholder="Seu bairro">
+                    </div>
+                    <button type="submit" class="btn-confirm-order">
+                        <i class="fab fa-whatsapp"></i> Enviar Pedido pelo WhatsApp
+                    </button>
+                    <button type="button" id="cancel-checkout" class="btn-secondary" style="width:100%;margin-top:10px;justify-content:center;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- FAB WhatsApp -->
+    <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="fab-whatsapp" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/orcamento.js"></script>
+</body>
+</html>

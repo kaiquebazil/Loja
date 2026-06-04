@@ -1,0 +1,17 @@
+{
+  "bairros": [
+    { "nome": "Centro", "valor": 15 },
+    { "nome": "Retiro", "valor": 15 },
+    { "nome": "Quitandinha", "valor": 15 },
+    { "nome": "Alto da Serra", "valor": 15 },
+    { "nome": "Bingen", "valor": 20 },
+    { "nome": "Itaipava", "valor": 20 },
+    { "nome": "Corrêas", "valor": 20 },
+    { "nome": "Nogueira", "valor": 20 },
+    { "nome": "Araras", "valor": 25 },
+    { "nome": "Pedro do Rio", "valor": 25 },
+    { "nome": "Posse", "valor": 25 },
+    { "nome": "Secretário", "valor": 25 }
+  ],
+  "padrao": "Frete informado pelo WhatsApp."
+}

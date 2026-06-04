@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "nome": "João Silva",
+    "nota": 5,
+    "comentario": "Atendimento excelente! Recebi meu pedido rapidinho e o produto veio perfeito. Super recomendo a KA TECH!"
+  },
+  {
+    "id": 2,
+    "nome": "Maria Oliveira",
+    "nota": 5,
+    "comentario": "Levei meu celular para trocar a tela e ficou como novo. Preço justo e serviço de qualidade. Voltarei sempre!"
+  },
+  {
+    "id": 3,
+    "nome": "Carlos Mendes",
+    "nota": 5,
+    "comentario": "Comprei um mouse e um teclado. Chegou no dia seguinte e o preço foi ótimo. Atendimento via WhatsApp muito ágil."
+  }
+]

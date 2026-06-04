@@ -1,263 +1,319 @@
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Carregado - Inicializando...');
+/* ============================================================
+   KA TECH - app.js
+   Lógica principal: carrossel, catálogo, busca, avaliações
+   ============================================================ */
+
+var ITEMS_PER_PAGE = 20;
+var currentPage = 1;
+var currentFilter = 'todos';
+var currentCategory = '';
+var currentSearch = '';
+
+var reviews = [
+    { nome: 'João Silva', cidade: 'Petrópolis', stars: 5, texto: 'Produto chegou rápido e com qualidade excelente! Recomendo muito a KA TECH.' },
+    { nome: 'Maria Santos', cidade: 'Petrópolis', stars: 5, texto: 'Atendimento incrível pelo WhatsApp. Tirou todas as minhas dúvidas antes de comprar.' },
+    { nome: 'Carlos Oliveira', cidade: 'Petrópolis', stars: 5, texto: 'Comprei um fone bluetooth e ficou perfeito. Entrega no mesmo dia!' },
+    { nome: 'Ana Lima', cidade: 'Petrópolis', stars: 5, texto: 'Preços ótimos e produtos de qualidade. Já é minha loja favorita de eletrônicos.' },
+    { nome: 'Pedro Costa', cidade: 'Petrópolis', stars: 5, texto: 'Comprei cabos e carregadores. Tudo funcionando perfeitamente. Voltarei sempre!' },
+    { nome: 'Fernanda Rocha', cidade: 'Petrópolis', stars: 5, texto: 'Excelente variedade de produtos. Encontrei tudo que precisava em um só lugar.' }
+];
+
+var categoryIcons = {
+    'Informática': 'fa-laptop', 'Áudio': 'fa-headphones', 'Cabos': 'fa-plug',
+    'Carregadores': 'fa-bolt', 'TV e Streaming': 'fa-tv', 'Câmeras': 'fa-camera',
+    'Wearables': 'fa-watch', 'Acessórios': 'fa-mobile-alt', 'Iluminação': 'fa-lightbulb',
+    'Casa': 'fa-home', 'Beleza': 'fa-spa', 'Saúde': 'fa-heartbeat',
+    'Elétrica': 'fa-bolt', 'Ferramentas': 'fa-tools', 'Fotografia': 'fa-camera-retro',
+    'Projetores': 'fa-film', 'Redes': 'fa-wifi', 'Controles': 'fa-gamepad',
+    'Drones': 'fa-paper-plane', 'Baterias': 'fa-battery-full'
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    initCarousel();
+    renderCategories();
     renderProducts();
-    updateCartUI();
-    setupEventListeners();
+    renderReviews();
+    initSearch();
+    initMobileMenu();
+    initFilterButtons();
 });
 
-function renderProducts(filter = 'Todos', searchQuery = '') {
-    const products = getProducts();
-    console.log('Renderizando produtos:', products.length);
-    
-    const container = document.getElementById('product-grid');
-    if (!container) {
-        console.error('Container product-grid não encontrado!');
-        return;
+// ── Carrossel ─────────────────────────────────────────────────
+var carouselIndex = 0;
+var carouselTimer = null;
+
+function initCarousel() {
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots = document.querySelectorAll('.dot');
+    if (!slides.length) return;
+
+    function showSlide(index) {
+        slides.forEach(function(s) { s.classList.remove('active'); });
+        dots.forEach(function(d) { d.classList.remove('active'); });
+        carouselIndex = (index + slides.length) % slides.length;
+        slides[carouselIndex].classList.add('active');
+        if (dots[carouselIndex]) dots[carouselIndex].classList.add('active');
     }
 
-    container.innerHTML = '';
+    function nextSlide() { showSlide(carouselIndex + 1); }
+    function prevSlide() { showSlide(carouselIndex - 1); }
 
-    if (products.length === 0) {
-        container.innerHTML = '<p class="no-products" style="text-align:center; padding:40px;">Nenhum produto encontrado. Adicione produtos no painel admin.</p>';
-        return;
+    function startTimer() {
+        clearInterval(carouselTimer);
+        carouselTimer = setInterval(nextSlide, 5000);
     }
 
-    const filteredProducts = products.filter(p => {
-        const matchesCategory = filter === 'Todos' || p.categoria === filter || (filter === 'Promoções' && p.oferta);
-        const matchesSearch = searchQuery === '' || p.nome.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
+    var btnNext = document.querySelector('.carousel-next');
+    var btnPrev = document.querySelector('.carousel-prev');
+    if (btnNext) btnNext.addEventListener('click', function() { nextSlide(); startTimer(); });
+    if (btnPrev) btnPrev.addEventListener('click', function() { prevSlide(); startTimer(); });
+
+    dots.forEach(function(dot, i) {
+        dot.addEventListener('click', function() { showSlide(i); startTimer(); });
     });
 
-    if (filteredProducts.length === 0) {
-        container.innerHTML = '<p class="no-products" style="text-align:center; padding:40px;">Nenhum produto encontrado para esta categoria.</p>';
-        return;
-    }
+    showSlide(0);
+    startTimer();
+}
 
-    filteredProducts.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        
-        let tags = '';
-        if (product.destaque) tags += '<span class="tag lancamento">Destaque</span>';
-        if (product.maisVendido) tags += '<span class="tag mais-vendido">Mais Vendido</span>';
-        if (product.oferta) {
-            tags += '<span class="tag oferta">Oferta</span>';
-            if (product.desconto) tags += `<span class="tag desconto">-${product.desconto}%</span>`;
-        }
+// ── Categorias ────────────────────────────────────────────────
+function renderCategories() {
+    var grid = document.getElementById('category-grid');
+    if (!grid) return;
 
-        const imgUrl = product.imagem || 'https://placehold.co/400x400/11141b/ffffff?text=Produto';
+    var products = getProducts();
+    var cats = [];
+    products.forEach(function(p) {
+        if (cats.indexOf(p.categoria) === -1) cats.push(p.categoria);
+    });
+    cats.sort();
 
-        card.innerHTML = `
-            ${tags}
-            <div class="product-img">
-                <img src="${imgUrl}" alt="${product.nome}" loading="lazy" onerror="this.src='https://placehold.co/400x400/11141b/ffffff?text=Produto'">
-            </div>
-            <div class="product-info">
-                <span class="product-category">${product.categoria || 'Geral'}</span>
-                <h4 class="product-title">${product.nome}</h4>
-                <div class="product-price">
-                    <span class="price">R$ ${product.preco.toFixed(2)}</span>
-                </div>
-                <span class="product-stock">Estoque: ${product.estoque} unidades</span>
-                <button class="btn-add-cart" onclick="addToCart(${product.id})">
-                    <i class="fas fa-shopping-cart"></i> Adicionar ao Carrinho
-                </button>
-            </div>
-        `;
-        container.appendChild(card);
+    grid.innerHTML = '';
+    cats.forEach(function(cat) {
+        var icon = categoryIcons[cat] || 'fa-tag';
+        var div = document.createElement('div');
+        div.className = 'category-card';
+        div.innerHTML =
+            '<div class="cat-img-placeholder"><i class="fas ' + icon + '"></i></div>' +
+            '<span>' + cat + '</span>';
+        div.addEventListener('click', function() {
+            currentCategory = cat;
+            currentPage = 1;
+            currentFilter = 'todos';
+            currentSearch = '';
+            var si = document.getElementById('search-input');
+            if (si) si.value = '';
+            renderProducts();
+            var ps = document.getElementById('products-section');
+            if (ps) ps.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        grid.appendChild(div);
     });
 }
 
-function updateCartUI() {
-    const cart = getCart();
-    const cartBadges = document.querySelectorAll('.cart-badge, .fab-cart .badge');
-    const cartTotalElement = document.querySelector('.action-text span');
-    const cartItemsContainer = document.getElementById('cart-items');
-    const cartTotalDisplay = document.getElementById('cart-total-display');
+// ── Produtos ──────────────────────────────────────────────────
+function renderProducts() {
+    var grid = document.getElementById('product-grid');
+    if (!grid) return;
 
-    const count = getCartCount();
-    const total = getCartTotal();
+    var products = getProducts();
 
-    cartBadges.forEach(badge => {
-        if (badge) badge.textContent = count;
-    });
-    
-    if (cartTotalElement) cartTotalElement.textContent = `R$ ${total.toFixed(2)}`;
-    
-    if (cartItemsContainer) {
-        cartItemsContainer.innerHTML = '';
-        if (cart.length === 0) {
-            cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Seu carrinho está vazio.</p>';
-        } else {
-            cart.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'cart-item';
-                div.innerHTML = `
-                    <img src="${item.imagem}" alt="${item.nome}" onerror="this.src='https://placehold.co/80x80/11141b/ffffff?text=Produto'">
-                    <div class="cart-item-info">
-                        <h5>${item.nome}</h5>
-                        <p>R$ ${item.preco.toFixed(2)}</p>
-                        <div class="quantity-controls">
-                            <button onclick="updateQuantity(${item.id}, -1)">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="updateQuantity(${item.id}, 1)">+</button>
-                        </div>
-                    </div>
-                    <button class="remove-item" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button>
-                `;
-                cartItemsContainer.appendChild(div);
-            });
-        }
+    if (currentSearch) {
+        var q = currentSearch.toLowerCase();
+        products = products.filter(function(p) {
+            return p.nome.toLowerCase().indexOf(q) !== -1 || p.categoria.toLowerCase().indexOf(q) !== -1;
+        });
+    }
+    if (currentCategory) {
+        products = products.filter(function(p) { return p.categoria === currentCategory; });
+    }
+    if (currentFilter === 'destaque') {
+        products = products.filter(function(p) { return p.destaque; });
+    } else if (currentFilter === 'oferta') {
+        products = products.filter(function(p) { return p.oferta || p.desconto > 0; });
+    } else if (currentFilter === 'mais-vendido') {
+        products = products.filter(function(p) { return p.maisVendido; });
     }
 
-    if (cartTotalDisplay) {
-        cartTotalDisplay.textContent = `R$ ${total.toFixed(2)}`;
+    var sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        var sv = sortSelect.value;
+        if (sv === 'preco-asc') products.sort(function(a, b) { return a.preco - b.preco; });
+        else if (sv === 'preco-desc') products.sort(function(a, b) { return b.preco - a.preco; });
+        else if (sv === 'nome') products.sort(function(a, b) { return a.nome.localeCompare(b.nome); });
+    }
+
+    var total = products.length;
+    var paginated = products.slice(0, currentPage * ITEMS_PER_PAGE);
+
+    var sectionTitle = document.getElementById('section-title');
+    if (sectionTitle) {
+        if (currentCategory) sectionTitle.textContent = currentCategory;
+        else if (currentSearch) sectionTitle.textContent = 'Busca: "' + currentSearch + '"';
+        else if (currentFilter === 'destaque') sectionTitle.textContent = 'Destaques';
+        else if (currentFilter === 'oferta') sectionTitle.textContent = 'Ofertas';
+        else if (currentFilter === 'mais-vendido') sectionTitle.textContent = 'Mais Vendidos';
+        else sectionTitle.textContent = 'Todos os Produtos';
+    }
+
+    var btnClear = document.getElementById('btn-clear-filter');
+    if (btnClear) {
+        btnClear.style.display = (currentCategory || currentSearch || currentFilter !== 'todos') ? 'inline-flex' : 'none';
+    }
+
+    if (total === 0) {
+        grid.innerHTML =
+            '<div class="no-products">' +
+            '<i class="fas fa-search" style="font-size:40px;margin-bottom:12px;color:var(--border-color);display:block;"></i>' +
+            '<p>Nenhum produto encontrado.</p>' +
+            '<p style="font-size:13px;margin-top:6px;color:var(--text-muted);">Tente outro termo de busca ou categoria.</p>' +
+            '</div>';
+        var lm = document.getElementById('load-more-wrapper');
+        if (lm) lm.style.display = 'none';
+        return;
+    }
+
+    grid.innerHTML = '';
+    paginated.forEach(function(p) { grid.appendChild(createProductCard(p)); });
+
+    var loadMore = document.getElementById('load-more-wrapper');
+    if (loadMore) loadMore.style.display = paginated.length < total ? 'block' : 'none';
+}
+
+function createProductCard(p) {
+    var card = document.createElement('div');
+    card.className = 'product-card';
+
+    var precoFinal = p.preco;
+    var precoOriginal = '';
+    if (p.desconto > 0) {
+        precoFinal = p.preco * (1 - p.desconto / 100);
+        precoOriginal = '<span class="price-original">R$ ' + p.preco.toFixed(2).replace('.', ',') + '</span>';
+    }
+
+    var tags = '';
+    if (p.destaque) tags += '<span class="tag lancamento">Destaque</span>';
+    if (p.maisVendido) tags += '<span class="tag mais-vendido">+ Vendido</span>';
+    if (p.oferta) tags += '<span class="tag oferta">Oferta</span>';
+    if (p.desconto > 0) tags += '<span class="tag desconto">-' + p.desconto + '%</span>';
+
+    var estoque = p.estoque > 0
+        ? '<span class="product-stock">Em estoque: ' + p.estoque + ' un.</span>'
+        : '<span class="product-stock out">Sem estoque</span>';
+
+    var imgSrc = p.imagem || 'https://placehold.co/400x400/11141b/ffffff?text=Produto';
+    var waMsg = 'Olá KA TECH! Tenho interesse no produto: ' + p.nome + ' (R$ ' + precoFinal.toFixed(2).replace('.', ',') + '). Poderia me dar mais informações?';
+    var waUrl = 'https://wa.me/5524992046467?text=' + encodeURIComponent(waMsg);
+
+    var addBtn = p.estoque > 0
+        ? '<button class="btn-add-cart" onclick="addToCart(' + p.id + ')"><i class="fas fa-cart-plus"></i> Adicionar ao Carrinho</button>'
+        : '<button class="btn-add-cart" disabled style="opacity:0.5;cursor:not-allowed;"><i class="fas fa-ban"></i> Sem Estoque</button>';
+
+    card.innerHTML =
+        tags +
+        '<div class="product-img"><img src="' + imgSrc + '" alt="' + p.nome + '" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/11141b/ffffff?text=Produto\'"></div>' +
+        '<span class="product-category">' + p.categoria + '</span>' +
+        '<h3 class="product-title">' + p.nome + '</h3>' +
+        '<div class="product-price"><span class="price">R$ ' + precoFinal.toFixed(2).replace('.', ',') + '</span>' + precoOriginal + '</div>' +
+        estoque +
+        '<div class="product-actions">' + addBtn +
+        '<a href="' + waUrl + '" target="_blank" rel="noopener" class="btn-buy-whatsapp"><i class="fab fa-whatsapp"></i> Comprar pelo WhatsApp</a>' +
+        '</div>';
+
+    return card;
+}
+
+// ── Busca ─────────────────────────────────────────────────────
+function initSearch() {
+    var searchInput = document.getElementById('search-input');
+    var searchBtn = document.getElementById('search-btn');
+    if (!searchInput) return;
+
+    function doSearch() {
+        currentSearch = searchInput.value.trim();
+        currentCategory = '';
+        currentPage = 1;
+        currentFilter = 'todos';
+        renderProducts();
+        var ps = document.getElementById('products-section');
+        if (ps) ps.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+    if (searchBtn) searchBtn.addEventListener('click', doSearch);
+}
+
+// ── Filtros ───────────────────────────────────────────────────
+function initFilterButtons() {
+    document.querySelectorAll('[data-filter]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('[data-filter]').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            currentFilter = btn.getAttribute('data-filter');
+            currentCategory = '';
+            currentPage = 1;
+            currentSearch = '';
+            var si = document.getElementById('search-input');
+            if (si) si.value = '';
+            renderProducts();
+        });
+    });
+
+    var sortSelect = document.getElementById('sort-select');
+    if (sortSelect) sortSelect.addEventListener('change', function() { currentPage = 1; renderProducts(); });
+
+    var btnLoadMore = document.getElementById('btn-load-more');
+    if (btnLoadMore) btnLoadMore.addEventListener('click', function() { currentPage++; renderProducts(); });
+
+    var btnClear = document.getElementById('btn-clear-filter');
+    if (btnClear) {
+        btnClear.addEventListener('click', function() {
+            currentFilter = 'todos'; currentCategory = ''; currentSearch = ''; currentPage = 1;
+            var si = document.getElementById('search-input');
+            if (si) si.value = '';
+            document.querySelectorAll('[data-filter]').forEach(function(b) { b.classList.remove('active'); });
+            var todosBtn = document.querySelector('[data-filter="todos"]');
+            if (todosBtn) todosBtn.classList.add('active');
+            renderProducts();
+        });
     }
 }
 
-function setupEventListeners() {
-    const searchInput = document.querySelector('.search-container input');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            renderProducts('Todos', e.target.value);
-        });
-    }
-
-    const categoryCards = document.querySelectorAll('.category-card');
-    categoryCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const category = card.querySelector('span')?.textContent || 'Todos';
-            const categoryMap = {
-                'Mouse': 'Mouse',
-                'Teclados': 'Teclados',
-                'Headsets': 'Headsets',
-                'Controles': 'Controles',
-                'SSDs': 'Armazenamento',
-                'Memórias RAM': 'Memórias RAM',
-                'Cabos': 'Cabos e Adaptadores',
-                'Outros': 'Outros'
-            };
-            renderProducts(categoryMap[category] || category);
-            
-            const titleEl = document.getElementById('current-category-title');
-            if (titleEl) titleEl.textContent = category;
-        });
+// ── Avaliações ────────────────────────────────────────────────
+function renderReviews() {
+    var grid = document.getElementById('reviews-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    reviews.forEach(function(r) {
+        var stars = '';
+        for (var i = 0; i < r.stars; i++) stars += '<i class="fas fa-star"></i>';
+        var div = document.createElement('div');
+        div.className = 'review-card';
+        div.innerHTML =
+            '<div class="review-stars">' + stars + '</div>' +
+            '<p class="review-text">"' + r.texto + '"</p>' +
+            '<div class="review-author">' + r.nome + ' — ' + r.cidade + '</div>';
+        grid.appendChild(div);
     });
+}
 
-    const menuToggle = document.getElementById('menu-toggle');
-    const closeMenu = document.getElementById('close-menu');
-    const navMenu = document.getElementById('nav-menu');
-    const overlay = document.getElementById('overlay');
+// ── Menu Mobile ───────────────────────────────────────────────
+function initMobileMenu() {
+    var menuToggle = document.getElementById('menu-toggle');
+    var navMenu = document.getElementById('nav-menu');
+    var closeMenuBtn = document.getElementById('close-menu');
+    var overlay = document.getElementById('overlay');
 
-    if (menuToggle && navMenu && overlay) {
-        menuToggle.addEventListener('click', () => {
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
             navMenu.classList.add('active');
-            overlay.classList.add('active');
+            if (overlay) overlay.classList.add('active');
         });
-
-        const closeNav = () => {
+    }
+    if (closeMenuBtn && navMenu) {
+        closeMenuBtn.addEventListener('click', function() {
             navMenu.classList.remove('active');
-            overlay.classList.remove('active');
-        };
-
-        if (closeMenu) closeMenu.addEventListener('click', closeNav);
-        
-        const navLinks = navMenu.querySelectorAll('a');
-        navLinks.forEach(link => link.addEventListener('click', closeNav));
-    }
-
-    const cartIcons = document.querySelectorAll('.cart-icon-wrapper, .fab-cart');
-    const cartSidebar = document.getElementById('cart-sidebar');
-    const closeCart = document.getElementById('close-cart');
-
-    if (cartSidebar && overlay) {
-        cartIcons.forEach(icon => {
-            if (icon) {
-                icon.addEventListener('click', () => {
-                    cartSidebar.classList.add('open');
-                    overlay.classList.add('active');
-                });
-            }
-        });
-
-        if (closeCart) {
-            closeCart.addEventListener('click', () => {
-                cartSidebar.classList.remove('open');
-                overlay.classList.remove('active');
-            });
-        }
-
-        overlay.addEventListener('click', () => {
-            cartSidebar.classList.remove('open');
-            if (navMenu) navMenu.classList.remove('active');
-            const checkoutModal = document.getElementById('checkout-modal');
-            if (checkoutModal) checkoutModal.classList.remove('active');
-            overlay.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
         });
     }
-
-    const btnCheckout = document.getElementById('btn-checkout');
-    if (btnCheckout) {
-        btnCheckout.addEventListener('click', () => {
-            if (getCart().length === 0) {
-                alert("Adicione produtos ao carrinho primeiro!");
-                return;
-            }
-            const checkoutModal = document.getElementById('checkout-modal');
-            if (checkoutModal) checkoutModal.classList.add('active');
-            
-            const savedData = getCustomerData();
-            const nameInput = document.getElementById('cust-name');
-            const phoneInput = document.getElementById('cust-phone');
-            const cityInput = document.getElementById('cust-city');
-            const obsInput = document.getElementById('cust-obs');
-            
-            if (nameInput) nameInput.value = savedData.nome || '';
-            if (phoneInput) phoneInput.value = savedData.telefone || '';
-            if (cityInput) cityInput.value = savedData.cidade || '';
-            if (obsInput) obsInput.value = savedData.observacoes || '';
-        });
-    }
-
-    const checkoutForm = document.getElementById('checkout-form');
-    if (checkoutForm) {
-        checkoutForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const customerData = {
-                nome: document.getElementById('cust-name').value,
-                telefone: document.getElementById('cust-phone').value,
-                cidade: document.getElementById('cust-city').value,
-                observacoes: document.getElementById('cust-obs').value
-            };
-            finalizeOrder(customerData);
-        });
-    }
-    
-    const closeCheckout = document.getElementById('close-checkout');
-    if (closeCheckout) {
-        closeCheckout.addEventListener('click', () => {
-            const checkoutModal = document.getElementById('checkout-modal');
-            if (checkoutModal) checkoutModal.classList.remove('active');
-            const cartSidebarCheck = document.getElementById('cart-sidebar');
-            if (cartSidebarCheck && !cartSidebarCheck.classList.contains('open')) {
-                overlay.classList.remove('active');
-            }
-        });
-    }
-}
-
-function showNotification(message) {
-    const toast = document.createElement('div');
-    toast.className = 'toast-notification';
-    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
 }
