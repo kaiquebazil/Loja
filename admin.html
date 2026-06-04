@@ -52,17 +52,29 @@
                 <span class="admin-badge">Admin</span>
             </div>
             <nav class="admin-nav">
-                <button class="admin-nav-btn active" data-tab="products">
+                <button class="admin-nav-btn active" data-tab="dashboard">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </button>
+                <button class="admin-nav-btn" data-tab="products">
                     <i class="fas fa-box"></i> Produtos
                 </button>
-                <button class="admin-nav-btn" data-tab="shipping">
-                    <i class="fas fa-truck"></i> Frete por Bairro
+                <button class="admin-nav-btn" data-tab="customers">
+                    <i class="fas fa-users"></i> Clientes
                 </button>
-                <button class="admin-nav-btn" data-tab="orders">
-                    <i class="fas fa-clipboard-list"></i> Pedidos
+                <button class="admin-nav-btn" data-tab="os">
+                    <i class="fas fa-tools"></i> Ordens de Serviço
                 </button>
                 <button class="admin-nav-btn" data-tab="kaos">
-                    <i class="fas fa-file-invoice"></i> KAOS / Nota Fiscal
+                    <i class="fas fa-file-invoice"></i> Nota Fiscal
+                </button>
+                <button class="admin-nav-btn" data-tab="shipping">
+                    <i class="fas fa-truck"></i> Frete
+                </button>
+                <button class="admin-nav-btn" data-tab="orders">
+                    <i class="fas fa-shopping-bag"></i> Pedidos Site
+                </button>
+                <button class="admin-nav-btn" data-tab="backup">
+                    <i class="fas fa-database"></i> Backup / Sistema
                 </button>
             </nav>
             <div class="admin-sidebar-footer">
@@ -74,8 +86,55 @@
         <!-- Conteúdo Admin -->
         <main class="admin-main">
 
+            <!-- Tab: Dashboard -->
+            <div id="tab-dashboard" class="admin-tab active">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-chart-line"></i> Dashboard KA TECH</h1>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <span class="stat-number" id="dash-vendas-mes">R$ 0,00</span>
+                        <span class="stat-label">Vendas no Mês</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="dash-os-abertas">0</span>
+                        <span class="stat-label">OS em Aberto</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="dash-total-clientes">0</span>
+                        <span class="stat-label">Clientes Cadastrados</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="dash-pedidos-site">0</span>
+                        <span class="stat-label">Novos Pedidos Site</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-row">
+                    <div class="dashboard-col">
+                        <h3><i class="fas fa-tools"></i> Últimas Ordens de Serviço</h3>
+                        <div class="admin-table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Equipamento</th>
+                                        <th>Status</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-os-list">
+                                    <!-- Preenchido via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tab: Produtos -->
-            <div id="tab-products" class="admin-tab active">
+            <div id="tab-products" class="admin-tab">
                 <div class="admin-tab-header">
                     <h1><i class="fas fa-box"></i> Gerenciar Produtos</h1>
                     <button id="btn-add-product" class="btn-primary">
@@ -166,6 +225,87 @@
                     <p class="empty-state"><i class="fas fa-inbox"></i> Nenhum pedido registrado ainda.</p>
                 </div>
                         </div>
+
+            <!-- Tab: Clientes -->
+            <div id="tab-customers" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-users"></i> Gerenciar Clientes</h1>
+                    <button id="btn-add-customer" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Novo Cliente
+                    </button>
+                </div>
+                <div class="admin-search-bar">
+                    <input type="text" id="customer-search" placeholder="Buscar por nome, CPF ou telefone...">
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CPF/CNPJ</th>
+                                <th>Telefone</th>
+                                <th>Cidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customers-list">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Ordens de Serviço -->
+            <div id="tab-os" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-tools"></i> Ordens de Serviço</h1>
+                    <button id="btn-add-os" class="btn-primary">
+                        <i class="fas fa-plus"></i> Nova OS
+                    </button>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nº OS</th>
+                                <th>Cliente</th>
+                                <th>Equipamento</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="os-list">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Backup / Sistema -->
+            <div id="tab-backup" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-database"></i> Backup e Sistema</h1>
+                </div>
+                <div class="backup-container">
+                    <div class="backup-card">
+                        <h3><i class="fas fa-download"></i> Exportar Dados</h3>
+                        <p>Baixe todos os dados do sistema (Produtos, Clientes, OS, Configurações) em um arquivo JSON.</p>
+                        <button id="btn-export-data" class="btn-primary">
+                            <i class="fas fa-file-download"></i> Baixar Backup
+                        </button>
+                    </div>
+                    <div class="backup-card">
+                        <h3><i class="fas fa-upload"></i> Importar Dados</h3>
+                        <p>Restaure o sistema a partir de um arquivo de backup anterior.</p>
+                        <input type="file" id="import-file" style="display:none;" accept=".json">
+                        <button id="btn-import-data" class="btn-secondary">
+                            <i class="fas fa-file-upload"></i> Selecionar Arquivo
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <!-- Tab: KAOS / Nota Fiscal -->
             <div id="tab-kaos" class="admin-tab">
@@ -261,6 +401,119 @@
             <div class="nf-paper" id="nf-render-area">
                 <!-- A nota fiscal será renderizada aqui via JS -->
             </div>
+        </div>
+    </div>
+
+    <!-- Modal de Cliente -->
+    <div id="customer-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="customer-modal-title">Novo Cliente</h3>
+                <button id="close-customer-modal" class="btn-close"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="customer-form">
+                <input type="hidden" id="cust-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nome Completo *</label>
+                        <input type="text" id="cust-nome" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>CPF / CNPJ</label>
+                            <input type="text" id="cust-doc">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone *</label>
+                            <input type="text" id="cust-tel" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <input type="text" id="cust-end">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cidade</label>
+                            <input type="text" id="cust-cidade" value="Petrópolis">
+                        </div>
+                        <div class="form-group">
+                            <label>Bairro</label>
+                            <input type="text" id="cust-bairro">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-customer-modal" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Ordem de Serviço (OS) -->
+    <div id="os-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="os-modal-title">Nova Ordem de Serviço</h3>
+                <button id="close-os-modal" class="btn-close"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="os-form">
+                <input type="hidden" id="os-id">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cliente *</label>
+                            <select id="os-cust-id" required>
+                                <option value="">Selecione um cliente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Entrada</label>
+                            <input type="date" id="os-data">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Equipamento *</label>
+                            <input type="text" id="os-equip" placeholder="Ex: iPhone 11, Notebook Dell" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="os-status">
+                                <option value="Aberto">Aberto</option>
+                                <option value="Em Análise">Em Análise</option>
+                                <option value="Aguardando Peça">Aguardando Peça</option>
+                                <option value="Pronto">Pronto</option>
+                                <option value="Entregue">Entregue</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Defeito / Reclamação</label>
+                        <textarea id="os-defeito" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Laudo Técnico / Serviço Realizado</label>
+                        <textarea id="os-laudo" rows="2"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor do Serviço (R$)</label>
+                            <input type="number" id="os-valor-serv" step="0.01" value="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Valor das Peças (R$)</label>
+                            <input type="number" id="os-valor-pecas" step="0.01" value="0.00">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-os-modal" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar OS</button>
+                </div>
+            </form>
         </div>
     </div>
 
