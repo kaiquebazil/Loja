@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | Kaique Bazil Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: var(--bg-panel);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .btn-add {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .product-table {
+            width: 100%;
+            background-color: var(--bg-panel);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+            overflow: hidden;
+        }
+        .product-table th, .product-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .product-table th {
+            background-color: #0d1017;
+            color: var(--text-muted);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .product-table img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-edit { color: #ffc107; cursor: pointer; background: none; border: none; font-size: 18px; }
+        .btn-delete { color: #e52e2e; cursor: pointer; background: none; border: none; font-size: 18px; }
+        
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .admin-modal.active { display: flex; }
+        .admin-modal-content {
+            background: var(--bg-panel);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 15px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .admin-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-full { grid-column: span 2; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <div class="logo-icon"><span>K</span>B</div>
+                <div class="logo-text">
+                    <h1>KAIQUE <span class="blue">BAZIL</span></h1>
+                    <p>ADMIN PANEL</p>
+                </div>
+            </div>
+            <a href="index.html" class="btn-outline"><i class="fas fa-arrow-left"></i> Voltar para Loja</a>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>Gerenciar Produtos</h2>
+            <button class="btn-add" id="btn-add-product"><i class="fas fa-plus"></i> Novo Produto</button>
+        </div>
+
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Imagem</th>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="admin-product-list">
+                <!-- Preenchido via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Adicionar/Editar -->
+    <div id="product-modal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h3 id="modal-title">Adicionar Produto</h3>
+                <button id="close-admin-modal" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="product-form">
+                <input type="hidden" id="prod-id">
+                <div class="form-grid">
+                    <div class="form-group form-full">
+                        <label>Nome do Produto</label>
+                        <input type="text" id="prod-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="prod-category" style="width:100%; background:#1a1e28; border:1px solid var(--border-color); color:white; padding:12px; border-radius:8px;">
+                            <option value="Mouse">Mouse</option>
+                            <option value="Teclados">Teclados</option>
+                            <option value="Headsets">Headsets</option>
+                            <option value="Controles">Controles</option>
+                            <option value="Armazenamento">Armazenamento</option>
+                            <option value="Memórias RAM">Memórias RAM</option>
+                            <option value="Cabos e Adaptadores">Cabos e Adaptadores</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Preço (R$)</label>
+                        <input type="number" id="prod-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estoque</label>
+                        <input type="number" id="prod-stock" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Desconto (%)</label>
+                        <input type="number" id="prod-discount" value="0">
+                    </div>
+                    <div class="form-group form-full">
+                        <label>URL da Imagem</label>
+                        <input type="text" id="prod-image" placeholder="https://...">
+                    </div>
+                    <div class="form-group form-full">
+                        <label>Descrição</label>
+                        <textarea id="prod-desc" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="prod-featured"> Destaque</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="prod-bestseller"> Mais Vendido</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="prod-offer"> Oferta</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; margin-top:20px;">Salvar Produto</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="products.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminProducts();
+            
+            const modal = document.getElementById('product-modal');
+            const form = document.getElementById('product-form');
+            const btnAdd = document.getElementById('btn-add-product');
+            const btnClose = document.getElementById('close-admin-modal');
+
+            btnAdd.onclick = () => {
+                form.reset();
+                document.getElementById('prod-id').value = '';
+                document.getElementById('modal-title').innerText = 'Adicionar Produto';
+                modal.classList.add('active');
+            };
+
+            btnClose.onclick = () => modal.classList.remove('active');
+
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                const id = document.getElementById('prod-id').value;
+                const products = getProducts();
+                
+                const productData = {
+                    id: id ? parseInt(id) : Date.now(),
+                    nome: document.getElementById('prod-name').value,
+                    categoria: document.getElementById('prod-category').value,
+                    preco: parseFloat(document.getElementById('prod-price').value),
+                    estoque: parseInt(document.getElementById('prod-stock').value),
+                    imagem: document.getElementById('prod-image').value || 'https://placehold.co/400x400/11141b/ffffff?text=Produto',
+                    descricao: document.getElementById('prod-desc').value,
+                    destaque: document.getElementById('prod-featured').checked,
+                    maisVendido: document.getElementById('prod-bestseller').checked,
+                    oferta: document.getElementById('prod-offer').checked,
+                    desconto: parseInt(document.getElementById('prod-discount').value) || 0
+                };
+
+                if (id) {
+                    const index = products.findIndex(p => p.id === parseInt(id));
+                    products[index] = productData;
+                } else {
+                    products.push(productData);
+                }
+
+                saveProducts(products);
+                modal.classList.remove('active');
+                renderAdminProducts();
+            };
+        });
+
+        function renderAdminProducts() {
+            const products = getProducts();
+            const list = document.getElementById('admin-product-list');
+            list.innerHTML = '';
+
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${p.imagem}" alt=""></td>
+                    <td>${p.nome}</td>
+                    <td>${p.categoria}</td>
+                    <td>R$ ${p.preco.toFixed(2)}</td>
+                    <td>${p.estoque}</td>
+                    <td class="actions">
+                        <button class="btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+        }
+
+        function editProduct(id) {
+            const products = getProducts();
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-name').value = p.nome;
+            document.getElementById('prod-category').value = p.categoria;
+            document.getElementById('prod-price').value = p.preco;
+            document.getElementById('prod-stock').value = p.estoque;
+            document.getElementById('prod-image').value = p.imagem;
+            document.getElementById('prod-desc').value = p.descricao || '';
+            document.getElementById('prod-featured').checked = p.destaque;
+            document.getElementById('prod-bestseller').checked = p.maisVendido;
+            document.getElementById('prod-offer').checked = p.oferta;
+            document.getElementById('prod-discount').value = p.desconto || 0;
+
+            document.getElementById('modal-title').innerText = 'Editar Produto';
+            document.getElementById('product-modal').classList.add('active');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                let products = getProducts();
+                products = products.filter(p => p.id !== id);
+                saveProducts(products);
+                renderAdminProducts();
+            }
+        }
+    </script>
+</body>
+</html>
