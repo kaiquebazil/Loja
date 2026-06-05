@@ -260,6 +260,7 @@ function renderOS() {
             <td>R$ ' + (o.valorServico + o.valorPecas).toFixed(2).replace('.', ',') + '</td> \
             <td> \
                 <div class="table-actions"> \
+                    <button onclick="printOS(' + o.id + ')" class="btn-edit-row" style="color:#25d366; border-color:#25d366;" title="Imprimir OS"><i class="fas fa-print"></i></button> \
                     <button onclick="editOS(' + o.id + ')" class="btn-edit-row"><i class="fas fa-edit"></i></button> \
                     <button onclick="deleteOS(' + o.id + ')" class="btn-delete-row"><i class="fas fa-trash"></i></button> \
                 </div> \
@@ -277,6 +278,7 @@ function initOSModal() {
         form.reset();
         document.getElementById('os-id').value = '';
         document.getElementById('os-data').valueAsDate = new Date();
+        document.getElementById('os-garantia').value = 90;
         populateOSCustomers();
         modal.classList.add('active');
     };
@@ -297,7 +299,9 @@ function initOSModal() {
             defeito: document.getElementById('os-defeito').value,
             laudo: document.getElementById('os-laudo').value,
             valorServico: parseFloat(document.getElementById('os-valor-serv').value) || 0,
-            valorPecas: parseFloat(document.getElementById('os-valor-pecas').value) || 0
+            valorPecas: parseFloat(document.getElementById('os-valor-pecas').value) || 0,
+            garantia: parseInt(document.getElementById('os-garantia').value) || 0,
+            pagamento: document.getElementById('os-pagamento').value || 'Não informado'
         };
 
         if (id) {
@@ -338,6 +342,8 @@ function editOS(id) {
     document.getElementById('os-laudo').value = o.laudo;
     document.getElementById('os-valor-serv').value = o.valorServico;
     document.getElementById('os-valor-pecas').value = o.valorPecas;
+    document.getElementById('os-garantia').value = o.garantia || 90;
+    document.getElementById('os-pagamento').value = o.pagamento || '';
     document.getElementById('os-modal').classList.add('active');
 }
 
@@ -596,10 +602,10 @@ function initKaosSystem() {
         form.onsubmit = function(e) {
             e.preventDefault();
             renderNotaFiscal();
-            document.getElementById('nf-preview-modal').classList.add('active');
         };
     }
-    if (document.getElementById('close-nf-modal')) document.getElementById('close-nf-modal').onclick = function() { document.getElementById('nf-preview-modal').classList.remove('active'); };
+    var closeBtn = document.getElementById('close-print-modal');
+    if (closeBtn) closeBtn.onclick = function() { document.getElementById('print-modal').classList.remove('active'); };
 }
 
 function addNfItemRow() {
@@ -620,18 +626,123 @@ function addNfItemRow() {
     row.querySelector('.btn-remove-item').onclick = function() { row.remove(); };
 }
 
+function getCompanyHeader(title, docId) {
+    return ' \
+        <div class="print-header"> \
+            <div class="company-info"> \
+                <h2>KA TECH</h2> \
+                <p><strong>CNPJ:</strong> 55.452.123/0001-89</p> \
+                <p><strong>Endereço:</strong> Petrópolis, RJ</p> \
+                <p><strong>WhatsApp:</strong> (24) 99204-6467</p> \
+            </div> \
+            <div class="doc-title"> \
+                <h1>' + title + '</h1> \
+                <p>Nº ' + docId.toString().slice(-6) + '</p> \
+                <p>Data: ' + new Date().toLocaleDateString() + '</p> \
+            </div> \
+        </div> \
+    ';
+}
+
 function renderNotaFiscal() {
-    var area = document.getElementById('nf-render-area');
+    var area = document.getElementById('print-render-area');
     var total = 0;
-    var items = '';
+    var itemsHtml = '';
+    
     document.querySelectorAll('.nf-item-row').forEach(function(row) {
-        var n = row.querySelector('.nf-item-select').options[row.querySelector('.nf-item-select').selectedIndex].text;
-        var q = parseInt(row.querySelector('.nf-item-qty').value) || 0;
-        var p = parseFloat(row.querySelector('.nf-item-price').value) || 0;
-        total += q * p;
-        items += '<tr><td>' + n + '</td><td>' + q + '</td><td>' + p.toFixed(2) + '</td><td>' + (q * p).toFixed(2) + '</td></tr>';
+        var select = row.querySelector('.nf-item-select');
+        if (select.value) {
+            var n = select.options[select.selectedIndex].text;
+            var q = parseInt(row.querySelector('.nf-item-qty').value) || 0;
+            var p = parseFloat(row.querySelector('.nf-item-price').value) || 0;
+            total += q * p;
+            itemsHtml += '<tr><td>' + n + '</td><td>' + q + '</td><td>R$ ' + p.toFixed(2).replace('.', ',') + '</td><td>R$ ' + (q * p).toFixed(2).replace('.', ',') + '</td></tr>';
+        }
     });
-    area.innerHTML = '<h2>KA TECH - NOTA DE VENDA</h2><p>Cliente: ' + document.getElementById('nf-cliente-nome').value + '</p><table>' + items + '</table><h3>TOTAL: R$ ' + total.toFixed(2) + '</h3>';
+
+    var html = getCompanyHeader('Nota de Venda', Date.now());
+    html += ' \
+        <div class="print-box" style="margin-bottom:20px;"> \
+            <h4>Dados do Cliente</h4> \
+            <p><strong>Nome:</strong> ' + document.getElementById('nf-cliente-nome').value + '</p> \
+            <p><strong>CPF/CNPJ:</strong> ' + document.getElementById('nf-cliente-cpf').value + '</p> \
+        </div> \
+        <table class="print-table"> \
+            <thead><tr><th>Descrição</th><th>Qtd</th><th>Unitário</th><th>Total</th></tr></thead> \
+            <tbody>' + itemsHtml + '</tbody> \
+        </table> \
+        <div class="print-summary"> \
+            <div class="garantia-box"> \
+                <h4>Termos de Garantia</h4> \
+                <p>Garantia legal de 90 dias conforme CDC. A garantia não cobre danos por mau uso, quedas ou contato com líquidos.</p> \
+            </div> \
+            <div class="total-box"> \
+                <p>Subtotal: R$ ' + total.toFixed(2).replace('.', ',') + '</p> \
+                <p class="grand-total">TOTAL: R$ ' + total.toFixed(2).replace('.', ',') + '</p> \
+            </div> \
+        </div> \
+        <div class="signature-area"> \
+            <div class="sig-line">KA TECH</div> \
+            <div class="sig-line">ASSINATURA DO CLIENTE</div> \
+        </div> \
+    ';
+
+    area.innerHTML = html;
+    document.getElementById('print-modal-title').textContent = 'Visualizar Nota Fiscal';
+    document.getElementById('print-modal').classList.add('active');
+}
+
+function printOS(id) {
+    var o = getOS().find(function(item) { return item.id == id; });
+    var c = getCustomers().find(function(cust) { return cust.id == o.customerId; });
+    var area = document.getElementById('print-render-area');
+    
+    var html = getCompanyHeader('Ordem de Serviço', o.id);
+    html += ' \
+        <div class="print-grid"> \
+            <div class="print-box"> \
+                <h4>Cliente</h4> \
+                <p><strong>Nome:</strong> ' + (c ? c.nome : 'N/A') + '</p> \
+                <p><strong>CPF/CNPJ:</strong> ' + (c && c.doc ? c.doc : '-') + '</p> \
+                <p><strong>Tel:</strong> ' + (c ? c.tel : '-') + '</p> \
+            </div> \
+            <div class="print-box"> \
+                <h4>Equipamento</h4> \
+                <p><strong>Modelo:</strong> ' + o.equipamento + '</p> \
+                <p><strong>Status:</strong> ' + o.status + '</p> \
+                <p><strong>Entrada:</strong> ' + o.data.split('-').reverse().join('/') + '</p> \
+            </div> \
+        </div> \
+        <div class="print-box" style="margin-bottom:20px;"> \
+            <h4>Defeito / Laudo Técnico</h4> \
+            <p><strong>Defeito:</strong> ' + o.defeito + '</p> \
+            <p><strong>Laudo:</strong> ' + o.laudo + '</p> \
+        </div> \
+        <table class="print-table"> \
+            <thead><tr><th>Descrição</th><th>Valor</th></tr></thead> \
+            <tbody> \
+                <tr><td>Mão de Obra / Serviço</td><td>R$ ' + o.valorServico.toFixed(2).replace('.', ',') + '</td></tr> \
+                <tr><td>Peças / Componentes</td><td>R$ ' + o.valorPecas.toFixed(2).replace('.', ',') + '</td></tr> \
+            </tbody> \
+        </table> \
+        <div class="print-summary"> \
+            <div class="garantia-box"> \
+                <h4>Garantia e Observações</h4> \
+                <p>Garantia de ' + (o.garantia || 90) + ' dias para os serviços realizados. Pagamento: ' + (o.pagamento || '-') + '.</p> \
+            </div> \
+            <div class="total-box"> \
+                <p class="grand-total">TOTAL: R$ ' + (o.valorServico + o.valorPecas).toFixed(2).replace('.', ',') + '</p> \
+            </div> \
+        </div> \
+        <div class="signature-area"> \
+            <div class="sig-line">KA TECH</div> \
+            <div class="sig-line">ASSINATURA DO CLIENTE</div> \
+        </div> \
+    ';
+
+    area.innerHTML = html;
+    document.getElementById('print-modal-title').textContent = 'Visualizar Ordem de Serviço';
+    document.getElementById('print-modal').classList.add('active');
 }
 
 function showAdminToast(msg) {
