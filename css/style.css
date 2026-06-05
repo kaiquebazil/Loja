@@ -186,14 +186,17 @@ input, select, textarea { font-family: inherit; }
     position: absolute;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 0 60px;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
     opacity: 0;
     transition: opacity 0.6s ease;
     pointer-events: none;
 }
 .hero-slide.active { opacity: 1; pointer-events: auto; }
-.hero-content { flex: 1; max-width: 560px; }
+.hero-content { max-width: 800px; margin-bottom: 30px; }
 .hero-badge {
     display: inline-block;
     background: rgba(0,102,255,0.2);
@@ -213,7 +216,7 @@ input, select, textarea { font-family: inherit; }
     line-height: 1.2;
     margin-bottom: 14px;
 }
-.hero-content p { font-size: 15px; color: var(--text-secondary); margin-bottom: 28px; max-width: 440px; }
+.hero-content p { font-size: 15px; color: var(--text-secondary); margin-bottom: 28px; max-width: 600px; margin-left: auto; margin-right: auto; }
 .highlight { color: var(--primary-blue); }
 
 .btn-primary {
@@ -233,7 +236,7 @@ input, select, textarea { font-family: inherit; }
 .btn-primary.btn-whatsapp { background: #25d366; box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
 .btn-primary.btn-whatsapp:hover { background: #1da851; }
 
-.hero-visual { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hero-visual { display: flex; align-items: center; justify-content: center; width: 100%; order: -1; margin-bottom: 20px; }
 .hero-icon-big {
     width: 180px; height: 180px;
     background: rgba(0,102,255,0.1);
