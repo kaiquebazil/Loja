@@ -485,13 +485,24 @@ function renderAdminProducts(filter) {
 
         var minStock = p.estoqueMin || 5;
         var stockClass = p.estoque <= 0 ? 'stock-zero' : (p.estoque <= minStock ? 'stock-low' : '');
+        
+        // Cálculo de lucro e margem
+        var custo = p.custo || 0;
+        var preco = p.preco || 0;
+        var lucro = preco - custo;
+        var margem = custo > 0 ? ((lucro / preco) * 100).toFixed(1) : 0;
+        
+        var lucroClass = lucro < 0 ? 'lucro-negativo' : '';
 
         tr.innerHTML = ' \
             <td>#' + p.id.toString().slice(-4) + '</td> \
             <td><img src="' + p.imagem + '" alt="' + p.nome + '"></td> \
             <td class="product-name"><strong>' + p.nome + '</strong></td> \
             <td>' + p.categoria + '</td> \
-            <td>R$ ' + p.preco.toFixed(2).replace('.', ',') + '</td> \
+            <td>R$ ' + custo.toFixed(2).replace('.', ',') + '</td> \
+            <td>R$ ' + preco.toFixed(2).replace('.', ',') + '</td> \
+            <td class="' + lucroClass + '">R$ ' + lucro.toFixed(2).replace('.', ',') + '</td> \
+            <td>' + margem + '%</td> \
             <td class="' + stockClass + '">' + p.estoque + '</td> \
             <td>' + flags + '</td> \
             <td> \

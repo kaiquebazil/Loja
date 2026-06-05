@@ -485,3 +485,6 @@
 .status-pronto { background: rgba(157, 42, 218, 0.1); color: #9d2ada; }
 .status-entregue { background: rgba(255, 255, 255, 0.1); color: #fff; }
 .status-cancelado { background: rgba(229, 46, 46, 0.1); color: var(--red-danger); }
+
+/* ── Lucro Styles ───────────────────────────────────────────── */
+.lucro-negativo { color: var(--red-danger); font-weight: 600; }
