@@ -59,6 +59,16 @@ function initAdminPanel() {
     initShippingModal();
     initKaosSystem();
     initBackupSystem();
+    initResetCatalog();
+    initClearOrders();
+
+    // Busca de Produtos
+    var searchInput = document.getElementById('admin-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            renderAdminProducts(e.target.value);
+        });
+    }
 }
 
 // ── Tabs ──────────────────────────────────────────────────────
@@ -389,14 +399,49 @@ function initBackupSystem() {
 // ── Reuso de Funções Existentes (Produtos, Frete, NF, Toast) ──
 function renderAdminProducts(filter) {
     var products = getProducts();
-    var grid = document.getElementById('admin-products-list');
-    if (!grid) return;
-    if (filter) products = products.filter(function(p) { return p.nome.toLowerCase().includes(filter.toLowerCase()); });
-    grid.innerHTML = '';
+    var tbody = document.getElementById('products-tbody');
+    if (!tbody) return;
+
+    if (filter) {
+        products = products.filter(function(p) {
+            return p.nome.toLowerCase().includes(filter.toLowerCase()) || 
+                   p.categoria.toLowerCase().includes(filter.toLowerCase());
+        });
+    }
+
+    // Atualizar Estatísticas
+    if (document.getElementById('stat-total')) document.getElementById('stat-total').textContent = products.length;
+    if (document.getElementById('stat-destaque')) document.getElementById('stat-destaque').textContent = products.filter(function(p) { return p.destaque; }).length;
+    if (document.getElementById('stat-oferta')) document.getElementById('stat-oferta').textContent = products.filter(function(p) { return p.oferta; }).length;
+    if (document.getElementById('stat-zerado')) document.getElementById('stat-zerado').textContent = products.filter(function(p) { return p.estoque <= 0; }).length;
+
+    tbody.innerHTML = '';
     products.forEach(function(p) {
         var tr = document.createElement('tr');
-        tr.innerHTML = '<td><img src="' + p.imagem + '" width="40"></td><td>' + p.nome + '</td><td>R$ ' + p.preco.toFixed(2) + '</td><td>' + p.estoque + '</td><td>' + p.categoria + '</td><td><div class="table-actions"><button onclick="editProduct(' + p.id + ')" class="btn-edit-row"><i class="fas fa-edit"></i></button><button onclick="deleteProduct(' + p.id + ')" class="btn-delete-row"><i class="fas fa-trash"></i></button></div></td>';
-        grid.appendChild(tr);
+        
+        var flags = '';
+        if (p.destaque) flags += '<span class="flag-badge flag-destaque">Destaque</span>';
+        if (p.oferta) flags += '<span class="flag-badge flag-oferta">Oferta</span>';
+        if (p.maisVendido) flags += '<span class="flag-badge flag-mais-vendido">Mais Vendido</span>';
+
+        var stockClass = p.estoque <= 0 ? 'stock-zero' : (p.estoque <= 3 ? 'stock-low' : '');
+
+        tr.innerHTML = ' \
+            <td>#' + p.id.toString().slice(-4) + '</td> \
+            <td><img src="' + p.imagem + '" alt="' + p.nome + '"></td> \
+            <td class="product-name"><strong>' + p.nome + '</strong></td> \
+            <td>' + p.categoria + '</td> \
+            <td>R$ ' + p.preco.toFixed(2).replace('.', ',') + '</td> \
+            <td class="' + stockClass + '">' + p.estoque + '</td> \
+            <td>' + flags + '</td> \
+            <td> \
+                <div class="table-actions"> \
+                    <button onclick="editProduct(' + p.id + ')" class="btn-edit-row" title="Editar"><i class="fas fa-edit"></i></button> \
+                    <button onclick="deleteProduct(' + p.id + ')" class="btn-delete-row" title="Excluir"><i class="fas fa-trash"></i></button> \
+                </div> \
+            </td> \
+        ';
+        tbody.appendChild(tr);
     });
 }
 
@@ -465,13 +510,22 @@ function deleteProduct(id) {
 
 function renderAdminShipping() {
     var shipping = getShipping();
-    var list = document.getElementById('admin-shipping-list');
-    if (!list) return;
-    list.innerHTML = '';
+    var tbody = document.getElementById('shipping-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
     shipping.forEach(function(s) {
         var tr = document.createElement('tr');
-        tr.innerHTML = '<td>' + s.nome + '</td><td>R$ ' + s.valor.toFixed(2) + '</td><td><div class="table-actions"><button onclick="editBairro(\'' + s.nome + '\')" class="btn-edit-row"><i class="fas fa-edit"></i></button><button onclick="deleteBairro(\'' + s.nome + '\')" class="btn-delete-row"><i class="fas fa-trash"></i></button></div></td>';
-        list.appendChild(tr);
+        tr.innerHTML = ' \
+            <td>' + s.nome + '</td> \
+            <td>R$ ' + s.valor.toFixed(2).replace('.', ',') + '</td> \
+            <td> \
+                <div class="table-actions"> \
+                    <button onclick="editBairro(\'' + s.nome + '\')" class="btn-edit-row"><i class="fas fa-edit"></i></button> \
+                    <button onclick="deleteBairro(\'' + s.nome + '\')" class="btn-delete-row"><i class="fas fa-trash"></i></button> \
+                </div> \
+            </td> \
+        ';
+        tbody.appendChild(tr);
     });
 }
 
