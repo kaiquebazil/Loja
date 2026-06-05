@@ -1,5 +1,5 @@
 /* ============================================================
-   KA TECH - products.js
+   KB Tech - products.js
    Gerenciamento do catálogo de produtos via localStorage
    ============================================================ */
 

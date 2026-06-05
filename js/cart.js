@@ -1,11 +1,11 @@
 /* ============================================================
-   KA TECH - cart.js
+   KB Tech - cart.js
    Carrinho de compras, frete por bairro e envio via WhatsApp
    ============================================================ */
 
 const CART_KEY = 'katech_cart';
 const ORDERS_KEY = 'katech_orders';
-const WHATSAPP_NUMBER = '5524992046467'; // Número da KA TECH
+const WHATSAPP_NUMBER = '5524992046467'; // Número da KB Tech
 
 // ── Funções do Carrinho ───────────────────────────────────────
 function getCart() {
@@ -268,7 +268,7 @@ function sendOrderWhatsApp(e) {
     var subtotal = getCartTotal();
     var total = subtotal + frete;
 
-    var msg = 'Olá *KA TECH*! 👋\n';
+    var msg = 'Olá *KB Tech*! 👋\n';
     msg += 'Gostaria de fazer este pedido:\n\n';
     msg += '━━━━━━━━━━━━━━━━━━\n';
     msg += '🛒 *ITENS DO PEDIDO*\n';

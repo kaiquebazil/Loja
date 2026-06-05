@@ -1,5 +1,5 @@
 /* ============================================================
-   KA TECH - admin.js
+   KB Tech - admin.js
    Lógica do painel administrativo completo (Sistema KAOS)
    ============================================================ */
 
@@ -703,7 +703,7 @@ function getCompanyHeader(title, docId) {
     return ' \
         <div class="print-header"> \
             <div class="company-info"> \
-                <h2>KA TECH</h2> \
+                <h2>KB Tech</h2> \
                 <p><strong>CNPJ:</strong> 55.452.123/0001-89</p> \
                 <p><strong>Endereço:</strong> Petrópolis, RJ</p> \
                 <p><strong>WhatsApp:</strong> (24) 99204-6467</p> \
@@ -755,7 +755,7 @@ function renderNotaFiscal() {
             </div> \
         </div> \
         <div class="signature-area"> \
-            <div class="sig-line">KA TECH</div> \
+            <div class="sig-line">KB Tech</div> \
             <div class="sig-line">ASSINATURA DO CLIENTE</div> \
         </div> \
     ';
@@ -808,7 +808,7 @@ function printOS(id) {
             </div> \
         </div> \
         <div class="signature-area"> \
-            <div class="sig-line">KA TECH</div> \
+            <div class="sig-line">KB Tech</div> \
             <div class="sig-line">ASSINATURA DO CLIENTE</div> \
         </div> \
     ';
@@ -1127,7 +1127,7 @@ function printGuarantee(id) {
     renderArea.innerHTML = ' \
         <div class="print-header"> \
             <div class="company-info"> \
-                <h2>KA TECH</h2> \
+                <h2>KB Tech</h2> \
                 <p>Assistência Técnica e Acessórios</p> \
                 <p>Petrópolis, RJ</p> \
             </div> \

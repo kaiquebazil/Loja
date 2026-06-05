@@ -1,5 +1,5 @@
 /* ============================================================
-   KA TECH - orcamento.js
+   KB Tech - orcamento.js
    Lógica do formulário de orçamento
    ============================================================ */
 
@@ -65,7 +65,7 @@ function sendOrcamentoWhatsApp() {
         return;
     }
 
-    var msg = 'Olá *KA TECH*! 👋\n';
+    var msg = 'Olá *KB Tech*! 👋\n';
     msg += 'Gostaria de solicitar um orçamento:\n\n';
     msg += '━━━━━━━━━━━━━━━━━━\n';
     msg += '📋 *DETALHES DO ORÇAMENTO*\n';

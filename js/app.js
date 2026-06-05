@@ -1,5 +1,5 @@
 /* ============================================================
-   KA TECH - app.js
+   KB Tech - app.js
    Lógica principal: carrossel, catálogo, busca, avaliações
    ============================================================ */
 
@@ -10,7 +10,7 @@ var currentCategory = '';
 var currentSearch = '';
 
 var reviews = [
-    { nome: 'João Silva', cidade: 'Petrópolis', stars: 5, texto: 'Produto chegou rápido e com qualidade excelente! Recomendo muito a KA TECH.' },
+    { nome: 'João Silva', cidade: 'Petrópolis', stars: 5, texto: 'Produto chegou rápido e com qualidade excelente! Recomendo muito a KB Tech.' },
     { nome: 'Maria Santos', cidade: 'Petrópolis', stars: 5, texto: 'Atendimento incrível pelo WhatsApp. Tirou todas as minhas dúvidas antes de comprar.' },
     { nome: 'Carlos Oliveira', cidade: 'Petrópolis', stars: 5, texto: 'Comprei um fone bluetooth e ficou perfeito. Entrega no mesmo dia!' },
     { nome: 'Ana Lima', cidade: 'Petrópolis', stars: 5, texto: 'Preços ótimos e produtos de qualidade. Já é minha loja favorita de eletrônicos.' },
@@ -202,7 +202,7 @@ function createProductCard(p) {
         : '<span class="product-stock out">Sem estoque</span>';
 
     var imgSrc = p.imagem || 'https://placehold.co/400x400/11141b/ffffff?text=Produto';
-    var waMsg = 'Olá KA TECH! Tenho interesse no produto: ' + p.nome + ' (R$ ' + precoFinal.toFixed(2).replace('.', ',') + '). Poderia me dar mais informações?';
+    var waMsg = 'Olá KB Tech! Tenho interesse no produto: ' + p.nome + ' (R$ ' + precoFinal.toFixed(2).replace('.', ',') + '). Poderia me dar mais informações?';
     var waUrl = 'https://wa.me/5524992046467?text=' + encodeURIComponent(waMsg);
 
     var addBtn = p.estoque > 0
