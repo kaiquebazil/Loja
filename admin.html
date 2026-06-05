@@ -64,14 +64,29 @@
                 <button class="admin-nav-btn" data-tab="os">
                     <i class="fas fa-tools"></i> Ordens de Serviço
                 </button>
-                <button class="admin-nav-btn" data-tab="kaos">
-                    <i class="fas fa-file-invoice"></i> Nota Fiscal
+                <button class="admin-nav-btn" data-tab="guarantees">
+                    <i class="fas fa-shield-alt"></i> Garantias
                 </button>
-                <button class="admin-nav-btn" data-tab="shipping">
-                    <i class="fas fa-truck"></i> Frete
+                <button class="admin-nav-btn" data-tab="quotes">
+                    <i class="fas fa-file-invoice-dollar"></i> Orçamentos
+                </button>
+                <button class="admin-nav-btn" data-tab="finance">
+                    <i class="fas fa-wallet"></i> Financeiro
+                </button>
+                <button class="admin-nav-btn" data-tab="partners">
+                    <i class="fas fa-handshake"></i> Sócios
+                </button>
+                <button class="admin-nav-btn" data-tab="documents">
+                    <i class="fas fa-file-pdf"></i> Documentos
                 </button>
                 <button class="admin-nav-btn" data-tab="orders">
                     <i class="fas fa-shopping-bag"></i> Pedidos Site
+                </button>
+                <button class="admin-nav-btn" data-tab="kaos">
+                    <i class="fas fa-receipt"></i> NF Rápida
+                </button>
+                <button class="admin-nav-btn" data-tab="shipping">
+                    <i class="fas fa-truck"></i> Frete
                 </button>
                 <button class="admin-nav-btn" data-tab="backup">
                     <i class="fas fa-database"></i> Backup / Sistema
@@ -98,17 +113,21 @@
                         <span class="stat-label">Vendas no Mês</span>
                     </div>
                     <div class="stat-card">
+                        <span class="stat-number" id="dash-lucro-mes">R$ 0,00</span>
+                        <span class="stat-label">Lucro Estimado</span>
+                    </div>
+                    <div class="stat-card">
                         <span class="stat-number" id="dash-os-abertas">0</span>
                         <span class="stat-label">OS em Aberto</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-number" id="dash-total-clientes">0</span>
-                        <span class="stat-label">Clientes Cadastrados</span>
+                        <span class="stat-number" id="dash-estoque-baixo">0</span>
+                        <span class="stat-label">Estoque Baixo</span>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-number" id="dash-pedidos-site">0</span>
-                        <span class="stat-label">Novos Pedidos Site</span>
-                    </div>
+                </div>
+
+                <div class="dashboard-notifications" id="dash-notifications">
+                    <!-- Alertas de estoque e garantias aparecerão aqui -->
                 </div>
 
                 <div class="dashboard-row">
@@ -279,6 +298,134 @@
                         <tbody id="os-list">
                             <!-- Preenchido via JS -->
                         </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Garantias -->
+            <div id="tab-guarantees" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-shield-alt"></i> Garantias Ativas</h1>
+                </div>
+                <div class="admin-search-bar">
+                    <input type="text" id="guarantee-search" placeholder="Buscar por cliente, equipamento ou número...">
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Cliente</th>
+                                <th>Equipamento</th>
+                                <th>Início</th>
+                                <th>Fim</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guarantees-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Orçamentos -->
+            <div id="tab-quotes" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-file-invoice-dollar"></i> Orçamentos</h1>
+                    <button id="btn-add-quote" class="btn-primary">
+                        <i class="fas fa-plus"></i> Novo Orçamento
+                    </button>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Cliente</th>
+                                <th>Serviço/Peças</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotes-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Financeiro -->
+            <div id="tab-finance" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-wallet"></i> Financeiro</h1>
+                    <div class="finance-actions">
+                        <button id="btn-add-expense" class="btn-danger-outline">
+                            <i class="fas fa-minus"></i> Nova Despesa
+                        </button>
+                        <button id="btn-add-income" class="btn-primary" style="background-color: #25d366; border-color: #25d366;">
+                            <i class="fas fa-plus"></i> Nova Receita
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <span class="stat-number" id="fin-receitas" style="color: #25d366;">R$ 0,00</span>
+                        <span class="stat-label">Receitas (Mês)</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="fin-despesas" style="color: var(--red-danger);">R$ 0,00</span>
+                        <span class="stat-label">Despesas (Mês)</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="fin-lucro">R$ 0,00</span>
+                        <span class="stat-label">Lucro Líquido</span>
+                    </div>
+                </div>
+
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="finance-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Sócios -->
+            <div id="tab-partners" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-handshake"></i> Comissões e Sócios</h1>
+                </div>
+                <div class="partners-grid">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+
+            <!-- Tab: Documentos -->
+            <div id="tab-documents" class="admin-tab">
+                <div class="admin-tab-header">
+                    <h1><i class="fas fa-file-pdf"></i> Histórico de Documentos</h1>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Cliente</th>
+                                <th>Referência</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="documents-list"></tbody>
                     </table>
                 </div>
             </div>
@@ -572,12 +719,26 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="prod-preco">Preço (R$) *</label>
+                            <label for="prod-preco">Preço Venda (R$) *</label>
                             <input type="number" id="prod-preco" required min="0" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-custo">Preço Custo (R$)</label>
+                            <input type="number" id="prod-custo" min="0" step="0.01" placeholder="0,00">
                         </div>
                         <div class="form-group">
                             <label for="prod-estoque">Estoque *</label>
                             <input type="number" id="prod-estoque" required min="0" step="1" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prod-estoque-min">Estoque Mínimo</label>
+                            <input type="number" id="prod-estoque-min" min="0" step="1" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-fornecedor">Fornecedor</label>
+                            <input type="text" id="prod-fornecedor" placeholder="Nome do fornecedor">
                         </div>
                         <div class="form-group">
                             <label for="prod-desconto">Desconto (%)</label>
@@ -606,6 +767,92 @@
                 <div class="modal-footer">
                     <button type="button" id="cancel-product-modal" class="btn-secondary">Cancelar</button>
                     <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Orçamento -->
+    <div id="quote-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="quote-modal-title">Novo Orçamento</h3>
+                <button id="close-quote-modal" class="btn-close"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="quote-form">
+                <input type="hidden" id="quote-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Cliente *</label>
+                        <select id="quote-cust-id" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Serviços / Peças</label>
+                        <textarea id="quote-items" rows="3" placeholder="Descreva os itens do orçamento..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor Total (R$)</label>
+                            <input type="number" id="quote-valor" step="0.01" value="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="quote-status">
+                                <option value="Pendente">Pendente</option>
+                                <option value="Aprovado">Aprovado</option>
+                                <option value="Recusado">Recusado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-quote-modal" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Orçamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Financeiro (Receita/Despesa) -->
+    <div id="finance-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="finance-modal-title">Lançamento Financeiro</h3>
+                <button id="close-finance-modal" class="btn-close"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="finance-form">
+                <input type="hidden" id="fin-id">
+                <input type="hidden" id="fin-tipo">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Descrição *</label>
+                        <input type="text" id="fin-desc" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor (R$) *</label>
+                            <input type="number" id="fin-valor" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data</label>
+                            <input type="date" id="fin-data">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="fin-cat">
+                            <option value="Serviços">Serviços</option>
+                            <option value="Vendas">Vendas</option>
+                            <option value="Peças">Peças</option>
+                            <option value="Ferramentas">Ferramentas</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-finance-modal" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Lançamento</button>
                 </div>
             </form>
         </div>

@@ -50,12 +50,19 @@ function initAdminPanel() {
     renderAdminProducts();
     renderCustomers();
     renderOS();
+    renderGuarantees();
+    renderQuotes();
+    renderFinance();
+    renderPartners();
+    renderDocuments();
     renderAdminShipping();
     renderAdminOrders();
     
     initProductModal();
     initCustomerModal();
     initOSModal();
+    initQuoteModal();
+    initFinanceModal();
     initShippingModal();
     initKaosSystem();
     initBackupSystem();
@@ -103,6 +110,11 @@ function initAdminTabs() {
             if (tabId === 'products') renderAdminProducts();
             if (tabId === 'customers') renderCustomers();
             if (tabId === 'os') renderOS();
+            if (tabId === 'guarantees') renderGuarantees();
+            if (tabId === 'quotes') renderQuotes();
+            if (tabId === 'finance') renderFinance();
+            if (tabId === 'partners') renderPartners();
+            if (tabId === 'documents') renderDocuments();
             if (tabId === 'shipping') renderAdminShipping();
             if (tabId === 'orders') renderAdminOrders();
         });
@@ -286,7 +298,7 @@ function initOSModal() {
     document.getElementById('close-os-modal').onclick = function() { modal.classList.remove('active'); };
     document.getElementById('cancel-os-modal').onclick = function() { modal.classList.remove('active'); };
 
-    form.onsubmit = function(e) {
+        form.onsubmit = function(e) {
         e.preventDefault();
         var os = getOS();
         var id = document.getElementById('os-id').value;
@@ -312,6 +324,39 @@ function initOSModal() {
         }
 
         saveOS(os);
+        
+        // Geração automática de Garantia se entregue
+        if (data.status === 'Entregue') {
+            var guarantees = getGuarantees();
+            var customer = getCustomers().find(function(c) { return c.id == data.customerId; });
+            var inicio = new Date().toISOString().split('T')[0];
+            var fimDate = new Date();
+            fimDate.setDate(fimDate.getDate() + (data.garantia || 90));
+            var fim = fimDate.toISOString().split('T')[0];
+            
+            guarantees.push({
+                id: Date.now(),
+                cliente: customer ? customer.nome : 'Cliente',
+                equipamento: data.equipamento,
+                inicio: inicio,
+                fim: fim,
+                status: 'Ativa'
+            });
+            saveGuarantees(guarantees);
+            
+            // Registrar no financeiro como receita
+            var finance = getFinance();
+            finance.push({
+                id: Date.now() + 1,
+                desc: 'OS #' + data.id.toString().slice(-4) + ' - ' + data.equipamento,
+                valor: data.valorServico + data.valorPecas,
+                data: inicio,
+                cat: 'Serviços',
+                tipo: 'Receita'
+            });
+            saveFinance(finance);
+        }
+
         modal.classList.remove('active');
         renderOS();
         showAdminToast('OS salva com sucesso!');
@@ -362,6 +407,10 @@ function initBackupSystem() {
             products: getProducts(),
             customers: getCustomers(),
             os: getOS(),
+            guarantees: getGuarantees(),
+            quotes: getQuotes(),
+            finance: getFinance(),
+            documents: JSON.parse(localStorage.getItem('kaos_documents') || '[]'),
             shipping: getShipping(),
             orders: JSON.parse(localStorage.getItem('katech_orders') || '[]'),
             timestamp: new Date().toISOString()
@@ -389,6 +438,10 @@ function initBackupSystem() {
                     if (data.products) saveProducts(data.products);
                     if (data.customers) saveCustomers(data.customers);
                     if (data.os) saveOS(data.os);
+                    if (data.guarantees) saveGuarantees(data.guarantees);
+                    if (data.quotes) saveQuotes(data.quotes);
+                    if (data.finance) saveFinance(data.finance);
+                    if (data.documents) localStorage.setItem('kaos_documents', JSON.stringify(data.documents));
                     if (data.shipping) saveShipping(data.shipping);
                     if (data.orders) localStorage.setItem('katech_orders', JSON.stringify(data.orders));
                     alert('Backup restaurado com sucesso! O painel será reiniciado.');
@@ -430,7 +483,8 @@ function renderAdminProducts(filter) {
         if (p.oferta) flags += '<span class="flag-badge flag-oferta">Oferta</span>';
         if (p.maisVendido) flags += '<span class="flag-badge flag-mais-vendido">Mais Vendido</span>';
 
-        var stockClass = p.estoque <= 0 ? 'stock-zero' : (p.estoque <= 3 ? 'stock-low' : '');
+        var minStock = p.estoqueMin || 5;
+        var stockClass = p.estoque <= 0 ? 'stock-zero' : (p.estoque <= minStock ? 'stock-low' : '');
 
         tr.innerHTML = ' \
             <td>#' + p.id.toString().slice(-4) + '</td> \
@@ -471,13 +525,16 @@ function initProductModal() {
                 id: id ? parseInt(id) : Date.now(),
                 nome: document.getElementById('prod-nome').value,
                 preco: parseFloat(document.getElementById('prod-preco').value),
+                custo: parseFloat(document.getElementById('prod-custo').value) || 0,
                 estoque: parseInt(document.getElementById('prod-estoque').value),
+                estoqueMin: parseInt(document.getElementById('prod-estoque-min').value) || 5,
+                fornecedor: document.getElementById('prod-fornecedor').value,
                 categoria: document.getElementById('prod-categoria').value,
                 imagem: document.getElementById('prod-imagem').value || 'https://placehold.co/100',
                 destaque: document.getElementById('prod-destaque').checked,
                 oferta: document.getElementById('prod-oferta').checked,
                 maisVendido: document.getElementById('prod-mais-vendido').checked,
-                desconto: 0
+                desconto: parseInt(document.getElementById('prod-desconto').value) || 0
             };
             if (id) {
                 var idx = products.findIndex(function(p) { return p.id == id; });
@@ -488,6 +545,7 @@ function initProductModal() {
             saveProducts(products);
             modal.classList.remove('active');
             renderAdminProducts();
+            showAdminToast('Produto salvo!');
         };
     }
 }
@@ -497,12 +555,16 @@ function editProduct(id) {
     document.getElementById('prod-id').value = p.id;
     document.getElementById('prod-nome').value = p.nome;
     document.getElementById('prod-preco').value = p.preco;
+    document.getElementById('prod-custo').value = p.custo || 0;
     document.getElementById('prod-estoque').value = p.estoque;
+    document.getElementById('prod-estoque-min').value = p.estoqueMin || 5;
+    document.getElementById('prod-fornecedor').value = p.fornecedor || '';
     document.getElementById('prod-categoria').value = p.categoria;
     document.getElementById('prod-imagem').value = p.imagem;
     document.getElementById('prod-destaque').checked = p.destaque;
     document.getElementById('prod-oferta').checked = p.oferta;
     document.getElementById('prod-mais-vendido').checked = p.maisVendido;
+    document.getElementById('prod-desconto').value = p.desconto || 0;
     document.getElementById('product-modal').classList.add('active');
 }
 
@@ -761,3 +823,348 @@ function initClearOrders() {
     var btn = document.getElementById('btn-clear-orders');
     if (btn) btn.onclick = function() { if (confirm('Limpar pedidos?')) { localStorage.setItem('katech_orders', '[]'); renderAdminOrders(); } };
 }
+
+// ── Garantias ────────────────────────────────────────────────
+function getGuarantees() { return JSON.parse(localStorage.getItem('kaos_guarantees') || '[]'); }
+function saveGuarantees(data) { localStorage.setItem('kaos_guarantees', JSON.stringify(data)); }
+
+function renderGuarantees() {
+    var guarantees = getGuarantees();
+    var list = document.getElementById('guarantees-list');
+    if (!list) return;
+    list.innerHTML = '';
+    guarantees.reverse().forEach(function(g) {
+        var statusClass = g.status === 'Ativa' ? 'status-pronto' : (g.status === 'Vencendo' ? 'status-emanalise' : 'status-cancelado');
+        var tr = document.createElement('tr');
+        tr.innerHTML = ' \
+            <td>#' + g.id.toString().slice(-4) + '</td> \
+            <td>' + g.cliente + '</td> \
+            <td>' + g.equipamento + '</td> \
+            <td>' + g.inicio.split('-').reverse().join('/') + '</td> \
+            <td>' + g.fim.split('-').reverse().join('/') + '</td> \
+            <td><span class="status-badge ' + statusClass + '">' + g.status + '</span></td> \
+            <td> \
+                <div class="table-actions"> \
+                    <button onclick="printGuarantee(' + g.id + ')" class="btn-edit-row" style="color:#25d366; border-color:#25d366;"><i class="fas fa-print"></i></button> \
+                </div> \
+            </td> \
+        ';
+        list.appendChild(tr);
+    });
+}
+
+// ── Orçamentos ──────────────────────────────────────────────
+function getQuotes() { return JSON.parse(localStorage.getItem('kaos_quotes') || '[]'); }
+function saveQuotes(data) { localStorage.setItem('kaos_quotes', JSON.stringify(data)); }
+
+function renderQuotes() {
+    var quotes = getQuotes();
+    var customers = getCustomers();
+    var list = document.getElementById('quotes-list');
+    if (!list) return;
+    list.innerHTML = '';
+    quotes.reverse().forEach(function(q) {
+        var c = customers.find(function(cust) { return cust.id == q.customerId; });
+        var tr = document.createElement('tr');
+        tr.innerHTML = ' \
+            <td>#' + q.id.toString().slice(-4) + '</td> \
+            <td>' + (c ? c.nome : 'Excluído') + '</td> \
+            <td>' + q.itens.substring(0, 30) + '...</td> \
+            <td>R$ ' + parseFloat(q.valor).toFixed(2).replace('.', ',') + '</td> \
+            <td><span class="status-badge status-' + q.status.toLowerCase() + '">' + q.status + '</span></td> \
+            <td> \
+                <div class="table-actions"> \
+                    <button onclick="convertToOS(' + q.id + ')" class="btn-edit-row" style="color:#25d366; border-color:#25d366;" title="Converter em OS"><i class="fas fa-tools"></i></button> \
+                    <button onclick="editQuote(' + q.id + ')" class="btn-edit-row"><i class="fas fa-edit"></i></button> \
+                    <button onclick="deleteQuote(' + q.id + ')" class="btn-delete-row"><i class="fas fa-trash"></i></button> \
+                </div> \
+            </td> \
+        ';
+        list.appendChild(tr);
+    });
+}
+
+function initQuoteModal() {
+    var modal = document.getElementById('quote-modal');
+    var form = document.getElementById('quote-form');
+    if (!modal || !form) return;
+
+    document.getElementById('btn-add-quote').onclick = function() {
+        form.reset();
+        document.getElementById('quote-id').value = '';
+        populateQuoteCustomers();
+        modal.classList.add('active');
+    };
+
+    document.getElementById('close-quote-modal').onclick = function() { modal.classList.remove('active'); };
+    document.getElementById('cancel-quote-modal').onclick = function() { modal.classList.remove('active'); };
+
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        var quotes = getQuotes();
+        var id = document.getElementById('quote-id').value;
+        var data = {
+            id: id ? parseInt(id) : Date.now(),
+            customerId: document.getElementById('quote-cust-id').value,
+            itens: document.getElementById('quote-items').value,
+            valor: parseFloat(document.getElementById('quote-valor').value) || 0,
+            status: document.getElementById('quote-status').value
+        };
+        if (id) {
+            var idx = quotes.findIndex(function(q) { return q.id == id; });
+            quotes[idx] = data;
+        } else {
+            quotes.push(data);
+        }
+        saveQuotes(quotes);
+        modal.classList.remove('active');
+        renderQuotes();
+        showAdminToast('Orçamento salvo!');
+    };
+}
+
+function populateQuoteCustomers(selectedId) {
+    var select = document.getElementById('quote-cust-id');
+    var customers = getCustomers();
+    if (!select) return;
+    select.innerHTML = '<option value="">Selecione um cliente</option>';
+    customers.forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.nome;
+        if (c.id == selectedId) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+function convertToOS(quoteId) {
+    var q = getQuotes().find(function(item) { return item.id == quoteId; });
+    var os = getOS();
+    var newOS = {
+        id: Date.now(),
+        customerId: q.customerId,
+        data: new Date().toISOString().split('T')[0],
+        equipamento: 'Equipamento do Orçamento',
+        status: 'Aberto',
+        defeito: q.itens,
+        laudo: '',
+        valorServico: q.valor,
+        valorPecas: 0,
+        garantia: 90
+    };
+    os.push(newOS);
+    saveOS(os);
+    showAdminToast('Orçamento convertido em OS!');
+    initAdminTabs(); // Simular clique para mudar de aba ou apenas avisar
+}
+
+// ── Financeiro ──────────────────────────────────────────────
+function getFinance() { return JSON.parse(localStorage.getItem('kaos_finance') || '[]'); }
+function saveFinance(data) { localStorage.setItem('kaos_finance', JSON.stringify(data)); }
+
+function renderFinance() {
+    var finance = getFinance();
+    var list = document.getElementById('finance-list');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    var totalReceitas = 0;
+    var totalDespesas = 0;
+
+    finance.reverse().forEach(function(f) {
+        if (f.tipo === 'Receita') totalReceitas += f.valor;
+        else totalDespesas += f.valor;
+
+        var tr = document.createElement('tr');
+        tr.innerHTML = ' \
+            <td>' + f.data.split('-').reverse().join('/') + '</td> \
+            <td>' + f.desc + '</td> \
+            <td>' + f.cat + '</td> \
+            <td><span class="status-badge ' + (f.tipo === 'Receita' ? 'status-pronto' : 'status-cancelado') + '">' + f.tipo + '</span></td> \
+            <td>R$ ' + f.valor.toFixed(2).replace('.', ',') + '</td> \
+            <td> \
+                <button onclick="deleteFinance(' + f.id + ')" class="btn-delete-row"><i class="fas fa-trash"></i></button> \
+            </td> \
+        ';
+        list.appendChild(tr);
+    });
+
+    document.getElementById('fin-receitas').textContent = 'R$ ' + totalReceitas.toFixed(2).replace('.', ',');
+    document.getElementById('fin-despesas').textContent = 'R$ ' + totalDespesas.toFixed(2).replace('.', ',');
+    document.getElementById('fin-lucro').textContent = 'R$ ' + (totalReceitas - totalDespesas).toFixed(2).replace('.', ',');
+}
+
+function initFinanceModal() {
+    var modal = document.getElementById('finance-modal');
+    var form = document.getElementById('finance-form');
+    if (!modal || !form) return;
+
+    document.getElementById('btn-add-income').onclick = function() {
+        form.reset();
+        document.getElementById('fin-id').value = '';
+        document.getElementById('fin-tipo').value = 'Receita';
+        document.getElementById('fin-data').valueAsDate = new Date();
+        document.getElementById('finance-modal-title').textContent = 'Nova Receita';
+        modal.classList.add('active');
+    };
+
+    document.getElementById('btn-add-expense').onclick = function() {
+        form.reset();
+        document.getElementById('fin-id').value = '';
+        document.getElementById('fin-tipo').value = 'Despesa';
+        document.getElementById('fin-data').valueAsDate = new Date();
+        document.getElementById('finance-modal-title').textContent = 'Nova Despesa';
+        modal.classList.add('active');
+    };
+
+    document.getElementById('close-finance-modal').onclick = function() { modal.classList.remove('active'); };
+    document.getElementById('cancel-finance-modal').onclick = function() { modal.classList.remove('active'); };
+
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        var finance = getFinance();
+        var data = {
+            id: Date.now(),
+            desc: document.getElementById('fin-desc').value,
+            valor: parseFloat(document.getElementById('fin-valor').value) || 0,
+            data: document.getElementById('fin-data').value,
+            cat: document.getElementById('fin-cat').value,
+            tipo: document.getElementById('fin-tipo').value
+        };
+        finance.push(data);
+        saveFinance(finance);
+        modal.classList.remove('active');
+        renderFinance();
+        showAdminToast('Lançamento realizado!');
+    };
+}
+
+function deleteFinance(id) {
+    if (confirm('Excluir este lançamento?')) {
+        var finance = getFinance().filter(function(f) { return f.id != id; });
+        saveFinance(finance);
+        renderFinance();
+    }
+}
+
+// ── Sócios ──────────────────────────────────────────────────
+function renderPartners() {
+    var os = getOS();
+    var partnersGrid = document.querySelector('.partners-grid');
+    if (!partnersGrid) return;
+    
+    // Simulação de sócios (Kaique e Alex conforme prompt)
+    var partners = [
+        { nome: 'Kaique', comissao: 0.5 },
+        { nome: 'Alex', comissao: 0.5 }
+    ];
+
+    partnersGrid.innerHTML = '';
+    partners.forEach(function(p) {
+        var totalGerado = os.reduce(function(acc, o) {
+            if (o.status === 'Entregue') return acc + o.valorServico;
+            return acc;
+        }, 0);
+        
+        var pCard = document.createElement('div');
+        pCard.className = 'stat-card';
+        pCard.innerHTML = ' \
+            <h3 style="color:var(--primary-blue)">' + p.nome + '</h3> \
+            <span class="stat-number">R$ ' + (totalGerado * p.comissao).toFixed(2).replace('.', ',') + '</span> \
+            <span class="stat-label">Comissão Acumulada (50%)</span> \
+        ';
+        partnersGrid.appendChild(pCard);
+    });
+}
+
+// ── Documentos ──────────────────────────────────────────────
+function renderDocuments() {
+    var docs = JSON.parse(localStorage.getItem('kaos_documents') || '[]');
+    var list = document.getElementById('documents-list');
+    if (!list) return;
+    list.innerHTML = '';
+    docs.reverse().forEach(function(d) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = ' \
+            <td>' + d.data + '</td> \
+            <td>' + d.tipo + '</td> \
+            <td>' + d.cliente + '</td> \
+            <td>' + d.ref + '</td> \
+            <td> \
+                <button onclick="reprintDoc(' + d.id + ')" class="btn-edit-row"><i class="fas fa-print"></i></button> \
+            </td> \
+        ';
+        list.appendChild(tr);
+    });
+}
+
+function saveDocumentRecord(tipo, cliente, ref) {
+    var docs = JSON.parse(localStorage.getItem('kaos_documents') || '[]');
+    docs.push({
+        id: Date.now(),
+        data: new Date().toLocaleDateString('pt-BR'),
+        tipo: tipo,
+        cliente: cliente,
+        ref: ref
+    });
+    localStorage.setItem('kaos_documents', JSON.stringify(docs));
+}
+
+function printGuarantee(id) {
+    var g = getGuarantees().find(function(item) { return item.id == id; });
+    var renderArea = document.getElementById('print-render-area');
+    renderArea.innerHTML = ' \
+        <div class="print-header"> \
+            <div class="company-info"> \
+                <h2>KA TECH</h2> \
+                <p>Assistência Técnica e Acessórios</p> \
+                <p>Petrópolis, RJ</p> \
+            </div> \
+            <div class="doc-title"> \
+                <h1>Certificado de Garantia</h1> \
+                <p>Nº ' + g.id.toString().slice(-6) + '</p> \
+            </div> \
+        </div> \
+        <div class="print-box"> \
+            <h4>Dados do Cliente</h4> \
+            <p><strong>Nome:</strong> ' + g.cliente + '</p> \
+            <p><strong>Equipamento:</strong> ' + g.equipamento + '</p> \
+        </div> \
+        <div class="print-box" style="margin-top:20px"> \
+            <h4>Informações da Garantia</h4> \
+            <p><strong>Início:</strong> ' + g.inicio.split('-').reverse().join('/') + '</p> \
+            <p><strong>Vencimento:</strong> ' + g.fim.split('-').reverse().join('/') + '</p> \
+            <p><strong>Status:</strong> ' + g.status + '</p> \
+        </div> \
+        <div style="margin-top:30px; font-size:12px; color:#555;"> \
+            <p>* Esta garantia cobre apenas defeitos relacionados ao serviço executado ou peças substituídas.</p> \
+            <p>* Danos por mau uso, queda ou contato com líquidos anulam esta garantia.</p> \
+        </div> \
+    ';
+    document.getElementById('print-modal-title').textContent = 'Impressão de Garantia';
+    document.getElementById('print-modal').classList.add('active');
+    saveDocumentRecord('Garantia', g.cliente, '#' + g.id.toString().slice(-6));
+}
+
+function editQuote(id) {
+    var q = getQuotes().find(function(item) { return item.id == id; });
+    populateQuoteCustomers(q.customerId);
+    document.getElementById('quote-id').value = q.id;
+    document.getElementById('quote-items').value = q.itens;
+    document.getElementById('quote-valor').value = q.valor;
+    document.getElementById('quote-status').value = q.status;
+    document.getElementById('quote-modal').classList.add('active');
+}
+
+function deleteQuote(id) {
+    if (confirm('Excluir orçamento?')) {
+        var quotes = getQuotes().filter(function(q) { return q.id != id; });
+        saveQuotes(quotes);
+        renderQuotes();
+    }
+}
+
+function reprintDoc(id) {
+    alert('Funcionalidade de reimpressão de histórico em desenvolvimento. Por favor, use a impressão direta no módulo correspondente.');
+}
+
