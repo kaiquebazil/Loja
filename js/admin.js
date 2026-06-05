@@ -64,21 +64,37 @@ function initAdminPanel() {
 // ── Tabs ──────────────────────────────────────────────────────
 function initAdminTabs() {
     var navBtns = document.querySelectorAll('.admin-nav-btn');
+    var tabs = document.querySelectorAll('.admin-tab');
+
     navBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
+            // Remover active de todos os botões
             navBtns.forEach(function(b) { b.classList.remove('active'); });
+            // Adicionar active no botão clicado
             btn.classList.add('active');
             
             var tabId = btn.getAttribute('data-tab');
-            document.querySelectorAll('.admin-tab').forEach(function(t) { t.style.display = 'none'; });
+            
+            // Remover active de todas as abas e esconder
+            tabs.forEach(function(t) { 
+                t.classList.remove('active');
+                t.style.display = 'none'; 
+            });
+
+            // Mostrar a aba alvo
             var targetTab = document.getElementById('tab-' + tabId);
-            if (targetTab) targetTab.style.display = 'block';
+            if (targetTab) {
+                targetTab.classList.add('active');
+                targetTab.style.display = 'block';
+            }
 
             // Refresh data based on tab
             if (tabId === 'dashboard') renderDashboard();
             if (tabId === 'products') renderAdminProducts();
             if (tabId === 'customers') renderCustomers();
             if (tabId === 'os') renderOS();
+            if (tabId === 'shipping') renderAdminShipping();
+            if (tabId === 'orders') renderAdminOrders();
         });
     });
 }

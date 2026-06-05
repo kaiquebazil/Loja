@@ -181,6 +181,8 @@
     padding: 28px;
     background-color: var(--bg-main);
 }
+.admin-tab { display: none; }
+.admin-tab.active { display: block !important; }
 .admin-tab-header {
     display: flex;
     justify-content: space-between;
