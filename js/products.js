@@ -272,14 +272,14 @@ const initialProducts = [
     "id": 121,
     "nome": "CABO USB KAPBOM 25W IPHONE/LIGHTNING KAP-318-5G",
     "categoria": "Cabos",
-    "preco": 4.5,
+    "preco": 6,
     "estoque": 10,
     "imagem": "produtos/cabos/121_cabo_usb_kapbom_25w_iphone_lig.jpg",
     "destaque": false,
     "maisVendido": false,
     "oferta": false,
     "desconto": 0,
-    "custo": 0.0
+    "custo": 3.0
   },
   {
     "id": 122,
@@ -793,13 +793,13 @@ const initialProducts = [
     "nome": "FONE COM FIO P2 KAPBOM SAQUINHO KA-733B",
     "categoria": "Áudio",
     "preco": 3.75,
-    "estoque": 10,
+    "estoque": 8,
     "imagem": "produtos/udio/161_fone_com_fio_p2_kapbom_saquinh.jpg",
     "destaque": false,
     "maisVendido": false,
     "oferta": false,
     "desconto": 0,
-    "custo": 0.0
+    "custo": 3
   },
   {
     "id": 162,

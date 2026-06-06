@@ -22,6 +22,157 @@
     text-align: center;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
+/* ── Correções para Modal de Impressão ───────────────────────── */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.3s, opacity 0.3s;
+}
+
+.modal.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-content {
+    background: #1a1f2e;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.print-modal .modal-content {
+    max-width: 900px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #2a3550;
+    background: #0d1117;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #0066ff;
+}
+
+.modal-header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.print-paper {
+    background: white;
+    color: black;
+    padding: 30px;
+    min-height: 500px;
+}
+
+/* Estilos para impressão */
+@media print {
+    .modal,
+    .modal.active,
+    .modal-content,
+    .print-modal {
+        all: initial !important;
+        display: block !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: white !important;
+        z-index: 999999 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .modal-header,
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-paper {
+        padding: 20px !important;
+        margin: 0 !important;
+        background: white !important;
+        color: black !important;
+    }
+    
+    .print-header {
+        border-bottom: 2px solid #000 !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .print-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+    
+    .print-table th,
+    .print-table td {
+        border: 1px solid #ddd !important;
+        padding: 8px !important;
+    }
+    
+    .signature-area {
+        margin-top: 50px !important;
+    }
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1500;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.3s, opacity 0.3s;
+}
+
+.overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Botão fechar */
+.btn-close {
+    background: #2a3550;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-close:hover {
+    background: #e52e2e;
+}
 .login-logo { margin-bottom: 24px; display: flex; justify-content: center; }
 .login-box h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
 .login-box > p { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
@@ -488,3 +639,66 @@
 
 /* ── Lucro Styles ───────────────────────────────────────────── */
 .lucro-negativo { color: var(--red-danger); font-weight: 600; }
+
+/* Garantir que os modais sejam exibidos corretamente */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex !important;
+}
+
+.modal-content {
+    background: #1a1f2e;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.print-paper {
+    background: white;
+    color: black;
+    padding: 20px;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.overlay.active {
+    display: block;
+}
+
+@media print {
+    .modal, .modal-content, .modal-header, .no-print, .overlay {
+        display: none !important;
+    }
+    #print-render-area {
+        display: block !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        background: white !important;
+        color: black !important;
+    }
+}
