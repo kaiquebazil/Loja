@@ -247,7 +247,7 @@ function closeCheckoutModal() {
 }
 
 // ── Enviar Pedido via WhatsApp ────────────────────────────────
-function sendOrderWhatsApp(e) {
+async function sendOrderWhatsApp(e) {
     e.preventDefault();
 
     var nome = document.getElementById('checkout-nome').value.trim();
@@ -267,6 +267,32 @@ function sendOrderWhatsApp(e) {
     var frete = selectedBairro ? (getFreteByBairro(selectedBairro) || 0) : 0;
     var subtotal = getCartTotal();
     var total = subtotal + frete;
+    var orderData = {
+        clienteNome: nome,
+        telefone: telefone,
+        cidade: cidade,
+        bairro: selectedBairro || bairro || '',
+        endereco: '',
+        observacoes: '',
+        itens: cart.map(function(item) {
+            return {
+                id: item.id,
+                nome: item.nome,
+                quantidade: item.qty,
+                precoUnitario: item.preco,
+                subtotal: item.preco * item.qty,
+                imagem: item.imagem || ''
+            };
+        }),
+        subtotal: subtotal,
+        frete: frete,
+        total: total,
+        formaPagamento: 'A combinar',
+        status: 'Novo',
+        origem: 'Site',
+        criadoEm: new Date().toISOString(),
+        whatsappEnviado: true
+    };
 
     var msg = 'Olá *KB Tech*! 👋\n';
     msg += 'Gostaria de fazer este pedido:\n\n';
@@ -294,7 +320,14 @@ function sendOrderWhatsApp(e) {
     msg += '━━━━━━━━━━━━━━━━━━\n';
     msg += 'Aguardo confirmação! 😊';
 
-    saveOrder({ nome: nome, telefone: telefone, cidade: cidade, bairro: bairro, cart: cart, subtotal: subtotal, frete: frete, total: total, data: new Date().toISOString() });
+    saveOrder(orderData);
+    if (window.KBTFirebaseOrders && typeof window.KBTFirebaseOrders.saveOrderToFirebase === 'function') {
+        try {
+            await window.KBTFirebaseOrders.saveOrderToFirebase(orderData);
+        } catch (error) {
+            console.error('Erro ao salvar pedido no Firebase. Abrindo WhatsApp normalmente.', error);
+        }
+    }
 
     var url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
     window.open(url, '_blank');

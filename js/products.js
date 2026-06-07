@@ -1555,12 +1555,18 @@ function initProducts() {
 }
 
 function getProducts() {
+    if (window.KBTPublicProducts && !(document.body && document.body.classList.contains('admin-body'))) {
+        return window.KBTPublicProducts;
+    }
     initProducts();
     return JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || [];
 }
 
 function saveProducts(products) {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    if (window.KBTFirebaseProducts && typeof window.KBTFirebaseProducts.saveProductsToFirebase === 'function') {
+        window.KBTFirebaseProducts.saveProductsToFirebase(products);
+    }
 }
 
 function resetProducts() {

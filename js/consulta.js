@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             var query = normalizeNumber(input.value);
             if (!query) return;
             if (currentType === 'os') {
-                searchOS(query);
+                await searchOS(query);
             } else {
-                searchGuarantee(query);
+                await searchGuarantee(query);
             }
         });
     }
@@ -38,9 +38,26 @@ function normalizeNumber(value) {
 
 function formatDate(value) {
     if (!value) return '-';
+    if (typeof value.toDate === 'function') {
+        value = value.toDate().toISOString().split('T')[0];
+    }
+    if (value instanceof Date) {
+        value = value.toISOString().split('T')[0];
+    }
+    value = String(value);
     var parts = value.split('-');
     if (parts.length === 3) return parts.reverse().join('/');
     return value;
+}
+
+function getFirstValue(record, fields, fallback) {
+    fallback = fallback || '-';
+    if (!record) return fallback;
+    for (var i = 0; i < fields.length; i++) {
+        var value = record[fields[i]];
+        if (value !== undefined && value !== null && value !== '') return value;
+    }
+    return fallback;
 }
 
 function findByNumber(items, query) {
@@ -76,7 +93,37 @@ function showNotFound() {
     );
 }
 
-function searchOS(query) {
+async function getFirebaseOS(query) {
+    if (!window.KBTFirebaseConsulta || typeof window.KBTFirebaseConsulta.getOSFromFirebase !== 'function') {
+        return null;
+    }
+    try {
+        return await window.KBTFirebaseConsulta.getOSFromFirebase(query);
+    } catch (error) {
+        console.warn('Não foi possível consultar OS no Firebase. Tentando localStorage.', error);
+        return null;
+    }
+}
+
+async function getFirebaseGuarantee(query) {
+    if (!window.KBTFirebaseConsulta || typeof window.KBTFirebaseConsulta.getGuaranteeFromFirebase !== 'function') {
+        return null;
+    }
+    try {
+        return await window.KBTFirebaseConsulta.getGuaranteeFromFirebase(query);
+    } catch (error) {
+        console.warn('Não foi possível consultar garantia no Firebase. Tentando localStorage.', error);
+        return null;
+    }
+}
+
+async function searchOS(query) {
+    var firebaseOS = await getFirebaseOS(query);
+    if (firebaseOS) {
+        showOS(firebaseOS, false);
+        return;
+    }
+
     var osList = JSON.parse(localStorage.getItem('kaos_os') || '[]');
     var os = findByNumber(osList, query);
     if (!os) {
@@ -84,20 +131,37 @@ function searchOS(query) {
         return;
     }
 
-    var total = ((os.valorServico || 0) + (os.valorPecas || 0)).toFixed(2).replace('.', ',');
+    showOS(os, true);
+}
+
+function showOS(os, isLocal) {
+    var numero = getFirstValue(os, ['numeroOS', 'numero', 'codigo', 'id']);
+    var cliente = isLocal ? getCustomerName(os.customerId) : getFirstValue(os, ['cliente', 'clienteNome', 'nomeCliente']);
+    var equipamento = getFirstValue(os, ['equipamento', 'aparelho', 'dispositivo']);
+    var status = getFirstValue(os, ['status'], 'Aberto');
+    var entrada = getFirstValue(os, ['dataEntrada', 'entrada', 'data']);
+    var previsao = getFirstValue(os, ['dataPrevista', 'previsao', 'dataConclusao', 'conclusao', 'dataFinalizacao']);
+    var servico = getFirstValue(os, ['servicoRealizado', 'servico', 'laudo', 'descricaoServico'], '');
+
     showResult(
-        '<h3>Ordem de Serviço #' + String(os.id).slice(-4) + '</h3>' +
-        '<p><strong>Cliente:</strong> ' + getCustomerName(os.customerId) + '</p>' +
-        '<p><strong>Equipamento:</strong> ' + (os.equipamento || '-') + '</p>' +
-        '<p><strong>Status:</strong> ' + (os.status || 'Aberto') + '</p>' +
-        '<p><strong>Entrada:</strong> ' + formatDate(os.data) + '</p>' +
-        '<p><strong>Defeito informado:</strong> ' + (os.defeito || '-') + '</p>' +
-        '<p><strong>Laudo:</strong> ' + (os.laudo || '-') + '</p>' +
-        '<p><strong>Total:</strong> R$ ' + total + '</p>'
+        '<h3>Ordem de Serviço #' + String(numero).slice(-6) + '</h3>' +
+        '<p><strong>Número da OS:</strong> ' + numero + '</p>' +
+        '<p><strong>Cliente:</strong> ' + cliente + '</p>' +
+        '<p><strong>Equipamento:</strong> ' + equipamento + '</p>' +
+        '<p><strong>Status:</strong> ' + status + '</p>' +
+        '<p><strong>Data de entrada:</strong> ' + formatDate(entrada) + '</p>' +
+        '<p><strong>Data prevista/conclusão:</strong> ' + formatDate(previsao) + '</p>' +
+        (servico ? '<p><strong>Serviço realizado:</strong> ' + servico + '</p>' : '')
     );
 }
 
-function searchGuarantee(query) {
+async function searchGuarantee(query) {
+    var firebaseGuarantee = await getFirebaseGuarantee(query);
+    if (firebaseGuarantee) {
+        showGuarantee(firebaseGuarantee);
+        return;
+    }
+
     var guarantees = JSON.parse(localStorage.getItem('kaos_guarantees') || '[]');
     var guarantee = findByNumber(guarantees, query);
     if (!guarantee) {
@@ -105,12 +169,26 @@ function searchGuarantee(query) {
         return;
     }
 
+    showGuarantee(guarantee);
+}
+
+function showGuarantee(guarantee) {
+    var numero = getFirstValue(guarantee, ['numeroGarantia', 'numero', 'codigo', 'id']);
+    var cliente = getFirstValue(guarantee, ['cliente', 'clienteNome', 'nomeCliente']);
+    var equipamento = getFirstValue(guarantee, ['equipamento', 'aparelho', 'dispositivo']);
+    var servico = getFirstValue(guarantee, ['servico', 'servicoRealizado', 'descricaoServico']);
+    var inicio = getFirstValue(guarantee, ['dataInicio', 'inicio']);
+    var fim = getFirstValue(guarantee, ['dataFim', 'fim', 'validade']);
+    var status = getFirstValue(guarantee, ['status']);
+
     showResult(
-        '<h3>Garantia #' + String(guarantee.id).slice(-4) + '</h3>' +
-        '<p><strong>Cliente:</strong> ' + (guarantee.cliente || '-') + '</p>' +
-        '<p><strong>Equipamento:</strong> ' + (guarantee.equipamento || '-') + '</p>' +
-        '<p><strong>Início:</strong> ' + formatDate(guarantee.inicio) + '</p>' +
-        '<p><strong>Fim:</strong> ' + formatDate(guarantee.fim) + '</p>' +
-        '<p><strong>Status:</strong> ' + (guarantee.status || '-') + '</p>'
+        '<h3>Garantia #' + String(numero).slice(-6) + '</h3>' +
+        '<p><strong>Número da garantia:</strong> ' + numero + '</p>' +
+        '<p><strong>Cliente:</strong> ' + cliente + '</p>' +
+        '<p><strong>Equipamento:</strong> ' + equipamento + '</p>' +
+        '<p><strong>Serviço:</strong> ' + servico + '</p>' +
+        '<p><strong>Data início:</strong> ' + formatDate(inicio) + '</p>' +
+        '<p><strong>Data fim:</strong> ' + formatDate(fim) + '</p>' +
+        '<p><strong>Status:</strong> ' + status + '</p>'
     );
 }
