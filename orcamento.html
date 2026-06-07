@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitar Orçamento | KB Tech - Petrópolis</title>
-    <meta name="description" content="Solicite orçamento sem compromisso para manutenção de celulares e computadores em Petrópolis. Resposta pelo WhatsApp, troca de tela, bateria, conector, formatação, Windows e upgrades.">
+    <title>Solicitar Orçamento | KB Tech Petrópolis</title>
+    <meta name="description" content="Solicite orçamento para assistência técnica, manutenção de celular, computador, redes, câmeras, interfones e infraestrutura em Petrópolis. Atendimento pelo WhatsApp.">
+    <meta name="keywords" content="orçamento assistência técnica Petrópolis, manutenção celular Petrópolis, manutenção computador Petrópolis, redes Petrópolis, câmeras Petrópolis, interfone Petrópolis, KB Tech">
+    <link rel="canonical" href="https://kaiquebazil.github.io/Loja/orcamento.html">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,14 +19,14 @@
         <div class="container">
             <span><i class="fas fa-map-marker-alt"></i> Petrópolis, RJ</span>
             <span><i class="fab fa-whatsapp"></i> (24) 99204-6467</span>
-            <span><i class="fas fa-tools"></i> Assistência Técnica Especializada</span>
+            <span><i class="fas fa-tools"></i> Tecnologia, manutenção e infraestrutura</span>
         </div>
     </div>
 
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-controls="nav-menu" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="logo">
@@ -41,7 +43,7 @@
                         <span>Meu carrinho</span>
                     </div>
                 </div>
-                <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="action-item" aria-label="WhatsApp">
+                <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="action-item" aria-label="WhatsApp">
                     <i class="fab fa-whatsapp" style="color:#25d366;"></i>
                     <div class="action-text">
                         <strong>WhatsApp</strong>
@@ -54,16 +56,29 @@
 
     <!-- Nav -->
     <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
-        <button class="close-menu" id="close-menu" aria-label="Fechar menu"><i class="fas fa-times"></i></button>
+        <div class="nav-mobile-header">
+            <div class="nav-mobile-brand">
+                <img src="img/logo-transparente.png" alt="KB Tech" onerror="this.style.display='none'">
+                <div>
+                    <strong>Menu KB Tech</strong>
+                    <span>Tecnologia, manutenção e infraestrutura</span>
+                </div>
+            </div>
+            <button class="close-menu" id="close-menu" aria-label="Fechar menu"><i class="fas fa-times"></i></button>
+        </div>
         <ul>
             <li><a href="index.html"><i class="fas fa-home"></i> Início</a></li>
             <li><a href="index.html#services-section"><i class="fas fa-tools"></i> Serviços</a></li>
             <li><a href="orcamento.html" class="active"><i class="fas fa-file-alt"></i> Orçamento</a></li>
             <li><a href="index.html#products-section"><i class="fas fa-box"></i> Produtos</a></li>
-            <li><a href="consulta.html"><i class="fas fa-search"></i> Consultar OS/Garantia</a></li>
-            <li><a href="https://wa.me/5524992046467" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+            <li><a href="consulta.html"><i class="fas fa-search"></i> Acompanhar Pedido/OS/Garantia</a></li>
+            <li><a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
             <li><a href="admin.html"><i class="fas fa-lock"></i> Admin</a></li>
         </ul>
+        <div class="nav-mobile-cta">
+            <a href="orcamento.html" class="nav-cta-primary"><i class="fas fa-file-alt"></i> Solicitar Orçamento</a>
+            <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="nav-cta-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
     </nav>
 
     <!-- Conteúdo Principal -->
@@ -72,7 +87,7 @@
 
             <div class="page-header">
                 <h1><i class="fas fa-file-alt"></i> Solicitar <span class="highlight">Orçamento</span></h1>
-                <p>Orçamento sem compromisso para celulares e computadores em Petrópolis, com resposta pelo WhatsApp.</p>
+                <p>Preencha os dados e descreva o problema. A KB Tech retornará pelo WhatsApp com orientação, prazo e orçamento conforme análise técnica.</p>
             </div>
 
             <div class="orcamento-layout">
@@ -124,6 +139,8 @@
                                 <option value="Troca de Conector de Carga">Troca de Conector de Carga</option>
                                 <option value="Formatação / Windows">Formatação / Windows</option>
                                 <option value="Upgrade de Hardware">Upgrade de Hardware</option>
+                                <option value="Infraestrutura">Infraestrutura</option>
+                                <option value="Redes / Câmeras / Interfones">Redes / Câmeras / Interfones</option>
                                 <option value="Acessórios">Acessórios</option>
                                 <option value="Outro">Outro</option>
                             </select>
@@ -182,10 +199,19 @@
                             <li>Upgrade de SSD/RAM</li>
                         </ul>
                     </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-network-wired"></i> Infraestrutura</h3>
+                        <ul>
+                            <li>Interfones, redes e câmeras</li>
+                            <li>Cabeamento e manutenção predial técnica</li>
+                            <li>Soluções sob orçamento</li>
+                            <li>Atendimento conforme disponibilidade</li>
+                        </ul>
+                    </div>
                     <div class="info-card info-card-whatsapp">
                         <h3><i class="fab fa-whatsapp"></i> Atendimento Direto</h3>
                         <p>Prefere falar diretamente?</p>
-                        <a href="https://wa.me/5524992046467" target="_blank" rel="noopener" class="btn-whatsapp-direct">
+                        <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="btn-whatsapp-direct">
                             <i class="fab fa-whatsapp"></i> (24) 99204-6467
                         </a>
                     </div>
@@ -201,8 +227,8 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <img src="img/logo-transparente.png" alt="KB Tech" width="140" onerror="this.style.display='none'">
-                    <p>Assistência Técnica em Celulares e Computadores</p>
-                    <p class="footer-tagline">Orçamento rápido pelo WhatsApp</p>
+                    <p>Soluções completas em tecnologia, manutenção e infraestrutura em Petrópolis.</p>
+                    <p class="footer-tagline">Diagnóstico prévio e orçamento pelo WhatsApp</p>
                 </div>
                 <div class="footer-links">
                     <h4>Navegação</h4>
@@ -211,7 +237,8 @@
                         <li><a href="index.html#services-section">Serviços</a></li>
                         <li><a href="index.html#products-section">Produtos</a></li>
                         <li><a href="orcamento.html">Orçamento</a></li>
-                        <li><a href="consulta.html">Consultar OS/Garantia</a></li>
+                        <li><a href="consulta.html">Acompanhar Pedido/OS/Garantia</a></li>
+                        <li><a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener">WhatsApp</a></li>
                         <li><a href="admin.html">Painel Admin</a></li>
                     </ul>
                 </div>
@@ -219,7 +246,7 @@
                     <h4>Contato</h4>
                     <p><i class="fab fa-whatsapp"></i> (24) 99204-6467</p>
                     <p><i class="fas fa-map-marker-alt"></i> Petrópolis - RJ</p>
-                    <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener" class="btn-whatsapp-footer">
+                    <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="btn-whatsapp-footer">
                         <i class="fab fa-whatsapp"></i> Falar pelo WhatsApp
                     </a>
                 </div>
@@ -302,7 +329,7 @@
     <div id="overlay" class="overlay"></div>
 
     <!-- FAB WhatsApp -->
-    <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener" class="fab-whatsapp" aria-label="Falar no WhatsApp">
+    <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="fab-whatsapp" aria-label="Falar no WhatsApp">
         <i class="fab fa-whatsapp"></i>
         <span class="sr-only">Falar no WhatsApp</span>
     </a>
@@ -311,6 +338,7 @@
     <script type="module" async src="js/firebase-products.js"></script>
     <script type="module" async src="js/firebase-orders.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/menu.js"></script>
     <script src="js/orcamento.js"></script>
 </body>
 </html>

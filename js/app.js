@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCategories();
     renderProducts();
     initSearch();
-    initMobileMenu();
     initFilterButtons();
 });
 
@@ -39,10 +38,16 @@ function initCarousel() {
 
     function showSlide(index) {
         slides.forEach(function(s) { s.classList.remove('active'); });
-        dots.forEach(function(d) { d.classList.remove('active'); });
+        dots.forEach(function(d) {
+            d.classList.remove('active');
+            d.removeAttribute('aria-current');
+        });
         carouselIndex = (index + slides.length) % slides.length;
         slides[carouselIndex].classList.add('active');
-        if (dots[carouselIndex]) dots[carouselIndex].classList.add('active');
+        if (dots[carouselIndex]) {
+            dots[carouselIndex].classList.add('active');
+            dots[carouselIndex].setAttribute('aria-current', 'true');
+        }
     }
 
     function nextSlide() { showSlide(carouselIndex + 1); }
@@ -196,7 +201,7 @@ function createProductCard(p) {
     var waUrl = 'https://wa.me/5524992046467?text=' + encodeURIComponent(waMsg);
 
     var addBtn = p.estoque > 0
-        ? '<button class="btn-add-cart" onclick="addToCart(' + p.id + ')"><i class="fas fa-cart-plus"></i> Adicionar ao Carrinho</button>'
+        ? '<button class="btn-add-cart" onclick="addToCart(' + p.id + ')"><i class="fas fa-cart-plus"></i> Adicionar</button>'
         : '<button class="btn-add-cart" disabled style="opacity:0.5;cursor:not-allowed;"><i class="fas fa-ban"></i> Sem Estoque</button>';
 
     card.innerHTML =
@@ -269,23 +274,3 @@ function initFilterButtons() {
     }
 }
 
-// ── Menu Mobile ───────────────────────────────────────────────
-function initMobileMenu() {
-    var menuToggle = document.getElementById('menu-toggle');
-    var navMenu = document.getElementById('nav-menu');
-    var closeMenuBtn = document.getElementById('close-menu');
-    var overlay = document.getElementById('overlay');
-
-    if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function() {
-            navMenu.classList.add('active');
-            if (overlay) overlay.classList.add('active');
-        });
-    }
-    if (closeMenuBtn && navMenu) {
-        closeMenuBtn.addEventListener('click', function() {
-            navMenu.classList.remove('active');
-            if (overlay) overlay.classList.remove('active');
-        });
-    }
-}

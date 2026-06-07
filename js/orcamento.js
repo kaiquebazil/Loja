@@ -20,7 +20,8 @@ function handleUrlParams() {
             var map = {
                 'Celular': 'Manutenção de Celular',
                 'Computador': 'Manutenção de Computador',
-                'Montagem': 'Montagem de PC'
+                'Montagem': 'Montagem de PC',
+                'Infraestrutura': 'Infraestrutura'
             };
             select.value = map[tipo] || tipo;
         }

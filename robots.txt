@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /kaos
+Disallow: /kos
+
+Sitemap: https://kaiquebazil.github.io/Loja/sitemap.xml

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var currentType = 'os';
+    var currentType = 'pedido';
     var tabs = document.querySelectorAll('.consulta-tab');
     var form = document.getElementById('consulta-form');
     var input = document.getElementById('consulta-numero');
@@ -177,6 +177,26 @@ function renderTimeline(currentStep) {
     return html;
 }
 
+function getItemsSummary(order) {
+    var items = order && (order.itens || order.items || order.cart);
+    if (!Array.isArray(items) || !items.length) return '-';
+    return items.map(function(item) {
+        var qty = item.quantidade || item.qty || item.quantity || 1;
+        return (item.nome || item.produto || item.name || 'Produto') + ' x ' + qty;
+    }).join(', ');
+}
+
+function getNextStepText(status) {
+    var normalized = normalizeStatusText(status);
+    if (normalized.indexOf('finalizado') !== -1 || normalized.indexOf('entregue') !== -1 || normalized.indexOf('concluido') !== -1) {
+        return 'Atendimento finalizado. Fale com a KB Tech se precisar de suporte adicional.';
+    }
+    if (normalized.indexOf('orcamento') !== -1 || normalized.indexOf('analise') !== -1 || normalized.indexOf('aguard') !== -1) {
+        return 'Aguarde o retorno da KB Tech ou fale pelo WhatsApp em caso de dúvida.';
+    }
+    return 'Acompanhe pelo site ou fale com a KB Tech pelo WhatsApp em caso de dúvida.';
+}
+
 function getFirebaseOrderDelivery(query) {
     if (!window.KBTFirebaseConsulta || typeof window.KBTFirebaseConsulta.getOrderDeliveryFromFirebase !== 'function') {
         return Promise.resolve(null);
@@ -229,8 +249,12 @@ function showOrderDelivery(order, delivery) {
     var total = getFirstValue(order, ['valorTotal', 'total', 'valor'], getFirstValue(delivery, ['valorTotal', 'total']));
     var observacoes = getFirstValue(delivery, ['observacoes', 'observacao', 'obs'],
         getFirstValue(order, ['observacoes', 'observacao', 'obs'], ''));
+    var data = getFirstValue(order, ['criadoEm', 'data', 'dataPedido', 'createdAt'],
+        getFirstValue(delivery, ['criadoEm', 'data', 'dataEntrega']));
+    var produtos = getItemsSummary(order);
     var pagamento = getFirstValue(order, ['statusPagamento', 'pagamentoStatus', 'pagamento'], '');
     var currentStep = getTimelineStep(statusPedido, statusEntrega, pagamento);
+    var proximoPasso = getNextStepText(statusPedido + ' ' + statusEntrega);
     var whatsappText = encodeURIComponent('Ola, gostaria de falar sobre o pedido ' + numero + '.');
 
     showResult(
@@ -239,12 +263,15 @@ function showOrderDelivery(order, delivery) {
         '<div class="order-summary-grid">' +
         '<p><strong>Número do pedido:</strong> ' + escapeHTML(numero) + '</p>' +
         '<p><strong>Cliente:</strong> ' + escapeHTML(cliente) + '</p>' +
+        '<p><strong>Data:</strong> ' + escapeHTML(formatDate(data)) + '</p>' +
+        '<p><strong>Produto(s):</strong> ' + escapeHTML(produtos) + '</p>' +
         '<p><strong>Status do pedido:</strong> ' + escapeHTML(statusPedido) + '</p>' +
         '<p><strong>Status da entrega:</strong> ' + escapeHTML(statusEntrega) + '</p>' +
         '<p><strong>Previsão de entrega:</strong> ' + escapeHTML(formatDate(previsao)) + '</p>' +
         '<p><strong>Taxa de entrega:</strong> ' + formatMoney(taxaEntrega) + '</p>' +
         '<p><strong>Valor total:</strong> ' + formatMoney(total) + '</p>' +
         (observacoes ? '<p class="order-notes"><strong>Observações:</strong> ' + escapeHTML(observacoes) + '</p>' : '<p class="order-notes"><strong>Observações:</strong> -</p>') +
+        '<p class="order-notes"><strong>Próximo passo:</strong> ' + escapeHTML(proximoPasso) + '</p>' +
         '</div>' +
         '<a href="https://wa.me/5524992046467?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
         '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
@@ -268,8 +295,8 @@ function showResult(html) {
 
 function showNotFound() {
     showResult(
-        '<p class="not-found">Registro não encontrado. Entre em contato pelo WhatsApp.</p>' +
-        '<a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
+        '<p class="not-found">Registro não encontrado. Verifique o número ou fale com a KB Tech pelo WhatsApp.</p>' +
+        '<a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
         '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
     );
 }
@@ -323,16 +350,23 @@ function showOS(os, isLocal) {
     var entrada = getFirstValue(os, ['dataEntrada', 'entrada', 'data']);
     var previsao = getFirstValue(os, ['dataPrevista', 'previsao', 'dataConclusao', 'conclusao', 'dataFinalizacao']);
     var servico = getFirstValue(os, ['servicoRealizado', 'servico', 'laudo', 'descricaoServico'], '');
+    var observacoes = getFirstValue(os, ['observacoes', 'observacao', 'obs', 'defeito'], '');
+    var proximoPasso = getNextStepText(status);
+    var whatsappText = encodeURIComponent('Ola, gostaria de falar sobre a OS ' + numero + '.');
 
     showResult(
-        '<h3>Ordem de Serviço #' + String(numero).slice(-6) + '</h3>' +
-        '<p><strong>Número da OS:</strong> ' + numero + '</p>' +
-        '<p><strong>Cliente:</strong> ' + cliente + '</p>' +
-        '<p><strong>Equipamento:</strong> ' + equipamento + '</p>' +
-        '<p><strong>Status:</strong> ' + status + '</p>' +
-        '<p><strong>Data de entrada:</strong> ' + formatDate(entrada) + '</p>' +
-        '<p><strong>Data prevista/conclusão:</strong> ' + formatDate(previsao) + '</p>' +
-        (servico ? '<p><strong>Serviço realizado:</strong> ' + servico + '</p>' : '')
+        '<h3>Ordem de Serviço #' + escapeHTML(String(numero).slice(-6)) + '</h3>' +
+        '<p><strong>Número da OS:</strong> ' + escapeHTML(numero) + '</p>' +
+        '<p><strong>Cliente:</strong> ' + escapeHTML(cliente) + '</p>' +
+        '<p><strong>Equipamento:</strong> ' + escapeHTML(equipamento) + '</p>' +
+        '<p><strong>Status:</strong> ' + escapeHTML(status) + '</p>' +
+        '<p><strong>Data de entrada:</strong> ' + escapeHTML(formatDate(entrada)) + '</p>' +
+        '<p><strong>Data prevista/conclusão:</strong> ' + escapeHTML(formatDate(previsao)) + '</p>' +
+        (servico ? '<p><strong>Serviço realizado:</strong> ' + escapeHTML(servico) + '</p>' : '') +
+        '<p><strong>Observações:</strong> ' + escapeHTML(observacoes || '-') + '</p>' +
+        '<p><strong>Próximo passo:</strong> ' + escapeHTML(proximoPasso) + '</p>' +
+        '<a href="https://wa.me/5524992046467?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
+        '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
     );
 }
 
@@ -361,15 +395,22 @@ function showGuarantee(guarantee) {
     var inicio = getFirstValue(guarantee, ['dataInicio', 'inicio']);
     var fim = getFirstValue(guarantee, ['dataFim', 'fim', 'validade']);
     var status = getFirstValue(guarantee, ['status']);
+    var observacoes = getFirstValue(guarantee, ['observacoes', 'observacao', 'obs'], '');
+    var proximoPasso = getNextStepText(status);
+    var whatsappText = encodeURIComponent('Ola, gostaria de falar sobre a garantia ' + numero + '.');
 
     showResult(
-        '<h3>Garantia #' + String(numero).slice(-6) + '</h3>' +
-        '<p><strong>Número da garantia:</strong> ' + numero + '</p>' +
-        '<p><strong>Cliente:</strong> ' + cliente + '</p>' +
-        '<p><strong>Equipamento:</strong> ' + equipamento + '</p>' +
-        '<p><strong>Serviço:</strong> ' + servico + '</p>' +
-        '<p><strong>Data início:</strong> ' + formatDate(inicio) + '</p>' +
-        '<p><strong>Data fim:</strong> ' + formatDate(fim) + '</p>' +
-        '<p><strong>Status:</strong> ' + status + '</p>'
+        '<h3>Garantia #' + escapeHTML(String(numero).slice(-6)) + '</h3>' +
+        '<p><strong>Número da garantia:</strong> ' + escapeHTML(numero) + '</p>' +
+        '<p><strong>Cliente:</strong> ' + escapeHTML(cliente) + '</p>' +
+        '<p><strong>Equipamento:</strong> ' + escapeHTML(equipamento) + '</p>' +
+        '<p><strong>Serviço:</strong> ' + escapeHTML(servico) + '</p>' +
+        '<p><strong>Data início:</strong> ' + escapeHTML(formatDate(inicio)) + '</p>' +
+        '<p><strong>Data fim:</strong> ' + escapeHTML(formatDate(fim)) + '</p>' +
+        '<p><strong>Status:</strong> ' + escapeHTML(status) + '</p>' +
+        '<p><strong>Observações:</strong> ' + escapeHTML(observacoes || '-') + '</p>' +
+        '<p><strong>Próximo passo:</strong> ' + escapeHTML(proximoPasso) + '</p>' +
+        '<a href="https://wa.me/5524992046467?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
+        '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
     );
 }
