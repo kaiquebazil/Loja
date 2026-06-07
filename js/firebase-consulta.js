@@ -22,6 +22,11 @@ function matchesNumber(record, number) {
         record.numeroOS,
         record.numeroOrdem,
         record.numeroGarantia,
+        record.numeroPedido,
+        record.pedidoNumero,
+        record.orderNumber,
+        record.orderId,
+        record.pedidoId,
         record.codigo
     ];
 
@@ -85,9 +90,38 @@ async function getGuaranteeFromFirebase(number) {
     return direct || findByScan('garantias', number);
 }
 
+async function getOrderFromFirebase(number) {
+    var direct = await findByFields('pedidos', ['numeroPedido', 'pedidoNumero', 'numero', 'codigo', 'orderNumber'], number);
+    return direct || findByScan('pedidos', number);
+}
+
+async function getDeliveryFromFirebase(number) {
+    var direct = await findByFields('entregas', ['numeroPedido', 'pedidoNumero', 'pedidoId', 'orderId', 'numero', 'codigo'], number);
+    return direct || findByScan('entregas', number);
+}
+
+async function getOrderDeliveryFromFirebase(number) {
+    var order = await getOrderFromFirebase(number);
+    var delivery = await getDeliveryFromFirebase(number);
+
+    if (order && !delivery) {
+        var orderNumber = order.numeroPedido || order.pedidoNumero || order.numero || order.codigo || order.id;
+        delivery = await getDeliveryFromFirebase(orderNumber);
+    }
+
+    if (delivery && !order) {
+        var deliveryOrderNumber = delivery.numeroPedido || delivery.pedidoNumero || delivery.pedidoId || delivery.orderId || delivery.numero || delivery.codigo;
+        order = await getOrderFromFirebase(deliveryOrderNumber);
+    }
+
+    if (!order && !delivery) return null;
+    return { pedido: order, entrega: delivery };
+}
+
 window.KBTFirebaseConsulta = {
     getOSFromFirebase,
-    getGuaranteeFromFirebase
+    getGuaranteeFromFirebase,
+    getOrderDeliveryFromFirebase
 };
 
-export { getOSFromFirebase, getGuaranteeFromFirebase };
+export { getOSFromFirebase, getGuaranteeFromFirebase, getOrderDeliveryFromFirebase };
