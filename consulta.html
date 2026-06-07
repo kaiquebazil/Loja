@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar OS e Garantia | KB Tech</title>
+    <meta name="description" content="Consulte sua ordem de serviço ou garantia da KB Tech usando os dados salvos localmente no sistema.">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fas fa-map-marker-alt"></i> Petrópolis - RJ</span>
+            <span><i class="fab fa-whatsapp"></i> (24) 99204-6467</span>
+            <span><i class="fas fa-tools"></i> Assistência Técnica em Celulares e Computadores</span>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo">
+                <a href="index.html"><img src="img/logo-transparente.png" alt="KB Tech" onerror="this.style.display='none'"></a>
+            </div>
+            <div class="header-actions">
+                <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener" class="action-item" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp" style="color:#25d366;"></i>
+                    <div class="action-text">
+                        <strong>WhatsApp</strong>
+                        <span>Fale conosco</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
+        <button class="close-menu" id="close-menu" aria-label="Fechar menu"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="index.html#services-section"><i class="fas fa-tools"></i> Serviços</a></li>
+            <li><a href="orcamento.html"><i class="fas fa-file-alt"></i> Orçamento</a></li>
+            <li><a href="index.html#products-section"><i class="fas fa-box"></i> Produtos</a></li>
+            <li><a href="consulta.html" class="active"><i class="fas fa-search"></i> Consultar OS/Garantia</a></li>
+        </ul>
+    </nav>
+
+    <main class="page-main">
+        <div class="page-header">
+            <h1><i class="fas fa-search"></i> Consultar <span class="highlight">OS/Garantia</span></h1>
+            <p>Informe o número recebido no atendimento para consultar o registro salvo no sistema local.</p>
+        </div>
+
+        <div class="consulta-layout">
+            <div class="consulta-card">
+                <div class="consulta-tabs" role="tablist" aria-label="Tipo de consulta">
+                    <button class="consulta-tab active" type="button" data-consulta="os">Número da OS</button>
+                    <button class="consulta-tab" type="button" data-consulta="garantia">Número da garantia</button>
+                </div>
+
+                <form id="consulta-form">
+                    <div class="form-group">
+                        <label for="consulta-numero">Número para consulta</label>
+                        <input type="text" id="consulta-numero" required placeholder="Ex: 1234">
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-search"></i> Consultar
+                    </button>
+                </form>
+
+                <div class="consulta-result" id="consulta-result"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="img/logo-transparente.png" alt="KB Tech" width="140" onerror="this.style.display='none'">
+                    <p>Assistência Técnica em Celulares e Computadores</p>
+                    <p class="footer-tagline">Orçamento rápido pelo WhatsApp</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="index.html#services-section">Serviços</a></li>
+                        <li><a href="index.html#products-section">Produtos</a></li>
+                        <li><a href="orcamento.html">Orçamento</a></li>
+                        <li><a href="consulta.html">Consultar OS/Garantia</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contato</h4>
+                    <p><i class="fab fa-whatsapp"></i> (24) 99204-6467</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Petrópolis - RJ</p>
+                    <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener" class="btn-whatsapp-footer">
+                        <i class="fab fa-whatsapp"></i> Falar pelo WhatsApp
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 KB Tech. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener" class="fab-whatsapp" aria-label="Falar no WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="sr-only">Falar no WhatsApp</span>
+    </a>
+
+    <script src="js/consulta.js"></script>
+</body>
+</html>

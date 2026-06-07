@@ -96,6 +96,7 @@ function initAdminPanel() {
     initBackupSystem();
     initResetCatalog();
     initClearOrders();
+    initGlobalAdminSearch();
 
     var searchInput = document.getElementById('admin-search');
     if (searchInput) {
@@ -180,6 +181,7 @@ function renderDashboard() {
     var os = JSON.parse(localStorage.getItem('kaos_os') || '[]');
     var customers = JSON.parse(localStorage.getItem('kaos_customers') || '[]');
     var products = getProducts();
+    var quotes = getQuotes();
     
     var osAbertas = os.filter(function(o) { 
         return o.status === 'Aberto' || o.status === 'Em Análise' || o.status === 'Aguardando Peça'; 
@@ -207,6 +209,7 @@ function renderDashboard() {
     if (dashLucro) dashLucro.textContent = 'R$ ' + lucroEstimado.toFixed(2).replace('.', ',');
     if (dashOsAbertas) dashOsAbertas.textContent = osAbertas;
     if (dashEstoqueBaixo) dashEstoqueBaixo.textContent = estoqueBaixo;
+    renderDashboardNotifications(os, quotes, getGuarantees(), products);
 
     var dashOsList = document.getElementById('dash-os-list');
     if (dashOsList) {
@@ -222,6 +225,147 @@ function renderDashboard() {
             dashOsList.appendChild(tr);
         }
     }
+}
+
+function isOpenOS(status) {
+    return status === 'Aberto' || status === 'Em Análise' || status === 'Aguardando Peça';
+}
+
+function isPendingQuote(status) {
+    return !status || status === 'Pendente' || status === 'Em Análise' || status === 'Aguardando Cliente';
+}
+
+function isGuaranteeExpiring(guarantee) {
+    if (!guarantee || !guarantee.fim) return false;
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var end = new Date(guarantee.fim + 'T00:00:00');
+    var diffDays = Math.ceil((end - today) / 86400000);
+    return diffDays >= 0 && diffDays <= 15;
+}
+
+function renderDashboardNotifications(os, quotes, guarantees, products) {
+    var container = document.getElementById('dash-notifications');
+    if (!container) return;
+
+    var osAbertas = os.filter(function(o) { return isOpenOS(o.status); }).length;
+    var orcamentosPendentes = quotes.filter(function(q) { return isPendingQuote(q.status); }).length;
+    var garantiasVencendo = guarantees.filter(isGuaranteeExpiring).length;
+    var estoqueBaixo = products.filter(function(p) { return p.estoque > 0 && p.estoque <= (p.estoqueMin || 5); }).length;
+    var semEstoque = products.filter(function(p) { return p.estoque <= 0; }).length;
+
+    var cards = [
+        { label: 'OS em aberto', value: osAbertas, icon: 'fa-tools', type: osAbertas ? 'warning' : 'success' },
+        { label: 'Orçamentos pendentes', value: orcamentosPendentes, icon: 'fa-file-invoice-dollar', type: orcamentosPendentes ? 'warning' : 'success' },
+        { label: 'Garantias vencendo', value: garantiasVencendo, icon: 'fa-shield-alt', type: garantiasVencendo ? 'warning' : 'success' },
+        { label: 'Produtos com estoque baixo', value: estoqueBaixo, icon: 'fa-box-open', type: estoqueBaixo ? 'warning' : 'success' },
+        { label: 'Produtos sem estoque', value: semEstoque, icon: 'fa-ban', type: semEstoque ? 'danger' : 'success' }
+    ];
+
+    container.innerHTML = cards.map(function(card) {
+        return '<div class="dashboard-alert ' + card.type + '">' +
+            '<strong><i class="fas ' + card.icon + '"></i> ' + card.value + '</strong>' +
+            '<span>' + card.label + '</span>' +
+            '</div>';
+    }).join('');
+}
+
+function normalizeSearchText(value) {
+    return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function shortId(id) {
+    return String(id || '').slice(-4);
+}
+
+function matchesQuery(values, query) {
+    var normalized = normalizeSearchText(query);
+    for (var i = 0; i < values.length; i++) {
+        if (normalizeSearchText(values[i]).indexOf(normalized) !== -1) return true;
+    }
+    return false;
+}
+
+function initGlobalAdminSearch() {
+    var input = document.getElementById('global-admin-search');
+    var results = document.getElementById('global-search-results');
+    if (!input || !results) return;
+
+    input.addEventListener('input', function() {
+        var query = input.value.trim();
+        if (query.length < 2) {
+            results.classList.remove('active');
+            results.innerHTML = '';
+            return;
+        }
+        renderGlobalSearchResults(query);
+    });
+}
+
+function renderGlobalSearchResults(query) {
+    var results = document.getElementById('global-search-results');
+    if (!results) return;
+
+    var customers = getCustomers();
+    var os = getOS();
+    var guarantees = getGuarantees();
+    var quotes = getQuotes();
+    var products = getProducts();
+    var items = [];
+
+    customers.forEach(function(c) {
+        if (matchesQuery([c.nome, c.tel, c.doc], query)) {
+            items.push({ type: 'Cliente', title: c.nome || 'Cliente', meta: 'Telefone: ' + (c.tel || '-') });
+        }
+    });
+
+    os.forEach(function(o) {
+        var customerName = getCustomerNameById(customers, o.customerId);
+        if (matchesQuery([o.id, shortId(o.id), customerName, o.equipamento, o.status], query)) {
+            items.push({ type: 'OS', title: '#' + shortId(o.id) + ' - ' + (o.equipamento || '-'), meta: customerName + ' | Status: ' + (o.status || 'Aberto') });
+        }
+    });
+
+    guarantees.forEach(function(g) {
+        if (matchesQuery([g.id, shortId(g.id), g.cliente, g.equipamento, g.status], query)) {
+            items.push({ type: 'Garantia', title: '#' + shortId(g.id) + ' - ' + (g.equipamento || '-'), meta: (g.cliente || '-') + ' | Vence: ' + (g.fim || '-') });
+        }
+    });
+
+    quotes.forEach(function(q) {
+        var customerName = getCustomerNameById(customers, q.customerId);
+        if (matchesQuery([q.id, shortId(q.id), customerName, q.itens, q.status], query)) {
+            items.push({ type: 'Orçamento', title: '#' + shortId(q.id) + ' - ' + (q.itens || '-'), meta: customerName + ' | Status: ' + (q.status || 'Pendente') });
+        }
+    });
+
+    products.forEach(function(p) {
+        if (matchesQuery([p.id, shortId(p.id), p.nome, p.categoria], query)) {
+            items.push({ type: 'Produto', title: p.nome || 'Produto', meta: (p.categoria || '-') + ' | Estoque: ' + (p.estoque || 0) });
+        }
+    });
+
+    if (!items.length) {
+        results.innerHTML = '<div class="global-result-item"><span class="global-result-type">Busca</span><div><div class="global-result-title">Nenhum registro encontrado</div><div class="global-result-meta">Tente outro nome, telefone ou número.</div></div></div>';
+        results.classList.add('active');
+        return;
+    }
+
+    results.innerHTML = items.slice(0, 12).map(function(item) {
+        return '<div class="global-result-item">' +
+            '<span class="global-result-type">' + item.type + '</span>' +
+            '<div><div class="global-result-title">' + item.title + '</div>' +
+            '<div class="global-result-meta">' + item.meta + '</div></div>' +
+            '</div>';
+    }).join('');
+    results.classList.add('active');
+}
+
+function getCustomerNameById(customers, customerId) {
+    for (var i = 0; i < customers.length; i++) {
+        if (customers[i].id == customerId) return customers[i].nome || 'Cliente';
+    }
+    return 'Cliente não identificado';
 }
 
 // ── Clientes ──────────────────────────────────────────────────
@@ -1091,7 +1235,7 @@ function renderFinance() {
     if (finLucro) finLucro.textContent = 'R$ ' + (totalReceitas - totalDespesas).toFixed(2).replace('.', ',');
 }
 
-// ── Sócios ──────────────────────────────────────────────────
+// ── Parceiros / Comissões ────────────────────────────────────
 function renderPartners() {
     var os = getOS();
     var partnersGrid = document.querySelector('.partners-grid');

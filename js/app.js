@@ -1,6 +1,6 @@
 /* ============================================================
    KB Tech - app.js
-   Lógica principal: carrossel, catálogo, busca, avaliações
+   Lógica principal: carrossel, catálogo e busca
    ============================================================ */
 
 var ITEMS_PER_PAGE = 20;
@@ -8,15 +8,6 @@ var currentPage = 1;
 var currentFilter = 'todos';
 var currentCategory = '';
 var currentSearch = '';
-
-var reviews = [
-    { nome: 'João Silva', cidade: 'Petrópolis', stars: 5, texto: 'Produto chegou rápido e com qualidade excelente! Recomendo muito a KB Tech.' },
-    { nome: 'Maria Santos', cidade: 'Petrópolis', stars: 5, texto: 'Atendimento incrível pelo WhatsApp. Tirou todas as minhas dúvidas antes de comprar.' },
-    { nome: 'Carlos Oliveira', cidade: 'Petrópolis', stars: 5, texto: 'Comprei um fone bluetooth e ficou perfeito. Entrega no mesmo dia!' },
-    { nome: 'Ana Lima', cidade: 'Petrópolis', stars: 5, texto: 'Preços ótimos e produtos de qualidade. Já é minha loja favorita de eletrônicos.' },
-    { nome: 'Pedro Costa', cidade: 'Petrópolis', stars: 5, texto: 'Comprei cabos e carregadores. Tudo funcionando perfeitamente. Voltarei sempre!' },
-    { nome: 'Fernanda Rocha', cidade: 'Petrópolis', stars: 5, texto: 'Excelente variedade de produtos. Encontrei tudo que precisava em um só lugar.' }
-];
 
 var categoryIcons = {
     'Informática': 'fa-laptop', 'Áudio': 'fa-headphones', 'Cabos': 'fa-plug',
@@ -32,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initCarousel();
     renderCategories();
     renderProducts();
-    renderReviews();
     initSearch();
     initMobileMenu();
     initFilterButtons();
@@ -277,24 +267,6 @@ function initFilterButtons() {
             renderProducts();
         });
     }
-}
-
-// ── Avaliações ────────────────────────────────────────────────
-function renderReviews() {
-    var grid = document.getElementById('reviews-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    reviews.forEach(function(r) {
-        var stars = '';
-        for (var i = 0; i < r.stars; i++) stars += '<i class="fas fa-star"></i>';
-        var div = document.createElement('div');
-        div.className = 'review-card';
-        div.innerHTML =
-            '<div class="review-stars">' + stars + '</div>' +
-            '<p class="review-text">"' + r.texto + '"</p>' +
-            '<div class="review-author">' + r.nome + ' — ' + r.cidade + '</div>';
-        grid.appendChild(div);
-    });
 }
 
 // ── Menu Mobile ───────────────────────────────────────────────

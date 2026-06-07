@@ -74,7 +74,7 @@
                     <i class="fas fa-wallet"></i> Financeiro
                 </button>
                 <button class="admin-nav-btn" data-tab="partners">
-                    <i class="fas fa-handshake"></i> Sócios
+                    <i class="fas fa-handshake"></i> Parceiros / Comissões
                 </button>
                 <button class="admin-nav-btn" data-tab="documents">
                     <i class="fas fa-file-pdf"></i> Documentos
@@ -100,6 +100,13 @@
 
         <!-- Conteúdo Admin -->
         <main class="admin-main">
+            <div class="admin-topbar">
+                <div class="admin-global-search">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="global-admin-search" placeholder="Buscar cliente, telefone, OS, garantia, orçamento ou produto..." aria-label="Busca global do painel">
+                </div>
+                <div id="global-search-results" class="global-search-results" aria-live="polite"></div>
+            </div>
 
             <!-- Tab: Dashboard -->
             <div id="tab-dashboard" class="admin-tab active">
@@ -402,10 +409,10 @@
                 </div>
             </div>
 
-            <!-- Tab: Sócios -->
+            <!-- Tab: Parceiros / Comissões -->
             <div id="tab-partners" class="admin-tab">
                 <div class="admin-tab-header">
-                    <h1><i class="fas fa-handshake"></i> Comissões e Sócios</h1>
+                    <h1><i class="fas fa-handshake"></i> Parceiros / Comissões</h1>
                 </div>
                 <div class="partners-grid">
                     <!-- Preenchido via JS -->
