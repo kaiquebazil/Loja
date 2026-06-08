@@ -193,7 +193,7 @@ function createProductCard(p) {
     if (p.desconto > 0) tags += '<span class="tag desconto">-' + p.desconto + '%</span>';
 
     var estoque = p.estoque > 0
-        ? '<span class="product-stock">Em estoque: ' + p.estoque + ' un.</span>'
+        ? '<span class="product-stock">Em estoque</span>'
         : '<span class="product-stock out">Sem estoque</span>';
 
     var imgSrc = p.imagem || 'https://placehold.co/400x400/11141b/ffffff?text=Produto';
