@@ -142,20 +142,17 @@ function renderCartSidebar() {
     });
 
     var subtotal = getCartTotal();
-    var shippingSelect = document.getElementById('shipping-select');
-    var selectedBairro = shippingSelect ? shippingSelect.value : '';
-    var frete = selectedBairro ? (getFreteByBairro(selectedBairro) || 0) : 0;
-    updateCartFooter(subtotal, frete);
+    updateCartFooter(subtotal);
 }
 
-function updateCartFooter(subtotal, frete) {
+function updateCartFooter(subtotal) {
     var subtotalEl = document.getElementById('cart-subtotal');
     var freteEl = document.getElementById('cart-frete');
     var totalEl = document.getElementById('cart-total');
 
     if (subtotalEl) subtotalEl.textContent = 'R$ ' + subtotal.toFixed(2).replace('.', ',');
-    if (freteEl) freteEl.textContent = frete > 0 ? 'R$ ' + frete.toFixed(2).replace('.', ',') : 'A calcular';
-    if (totalEl) totalEl.textContent = 'R$ ' + (subtotal + frete).toFixed(2).replace('.', ',');
+    if (freteEl) freteEl.textContent = 'Pelo entregador ou retirada';
+    if (totalEl) totalEl.textContent = 'R$ ' + subtotal.toFixed(2).replace('.', ',');
 }
 
 // ── Preencher select de bairros ───────────────────────────────
@@ -168,7 +165,7 @@ function populateShippingSelect() {
     shipping.sort(function(a, b) { return a.nome.localeCompare(b.nome); }).forEach(function(s) {
         var opt = document.createElement('option');
         opt.value = s.nome;
-        opt.textContent = s.nome + ' — R$ ' + s.valor.toFixed(2).replace('.', ',');
+        opt.textContent = s.nome;
         select.appendChild(opt);
     });
 
@@ -176,12 +173,9 @@ function populateShippingSelect() {
         var bairro = select.value;
         var resultEl = document.getElementById('shipping-result');
         if (bairro) {
-            var valor = getFreteByBairro(bairro);
             if (resultEl) {
                 resultEl.className = 'shipping-result found';
-                resultEl.textContent = valor !== null
-                    ? 'Frete para ' + bairro + ': R$ ' + valor.toFixed(2).replace('.', ',')
-                    : 'Frete a combinar pelo WhatsApp.';
+                resultEl.textContent = 'Frete decidido pelo entregador. Para não pagar frete, retire na Rua Condessa Barbosa, 500, C Tobogã, Corrêas, Petrópolis, RJ - 25730-040.';
             }
         } else {
             if (resultEl) { resultEl.className = 'shipping-result'; resultEl.textContent = ''; }
@@ -223,16 +217,14 @@ function openCheckoutModal() {
         var subtotal = getCartTotal();
         var shippingSelect = document.getElementById('shipping-select');
         var bairro = shippingSelect ? shippingSelect.value : '';
-        var frete = bairro ? (getFreteByBairro(bairro) || 0) : 0;
-        var total = subtotal + frete;
-
         var html = '<strong>Resumo do Pedido:</strong><br>';
         cart.forEach(function(item) {
             html += '• ' + item.nome + ' × ' + item.qty + ' = R$ ' + (item.preco * item.qty).toFixed(2).replace('.', ',') + '<br>';
         });
         html += '<br>Subtotal: R$ ' + subtotal.toFixed(2).replace('.', ',') + '<br>';
-        if (bairro) html += 'Frete (' + bairro + '): R$ ' + frete.toFixed(2).replace('.', ',') + '<br>';
-        html += '<strong>Total: R$ ' + total.toFixed(2).replace('.', ',') + '</strong>';
+        html += 'Frete: decidido pelo entregador<br>';
+        html += 'Retirada sem frete: Rua Condessa Barbosa, 500, C Tobogã, Corrêas, Petrópolis, RJ - 25730-040<br>';
+        html += '<strong>Total dos produtos: R$ ' + subtotal.toFixed(2).replace('.', ',') + '</strong>';
         summaryEl.innerHTML = html;
         summaryEl.className = 'form-summary visible';
     }
@@ -264,9 +256,7 @@ async function sendOrderWhatsApp(e) {
     var cart = getCart();
     var shippingSelect = document.getElementById('shipping-select');
     var selectedBairro = (shippingSelect && shippingSelect.value) ? shippingSelect.value : bairro;
-    var frete = selectedBairro ? (getFreteByBairro(selectedBairro) || 0) : 0;
     var subtotal = getCartTotal();
-    var total = subtotal + frete;
     var orderData = {
         clienteNome: nome,
         telefone: telefone,
@@ -285,8 +275,8 @@ async function sendOrderWhatsApp(e) {
             };
         }),
         subtotal: subtotal,
-        frete: frete,
-        total: total,
+        frete: 0,
+        total: subtotal,
         formaPagamento: 'A combinar',
         status: 'Novo',
         origem: 'Site',
@@ -305,12 +295,9 @@ async function sendOrderWhatsApp(e) {
     });
     msg += '━━━━━━━━━━━━━━━━━━\n';
     msg += '💰 Subtotal: R$ ' + subtotal.toFixed(2).replace('.', ',') + '\n';
-    if (selectedBairro) {
-        msg += '🚚 Frete (' + selectedBairro + '): R$ ' + frete.toFixed(2).replace('.', ',') + '\n';
-    } else {
-        msg += '🚚 Frete: A combinar\n';
-    }
-    msg += '💵 *TOTAL: R$ ' + total.toFixed(2).replace('.', ',') + '*\n';
+    msg += '🚚 Frete: decidido pelo entregador\n';
+    msg += '📍 Retirada sem frete: Rua Condessa Barbosa, 500, C Tobogã, Corrêas, Petrópolis, RJ - 25730-040\n';
+    msg += '💵 *TOTAL DOS PRODUTOS: R$ ' + subtotal.toFixed(2).replace('.', ',') + '*\n';
     msg += '━━━━━━━━━━━━━━━━━━\n';
     msg += '📋 *DADOS DO CLIENTE*\n';
     msg += 'Nome: ' + nome + '\n';

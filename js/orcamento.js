@@ -36,7 +36,7 @@ function populateBairroSelect() {
     shipping.sort(function(a, b) { return a.nome.localeCompare(b.nome); }).forEach(function(s) {
         var opt = document.createElement('option');
         opt.value = s.nome;
-        opt.textContent = s.nome + ' — Frete: R$ ' + s.valor.toFixed(2).replace('.', ',');
+        opt.textContent = s.nome;
         select.appendChild(opt);
     });
 }
