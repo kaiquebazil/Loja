@@ -1,0 +1,96 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/lojistas/$(request.auth.uid))
+        && get(/databases/$(database)/documents/lojistas/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function hasActiveSubscription(userId) {
+      return exists(/databases/$(database)/documents/lojistas/$(userId))
+        && get(/databases/$(database)/documents/lojistas/$(userId)).data.subscriptionStatus == 'ativa';
+    }
+
+    function updatesOnlyPublicStoreFields() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'companyName',
+        'phone',
+        'whatsapp',
+        'address',
+        'city',
+        'state',
+        'zip',
+        'deliveryMode',
+        'openingHours',
+        'logoUrl',
+        'coverUrl',
+        'updatedAt'
+      ]);
+    }
+
+    match /lojistas/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAdmin()
+        || (
+          isOwner(userId)
+          && request.resource.data.role == 'lojista'
+          && request.resource.data.subscriptionStatus == 'vencida'
+        );
+      allow update: if isAdmin() || (isOwner(userId) && updatesOnlyPublicStoreFields());
+      allow delete: if isAdmin();
+    }
+
+    match /lojasPublicas/{userId} {
+      allow read: if true;
+      allow create: if isAdmin()
+        || (
+          isOwner(userId)
+          && request.resource.data.subscriptionStatus == 'vencida'
+        );
+      allow update: if isAdmin() || (isOwner(userId) && updatesOnlyPublicStoreFields());
+      allow delete: if isAdmin();
+    }
+
+    match /marketplaceProdutos/{productId} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.merchantId == request.auth.uid
+        && hasActiveSubscription(request.auth.uid);
+      allow update: if isAdmin()
+        || (
+          signedIn()
+          && resource.data.merchantId == request.auth.uid
+          && request.resource.data.merchantId == request.auth.uid
+          && hasActiveSubscription(request.auth.uid)
+        );
+      allow delete: if isAdmin()
+        || (signedIn() && resource.data.merchantId == request.auth.uid);
+    }
+
+    match /marketplacePedidos/{orderId} {
+      allow create: if true;
+      allow read, update: if isAdmin()
+        || (signedIn() && resource.data.merchantId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    match /marketplaceCategorias/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
