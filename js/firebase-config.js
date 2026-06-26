@@ -3,9 +3,7 @@
 // Se algum campo ficar vazio, o site continuará usando localStorage.
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
 import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
-import { getStorage } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDrRIql_uh3shdn_48U-MXZ35oIkaGktp8",
@@ -29,17 +27,13 @@ function hasFirebaseConfig(config) {
 }
 
 let app = null;
-let auth = null;
 let db = null;
-let storage = null;
 let firebaseReady = false;
 
 try {
     if (hasFirebaseConfig(firebaseConfig)) {
         app = initializeApp(firebaseConfig);
-        auth = getAuth(app);
         db = getFirestore(app);
-        storage = getStorage(app);
         firebaseReady = true;
         window.KBTFirebaseReady = true;
     } else {
@@ -51,4 +45,4 @@ try {
     console.warn('Firebase falhou ao iniciar. Usando dados locais como fallback.', error);
 }
 
-export { app, auth, db, storage, firebaseReady };
+export { app, db, firebaseReady };
