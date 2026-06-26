@@ -5,7 +5,7 @@
 
 const CART_KEY = 'katech_cart';
 const ORDERS_KEY = 'katech_orders';
-const WHATSAPP_NUMBER = '5524992046467'; // Número da KB Tech
+const WHATSAPP_NUMBER = '5521977297049'; // Número da KB Tech
 
 // ── Funções do Carrinho ───────────────────────────────────────
 function getCart() {

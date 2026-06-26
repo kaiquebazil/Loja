@@ -710,7 +710,7 @@ function generateOSHTML(o, c) {
         '                <h2>KB Tech</h2>\n' +
         '                <p>CNPJ: 55.452.123/0001-89</p>\n' +
         '                <p>Petrópolis, RJ</p>\n' +
-        '                <p>WhatsApp: (24) 99204-6467</p>\n' +
+        '                <p>WhatsApp: (21) 97729-7049</p>\n' +
         '            </div>\n' +
         '            <div class="title">\n' +
         '                <h1>ORDEM DE SERVIÇO</h1>\n' +

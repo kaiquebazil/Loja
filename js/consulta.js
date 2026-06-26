@@ -273,7 +273,7 @@ function showOrderDelivery(order, delivery) {
         (observacoes ? '<p class="order-notes"><strong>Observações:</strong> ' + escapeHTML(observacoes) + '</p>' : '<p class="order-notes"><strong>Observações:</strong> -</p>') +
         '<p class="order-notes"><strong>Próximo passo:</strong> ' + escapeHTML(proximoPasso) + '</p>' +
         '</div>' +
-        '<a href="https://wa.me/5524992046467?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
+        '<a href="https://wa.me/5521977297049?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
         '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
     );
 }
@@ -296,7 +296,7 @@ function showResult(html) {
 function showNotFound() {
     showResult(
         '<p class="not-found">Registro não encontrado. Verifique o número ou fale com a KB Tech pelo WhatsApp.</p>' +
-        '<a href="https://wa.me/5524992046467?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
+        '<a href="https://wa.me/5521977297049?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20KB%20Tech." target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
         '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
     );
 }
@@ -365,7 +365,7 @@ function showOS(os, isLocal) {
         (servico ? '<p><strong>Serviço realizado:</strong> ' + escapeHTML(servico) + '</p>' : '') +
         '<p><strong>Observações:</strong> ' + escapeHTML(observacoes || '-') + '</p>' +
         '<p><strong>Próximo passo:</strong> ' + escapeHTML(proximoPasso) + '</p>' +
-        '<a href="https://wa.me/5524992046467?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
+        '<a href="https://wa.me/5521977297049?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
         '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
     );
 }
@@ -410,7 +410,7 @@ function showGuarantee(guarantee) {
         '<p><strong>Status:</strong> ' + escapeHTML(status) + '</p>' +
         '<p><strong>Observações:</strong> ' + escapeHTML(observacoes || '-') + '</p>' +
         '<p><strong>Próximo passo:</strong> ' + escapeHTML(proximoPasso) + '</p>' +
-        '<a href="https://wa.me/5524992046467?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
+        '<a href="https://wa.me/5521977297049?text=' + whatsappText + '" target="_blank" rel="noopener" class="btn-whatsapp-direct">' +
         '<i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>'
     );
 }

@@ -84,7 +84,7 @@ function sendOrcamentoWhatsApp() {
     msg += '━━━━━━━━━━━━━━━━━━\n';
     msg += 'Aguardo retorno! 😊';
 
-    var url = 'https://wa.me/5524992046467?text=' + encodeURIComponent(msg);
+    var url = 'https://wa.me/5521977297049?text=' + encodeURIComponent(msg);
     window.open(url, '_blank');
 
     document.getElementById('orcamento-form').reset();

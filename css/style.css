@@ -63,6 +63,8 @@ input, select, textarea { font-family: inherit; }
 .top-bar .container { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
 .top-bar span { display: flex; align-items: center; gap: 6px; }
 .top-bar i { color: var(--primary-blue); }
+.top-bar a { color: inherit; }
+.top-bar a:hover { color: var(--primary-blue); }
 
 /* Header */
 .header {
@@ -566,6 +568,8 @@ input, select, textarea { font-family: inherit; }
 .footer-links ul li a:hover { color: var(--primary-blue); }
 .footer-contact p { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
 .footer-contact p i { color: var(--primary-blue); }
+.footer-contact p a { color: inherit; }
+.footer-contact p a:hover { color: var(--primary-blue); }
 .btn-whatsapp-footer {
     display: inline-flex;
     align-items: center;
@@ -722,7 +726,7 @@ input, select, textarea { font-family: inherit; }
 
 @media (max-width: 768px) {
     .top-bar .container { justify-content: center; gap: 12px; }
-    .top-bar span:nth-child(3) { display: none; }
+    .top-bar span:nth-child(4) { display: none; }
     body.menu-open { overflow: hidden; }
     .menu-toggle {
         display: flex;

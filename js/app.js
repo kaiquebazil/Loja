@@ -198,7 +198,7 @@ function createProductCard(p) {
 
     var imgSrc = p.imagem || 'https://placehold.co/400x400/11141b/ffffff?text=Produto';
     var waMsg = 'Olá KB Tech! Tenho interesse no produto: ' + p.nome + ' (R$ ' + precoFinal.toFixed(2).replace('.', ',') + '). Poderia me dar mais informações?';
-    var waUrl = 'https://wa.me/5524992046467?text=' + encodeURIComponent(waMsg);
+    var waUrl = 'https://wa.me/5521977297049?text=' + encodeURIComponent(waMsg);
 
     var addBtn = p.estoque > 0
         ? '<button class="btn-add-cart" onclick="addToCart(' + p.id + ')"><i class="fas fa-cart-plus"></i> Adicionar</button>'
